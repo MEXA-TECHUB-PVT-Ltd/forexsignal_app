@@ -37,7 +37,7 @@ export default function Onboarding({navigation}) {
           alignItems: 'center',
         }}>
         <Image
-          style={{width: wp(68), height: hp(68), resizeMode: 'contain'}}
+          style={{width: wp(78), height: hp(77), resizeMode: 'contain'}}
           source={appImages.card}
         />
       </View>
@@ -50,7 +50,7 @@ export default function Onboarding({navigation}) {
           marginTop: hp(3),
         }}>
         <Image
-          style={{width: wp(59), height: hp(18), resizeMode: 'contain'}}
+          style={{width: wp(70), height: hp(18), resizeMode: 'contain'}}
           source={appImages.tradingAppImg}
         />
       </View>
@@ -60,7 +60,7 @@ export default function Onboarding({navigation}) {
         where every trade tells a story.
       </Text>
       <TouchableOpacity
-      onPress={()=>navigation.navigate("BottomTabNavigation")}
+      onPress={()=>navigation.navigate("SignIn")}
         style={{
           height: hp(7),
           paddingRight: wp(1),

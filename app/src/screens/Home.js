@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React,{useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -33,8 +33,31 @@ import {
   textBlack,
   white,
 } from '../assets/Colors';
+import CustomSnackbar from '../Custom/CustomSnackBar';
 
 export default function Home({navigation}) {
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+
+ const dismissSnackbar = () => {
+    setSnackbarVisible(true);
+  };
+
+ const handleUpdatePassword = async () => {
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    setSnackbarVisible(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      setSnackbarVisible(false);
+    }, 3000);
+  };
+
+
+
 
     const data = [
         {
@@ -141,7 +164,8 @@ export default function Home({navigation}) {
     
   const renderItems = item => {
     return (
-      <View
+      <TouchableOpacity
+      onPress={()=>navigation.navigate("SignalDetails")}
         style={{
           marginTop: hp(3),
           justifyContent: 'space-around',
@@ -197,8 +221,10 @@ export default function Home({navigation}) {
             style={{fontSize: hp(1.7), fontWeight: '500', color: lightGrey}}>
             {item.date}
           </Text>
+          <TouchableOpacity onPress={()=>handleUpdatePassword()}>
 
           <Copy width={60} height={80} />
+          </TouchableOpacity>
         </View>
 
         <View
@@ -245,7 +271,7 @@ export default function Home({navigation}) {
             </Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
   return (
@@ -274,13 +300,13 @@ export default function Home({navigation}) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
-              width: wp(23),
+              width: wp(20),
             }}>
             <TouchableOpacity>
               <Search width={25} height={25} />
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate("Notifications")}>
               <Notification width={25} height={25} />
             </TouchableOpacity>
           </View>
@@ -299,6 +325,13 @@ export default function Home({navigation}) {
               renderItem={({item}) => renderItems(item)}
             />
           </View>
+
+          <CustomSnackbar
+        message={'Success'}
+        messageDescription={'SIgnal Copied Successfully'}
+        onDismiss={dismissSnackbar} // Make sure this function is defined
+        visible={snackbarVisible}
+      />
     </View>
   );
 }
