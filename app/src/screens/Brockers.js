@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React,{useState} from 'react';
+import React, {useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -40,12 +40,11 @@ import Headers from '../Custom/Headers';
 export default function Brockers({navigation}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
-
- const dismissSnackbar = () => {
+  const dismissSnackbar = () => {
     setSnackbarVisible(true);
   };
 
- const handleUpdatePassword = async () => {
+  const handleUpdatePassword = async () => {
     // Perform the password update logic here
     // For example, you can make an API request to update the password
 
@@ -58,62 +57,57 @@ export default function Brockers({navigation}) {
     }, 3000);
   };
 
+  const data = [
+    {
+      id: 1,
+      name: 'John Doe',
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Buy',
+    },
+    {
+      id: 2,
+      name: 'Olivia Wiston',
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Sell',
+    },
+    {
+      id: 3,
+      name: 'Emily Johnson',
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Sell',
+    },
+    {
+      id: 4,
+      name: 'Emily Johnson',
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Buy',
+    },
+    {
+      id: 5,
+      name: 'David Smith',
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Sell',
+    },
+  ];
 
-
-
-    const data = [
-        {
-          id: 1,
-          name:'John Doe',
-          price:'$113.22',
-          profit:'0.59038',
-          loss:'0.59038',
-          date:'27-oct-2023, 08:20 AM',
-          status:'Buy'
-        },
-        {
-            id: 2,
-            name:'Olivia Wiston',
-            price:'$113.22',
-            profit:'0.59038',
-            loss:'0.59038',
-            date:'27-oct-2023, 08:20 AM',
-            status:'Sell'
-          },
-          {
-            id: 3,
-            name:'Emily Johnson',
-            price:'$113.22',
-            profit:'0.59038',
-            loss:'0.59038',
-            date:'27-oct-2023, 08:20 AM',
-            status:'Sell'
-          },
-          {
-            id: 4,
-            name:'Emily Johnson',
-            price:'$113.22',
-            profit:'0.59038',
-            loss:'0.59038',
-            date:'27-oct-2023, 08:20 AM',
-            status:'Buy'
-          },
-          {
-            id: 5,
-            name:'David Smith',
-            price:'$113.22',
-            profit:'0.59038',
-            loss:'0.59038',
-            date:'27-oct-2023, 08:20 AM',
-            status:'Sell'
-          },
-          
-
-      ];
-    
   const renderItems = item => {
     return (
-      <TouchableOpacity
+      <View
         style={{
           marginTop: hp(3),
           justifyContent: 'space-around',
@@ -132,32 +126,31 @@ export default function Brockers({navigation}) {
             paddingHorizontal: wp(3),
             height: hp(5),
           }}>
-
-<TouchableOpacity style={styles.circleBox}>
-            
-              <Image
-                style={{
-                  flex: 1,
-                  width: '100%',
-                  height: '100%',
-                  //borderRadius: wp(25) / 2, // Half of the width (25/2)
-                  resizeMode: 'contain',
-                }}
-                source={appImages.profileImg}
-              />
-           
+          <TouchableOpacity style={styles.circleBox}>
+            <Image
+              style={{
+                flex: 1,
+                width: '100%',
+                height: '100%',
+                //borderRadius: wp(25) / 2, // Half of the width (25/2)
+                resizeMode: 'contain',
+              }}
+              source={appImages.profileImg}
+            />
           </TouchableOpacity>
 
-          <View style={{flex:1, marginLeft:wp(3)}}>
-          <Text style={{fontSize: hp(1.8), fontWeight: 'bold', color: textBlack}}>
+          <View style={{flex: 1, marginLeft: wp(3)}}>
+            <Text
+              style={{fontSize: hp(1.8), fontWeight: 'bold', color: textBlack}}>
               {item.name}
             </Text>
           </View>
 
-          <Chat />
-            </View>
-          
-        
+          <TouchableOpacity onPress={()=>navigation.navigate("Chat")}>
+            <Chat />
+          </TouchableOpacity>
+        </View>
+
         <View
           style={{
             flexDirection: 'row',
@@ -198,11 +191,11 @@ export default function Brockers({navigation}) {
             </Text>
 
             <Text style={{fontSize: hp(1.5), fontWeight: 'bold', color: red}}>
-            {item.loss}
+              {item.loss}
             </Text>
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
   return (
@@ -213,23 +206,21 @@ export default function Brockers({navigation}) {
         barStyle="dark-content" // You can set the StatusBar text color to dark or light
       />
 
-      <View style={{marginTop:hp(5)}}>
-
-      <Headers showText={true} text={'Brokers'}/>
+      <View style={{marginTop: hp(5)}}>
+        <Headers showText={true} text={'Brokers'} />
       </View>
-      
 
-      <View style={{flex:1}}>
-            <FlatList
-              style={{flexGrow:1}}
-              showsVerticalScrollIndicator={false}
-              data={data}
-              keyExtractor={item => item.id.toString()}
-              renderItem={({item}) => renderItems(item)}
-            />
-          </View>
+      <View style={{flex: 1}}>
+        <FlatList
+          style={{flexGrow: 1}}
+          showsVerticalScrollIndicator={false}
+          data={data}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({item}) => renderItems(item)}
+        />
+      </View>
 
-          <CustomSnackbar
+      <CustomSnackbar
         message={'Success'}
         messageDescription={'SIgnal Copied Successfully'}
         onDismiss={dismissSnackbar} // Make sure this function is defined
@@ -242,7 +233,7 @@ export default function Brockers({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'white'
+    backgroundColor: 'white',
   },
   absoluteContainer: {
     position: 'absolute',
@@ -256,10 +247,10 @@ const styles = StyleSheet.create({
     width: wp(12),
     height: wp(12),
     borderWidth: 1,
-    overflow:'hidden',
+    overflow: 'hidden',
     borderColor: '#0000001F',
     borderRadius: wp(15),
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });

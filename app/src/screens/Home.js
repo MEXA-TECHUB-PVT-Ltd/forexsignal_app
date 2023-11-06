@@ -53,6 +53,7 @@ export default function Home({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
+      navigation.navigate("SignIn")
     }, 3000);
   };
 
@@ -302,7 +303,7 @@ export default function Home({navigation}) {
               alignItems: 'center',
               width: wp(20),
             }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate("SearchScreen")}>
               <Search width={25} height={25} />
             </TouchableOpacity>
 

@@ -11,7 +11,9 @@ const appImages = {
   circleImg:require(IMAGES_DIR + 'circleImg.png'),
   homeTopBar:require(IMAGES_DIR + 'HomeTopBar.png'),
   backgroundImgAuth:require(IMAGES_DIR + 'BackgroungImgAuth.png'),
-  profileImg:require(IMAGES_DIR + 'ProfileImg.png')
+  profileImg:require(IMAGES_DIR + 'ProfileImg.png'),
+  ShareMainImg:require(IMAGES_DIR + 'ShareMainImg.png')
+
   //graphChart: require(IMAGES_DIR + 'GraphCharts.PNG')
 };
 export { appImages };

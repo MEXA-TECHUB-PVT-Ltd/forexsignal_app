@@ -108,8 +108,11 @@ export default function SignUp({navigation}) {
         />
       </View>
       <View style={{justifyContent:'center', marginTop:hp(3), alignItems:'center'}}>
+      
+      <TouchableOpacity onPress={()=>navigation.navigate("ProfileImage")}>
 
       <CustomButton title={'Create'}/>
+      </TouchableOpacity>
       </View>
 
       <View style={{height:hp(8), flexDirection:'row',alignItems:'center', justifyContent:'space-between', marginHorizontal:wp(8)}}>
@@ -159,7 +162,7 @@ export default function SignUp({navigation}) {
             fontWeight: '400',
             color: textBlack,
         }}>
-         FaceBook
+         Facebook
       </Text>
 
          
@@ -167,7 +170,7 @@ export default function SignUp({navigation}) {
 
       </View>
 
-      <View style={{flexDirection:'row', marginTop:hp(5), height:hp(8), marginHorizontal:wp(17), alignItems:'center', justifyContent:'space-between'}}>
+      <View style={{flexDirection:'row', marginTop:hp(5), height:hp(8), marginHorizontal:wp(18), alignItems:'center', justifyContent:'space-between'}}>
       <Text
         style={{
           fontSize: hp(2),
@@ -184,7 +187,7 @@ export default function SignUp({navigation}) {
           fontWeight: 'bold',
           color: textBlack,
         }}>
-         Sign In?
+         Sign In
       </Text>
 
       </TouchableOpacity>
