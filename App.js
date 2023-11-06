@@ -32,6 +32,17 @@ import OTP from './app/src/Auth/OTP';
 import ResetPassword from './app/src/Auth/ResetPassword';
 import Notifications from './app/src/screens/Notifications';
 import SignalDetails from './app/src/screens/SignalDetails';
+import SearchScreen from './app/src/screens/SearchScreen';
+import Subscription from './app/src/screens/Subscription';
+import ChatDesk from './app/src/screens/ChatDesk';
+import Chat from './app/src/screens/Chat';
+import MyWishList from './app/src/screens/MyWishList';
+import EditProfile from './app/src/screens/EditProfile';
+import ChangePassword from './app/src/screens/ChangePassword';
+import Invite from './app/src/screens/Invite';
+import PrivacyPolicy from './app/src/screens/PrivacyPolicy';
+import TermsAndCondition from './app/src/screens/TermsAndCondition';
+import ProfileImage from './app/src/screens/ProfileImage';
 
 //---------------\\
 
@@ -44,6 +55,72 @@ export default function App() {
         <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="ProfileImage"
+          component={ProfileImage}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="TermsAndCondition"
+          component={TermsAndCondition}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="PrivacyPolicy"
+          component={PrivacyPolicy}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="Invite"
+          component={Invite}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="ChangePassword"
+          component={ChangePassword}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfile}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="MyWishList"
+          component={MyWishList}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="ChatDesk"
+          component={ChatDesk}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="Chat"
+          component={Chat}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="Subscription"
+          component={Subscription}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="SearchScreen"
+          component={SearchScreen}
           options={{headerShown: false}}
         />
 

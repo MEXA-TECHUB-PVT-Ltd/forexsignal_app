@@ -621,8 +621,8 @@ export default function SignalDetails({navigation}) {
 
         <TouchableOpacity
           onPress={() => ref_RBSheet.current.close()}
-          style={{marginHorizontal: wp(8)}}>
-          <Cancel width={280} />
+          style={{marginHorizontal: wp(5)}}>
+          <Cancel width={290} />
         </TouchableOpacity>
       </RBSheet>
 
