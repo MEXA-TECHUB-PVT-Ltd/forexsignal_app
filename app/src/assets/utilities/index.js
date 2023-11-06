@@ -9,6 +9,9 @@ const appImages = {
   card:require(IMAGES_DIR + 'card.png'),
   tradingAppImg:require(IMAGES_DIR + 'tradingAppImg.png'),
   circleImg:require(IMAGES_DIR + 'circleImg.png'),
-  homeTopBar:require(IMAGES_DIR + 'HomeTopBar.png')
+  homeTopBar:require(IMAGES_DIR + 'HomeTopBar.png'),
+  backgroundImgAuth:require(IMAGES_DIR + 'BackgroungImgAuth.png'),
+  profileImg:require(IMAGES_DIR + 'ProfileImg.png')
+  //graphChart: require(IMAGES_DIR + 'GraphCharts.PNG')
 };
 export { appImages };

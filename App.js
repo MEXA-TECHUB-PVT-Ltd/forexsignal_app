@@ -25,6 +25,13 @@ import SplashScreen from './app/src/screens/SplashScreen';
 import Onboarding from './app/src/screens/Onboarding';
 import Home from './app/src/screens/Home';
 import BottomTabNavigation from './app/src/Navigations/BottomTabNavigation';
+import SignUp from './app/src/Auth/SignUp';
+import SignIn from './app/src/Auth/SignIn';
+import ForgetPassword from './app/src/Auth/ForgetPassword';
+import OTP from './app/src/Auth/OTP';
+import ResetPassword from './app/src/Auth/ResetPassword';
+import Notifications from './app/src/screens/Notifications';
+import SignalDetails from './app/src/screens/SignalDetails';
 
 //---------------\\
 
@@ -34,14 +41,55 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-
-      <Stack.Screen
+        <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}
           options={{headerShown: false}}
         />
 
-      <Stack.Screen
+        <Stack.Screen
+          name="SignalDetails"
+          component={SignalDetails}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="Notifications"
+          component={Notifications}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="ResetPassword"
+          component={ResetPassword}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="ForgetPassword"
+          component={ForgetPassword}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="OTP"
+          component={OTP}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="SignUp"
+          component={SignUp}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="SignIn"
+          component={SignIn}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
           name="BottomTabNavigation"
           component={BottomTabNavigation}
           options={{headerShown: false}}
@@ -51,10 +99,6 @@ export default function App() {
           component={Onboarding}
           options={{headerShown: false}}
         />
-
-       
-
-        
       </Stack.Navigator>
     </NavigationContainer>
   );
