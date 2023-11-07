@@ -43,6 +43,7 @@ import Invite from './app/src/screens/Invite';
 import PrivacyPolicy from './app/src/screens/PrivacyPolicy';
 import TermsAndCondition from './app/src/screens/TermsAndCondition';
 import ProfileImage from './app/src/screens/ProfileImage';
+import RateApp from './app/src/screens/RateApp';
 
 //---------------\\
 
@@ -52,9 +53,17 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+
+      
         <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}
+          options={{headerShown: false}}
+        />
+
+<Stack.Screen
+          name="RateApp"
+          component={RateApp}
           options={{headerShown: false}}
         />
 

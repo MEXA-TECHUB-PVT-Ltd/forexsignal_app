@@ -87,7 +87,7 @@ export default function ProfileImage({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
-      navigation.goBack()
+      navigation.navigate("BottomTabNavigation")
     }, 3000);
   };
 

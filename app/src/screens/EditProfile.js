@@ -223,7 +223,7 @@ export default function EditProfile({navigation}) {
           style={{
             marginHorizontal: wp(1),
             height: hp(12),
-            marginTop: hp(3),
+            marginTop: hp(1),
           }}>
           <Text style={{fontSize: hp(2.1), fontWeight: 'bold', color: textBlack}}>
            Email Address

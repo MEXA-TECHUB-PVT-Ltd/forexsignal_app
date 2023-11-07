@@ -67,19 +67,51 @@ export default function SignalDetails({navigation}) {
     setSnackbarVisible(true);
   };
 
+  const handleUpdatePasswordSignIn = async () => {
+    ref_RBSheet.current.close()
+  
+      // Perform the password update logic here
+      // For example, you can make an API request to update the password
+  
+      // Assuming the update was successful
+      //setSnackbarVisible(true);
+  
+      // Automatically hide the Snackbar after 3 seconds
+      setTimeout(() => {
+        //setSnackbarVisible(false);
+       navigation.navigate("SignIn")
+      }, 5);
+    };
+
+    const handleUpdatePasswordSignUp = async () => {
+      ref_RBSheet.current.close()
+    
+        // Perform the password update logic here
+        // For example, you can make an API request to update the password
+    
+        // Assuming the update was successful
+        //setSnackbarVisible(true);
+    
+        // Automatically hide the Snackbar after 3 seconds
+        setTimeout(() => {
+          //setSnackbarVisible(false);
+          navigation.navigate("SignUp")
+        }, 10);
+      };
+
   const handleUpdatePassword = async () => {
     // Perform the password update logic here
     // For example, you can make an API request to update the password
 
     // Assuming the update was successful
-    setSnackbarVisible(true);
+    //setSnackbarVisible(true);
 
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
-      setSnackbarVisible(false);
+      //setSnackbarVisible(false);
       setShowHeartFilled(!showHeartFilled);
       ref_RBSheet.current.open();
-    }, 3000);
+    }, 50);
   };
 
   const dismissSnackbarCopied = () => {
@@ -615,8 +647,15 @@ export default function SignalDetails({navigation}) {
             marginHorizontal: wp(5),
             alignItems: 'center',
           }}>
+            <TouchableOpacity onPress={()=> handleUpdatePasswordSignIn()}>
+
           <SignInBtn width={130} height={130} />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={()=> handleUpdatePasswordSignUp()}>
+
           <CreateBtn width={130} height={130} />
+            </TouchableOpacity>
         </View>
 
         <TouchableOpacity
