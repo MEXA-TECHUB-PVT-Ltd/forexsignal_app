@@ -3,6 +3,7 @@ import {
   StatusBar,
   Text,
   Image,
+  Linking,
   FlatList,
   ScrollView,
   TouchableOpacity,
@@ -38,6 +39,15 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {greyBold, orange, textBlack, textGrey, white} from '../assets/Colors';
 
 export default function ChatDesk({navigation}) {
+
+  const openTelegramDirectMessage = (recipientUsername, message) => {
+    // Form the deep link URL for the Telegram direct message
+    const telegramDeepLink = `https://t.me/${recipientUsername}?text=${encodeURIComponent(message)}`;
+  
+    // Try to open the Telegram deep link
+    Linking.openURL(telegramDeepLink)
+      .catch((err) => console.error('An error occurred: ', err));
+  };
   return (
     <View style={styles.container}>
       <View style={{marginTop: hp(5)}}>
@@ -48,7 +58,7 @@ export default function ChatDesk({navigation}) {
         />
       </View>
 
-      <Text
+      {/* <Text
         style={{
           fontSize: hp(2.6),
           marginTop: hp(10),
@@ -57,10 +67,34 @@ export default function ChatDesk({navigation}) {
           color: textBlack,
         }}>
         Lets Talk!
+      </Text> */}
+
+      <Text
+        style={{
+          fontSize: hp(2.6),
+          marginTop: hp(10),
+          alignSelf: 'center',
+          fontWeight: 'bold',
+          color: textBlack,
+        }}>
+        CONTACT SUPPORT
       </Text>
+      
+      <View style={{marginHorizontal:wp(10)}}>
+
+      <Text
+        style={{
+          fontSize: hp(2.6),
+          textAlign:'center',
+          fontWeight: 'bold',
+          color: textBlack,
+        }}>
+        if you have any question or encounter any issues, please feel free to reach out to us on Telegram.We are available and active 24/7, and we've here to assist you.
+      </Text>
+      </View>
 
       <ScrollView contentContainerStyle={{flex: 1, justifyContent: 'flex-end'}}>
-        <TouchableOpacity onPress={()=>navigation.navigate("Chat")}
+        <TouchableOpacity onPress={()=>openTelegramDirectMessage('Testing', ' Is there a demo account for practice!')}
           style={{
             marginLeft: wp(5),
             marginBottom: hp(3),
@@ -84,6 +118,7 @@ export default function ChatDesk({navigation}) {
         </TouchableOpacity>
 
         <TouchableOpacity
+        onPress={()=>openTelegramDirectMessage('Testing', ' Any upcoming app changes or enhancements?')}
           style={{
             marginLeft: wp(5),
             marginBottom: hp(3),
@@ -107,6 +142,7 @@ export default function ChatDesk({navigation}) {
         </TouchableOpacity>
 
         <TouchableOpacity
+         onPress={()=>openTelegramDirectMessage('Testing', 'How often are charts and data updated?')}
           style={{
             marginLeft: wp(5),
             paddingLeft: wp(5),
@@ -129,6 +165,7 @@ export default function ChatDesk({navigation}) {
         </TouchableOpacity>
 
         <TouchableOpacity
+        onPress={()=>openTelegramDirectMessage('Testing', 'How are disputes or trade issues resolved?')}
           style={{
             marginLeft: wp(5),
             marginBottom: hp(3),
@@ -152,6 +189,8 @@ export default function ChatDesk({navigation}) {
         </TouchableOpacity>
 
         <TouchableOpacity
+        onPress={()=>openTelegramDirectMessage('Testing', 'How can I contact customer support?')}
+
           style={{
             marginLeft: wp(5),
             marginBottom: hp(3),
@@ -174,7 +213,21 @@ export default function ChatDesk({navigation}) {
         </TouchableOpacity>
       </ScrollView>
 
-      <View style={{flexDirection:'row',height:hp(8), paddingHorizontal:wp(5), alignItems:'center'}}>
+      <View style={{justifyContent:'center', marginTop:hp(1), marginBottom:hp(5), alignItems:'center'}}>
+
+      <TouchableOpacity onPress={()=>openTelegramDirectMessage('Testing', 'Hello, this is a custom message!')} style={{ width:wp(39), borderRadius:wp(8), height:hp(5), backgroundColor:orange, justifyContent:'center',alignItems:'center'}}>
+      <Text
+          style={{
+            fontWeight: 'bold',
+            color: textBlack,
+            fontSize: hp(2.1),
+          }}>
+            Contact Support
+        </Text>
+      </TouchableOpacity>
+      </View>
+
+      {/* <View style={{flexDirection:'row',height:hp(8), paddingHorizontal:wp(5), alignItems:'center'}}>
         <View style={{ flex:1, borderRadius:wp(5), alignItems:'center', flexDirection:'row', borderWidth:1, borderColor:'#00000017'}}>
          <Happiness style={{marginLeft:wp(3)}} width={20} height={20}/>
 
@@ -184,7 +237,7 @@ export default function ChatDesk({navigation}) {
 
          <Send width={48} height={48}/>
          </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 }

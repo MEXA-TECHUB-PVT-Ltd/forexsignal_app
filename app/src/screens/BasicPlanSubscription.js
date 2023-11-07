@@ -60,13 +60,13 @@ export default function BasicPlanSubscription() {
 
         <Text
           style={{
-            fontSize: hp(3.2),
+            fontSize: hp(2.5),
             marginLeft: wp(8),
             marginTop:hp(3),
             fontWeight: 'bold',
             color: orange,
           }}>
-          $ 100
+          Basic plan 3 Months Price 99 $
         </Text>
 
         <View style={{flexDirection:'row', paddingHorizontal:wp(8), alignItems:'center', height:hp(10)}}>

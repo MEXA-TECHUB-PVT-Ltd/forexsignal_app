@@ -366,7 +366,7 @@ export default function Home({navigation}) {
             flexDirection: 'row',
           }}>
           <Text style={{fontSize: hp(2.5), fontWeight: '500', color: white}}>
-            GT-Signals
+           Forex Artium
           </Text>
 
           <View

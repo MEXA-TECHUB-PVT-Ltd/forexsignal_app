@@ -48,11 +48,14 @@ import Headers from '../Custom/Headers';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 
+import Lightbox from 'react-native-lightbox';
+
 import SignInBtn from '../assets/svg/SignIn';
 import CreateBtn from '../assets/svg/CreateAccount';
 import Cancel from '../assets/svg/Cancel';
 
 import RBSheet from 'react-native-raw-bottom-sheet';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 export default function SignalDetails({navigation}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -61,6 +64,21 @@ export default function SignalDetails({navigation}) {
 
   const [snackbarVisibleCopied, setSnackbarVisibleCopied] = useState(false);
 
+  const [waitingVisible, setWaitingVisible] = useState(false);
+
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  const openLightbox = () => {
+    setIsLightboxOpen(true);
+    //setWaitingVisible(false)
+  };
+
+  const closeLightbox = () => {
+    setIsLightboxOpen(false);
+    setWaitingVisible(!waitingVisible);
+
+  };
+
   const ref_RBSheet = useRef(null);
 
   const dismissSnackbar = () => {
@@ -68,36 +86,36 @@ export default function SignalDetails({navigation}) {
   };
 
   const handleUpdatePasswordSignIn = async () => {
-    ref_RBSheet.current.close()
-  
-      // Perform the password update logic here
-      // For example, you can make an API request to update the password
-  
-      // Assuming the update was successful
-      //setSnackbarVisible(true);
-  
-      // Automatically hide the Snackbar after 3 seconds
-      setTimeout(() => {
-        //setSnackbarVisible(false);
-       navigation.navigate("SignIn")
-      }, 5);
-    };
+    ref_RBSheet.current.close();
 
-    const handleUpdatePasswordSignUp = async () => {
-      ref_RBSheet.current.close()
-    
-        // Perform the password update logic here
-        // For example, you can make an API request to update the password
-    
-        // Assuming the update was successful
-        //setSnackbarVisible(true);
-    
-        // Automatically hide the Snackbar after 3 seconds
-        setTimeout(() => {
-          //setSnackbarVisible(false);
-          navigation.navigate("SignUp")
-        }, 10);
-      };
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    //setSnackbarVisible(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      //setSnackbarVisible(false);
+      navigation.navigate('SignIn');
+    }, 5);
+  };
+
+  const handleUpdatePasswordSignUp = async () => {
+    ref_RBSheet.current.close();
+
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    //setSnackbarVisible(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      //setSnackbarVisible(false);
+      navigation.navigate('SignUp');
+    }, 10);
+  };
 
   const handleUpdatePassword = async () => {
     // Perform the password update logic here
@@ -116,6 +134,10 @@ export default function SignalDetails({navigation}) {
 
   const dismissSnackbarCopied = () => {
     setSnackbarVisibleCopied(true);
+  };
+
+  const waitingChange = () => {
+    setWaitingVisible(!waitingVisible);
   };
 
   const handleUpdateCopied = async () => {
@@ -206,11 +228,9 @@ export default function SignalDetails({navigation}) {
               style={{fontSize: hp(1.7), fontWeight: '500', color: lightGrey}}>
               27-oct-2023, 08:00 AM
             </Text>
-            
-            <TouchableOpacity onPress={()=>handleUpdateCopied()}>
 
-            <Copy width={60} height={80} />
-
+            <TouchableOpacity onPress={() => handleUpdateCopied()}>
+              <Copy width={60} height={80} />
             </TouchableOpacity>
           </View>
         </View>
@@ -221,9 +241,8 @@ export default function SignalDetails({navigation}) {
             marginTop: hp(3),
             marginHorizontal: wp(8),
           }}>
-
-            <Bars width={300} height={230}/>
-          </View>
+          <Bars width={300} height={230} />
+        </View>
 
         <Text
           style={{
@@ -487,14 +506,29 @@ export default function SignalDetails({navigation}) {
             Trade Result
           </Text>
 
-          <Text
+          <TouchableOpacity onPress={() => openLightbox()}>
+            {waitingVisible === true ? (
+             <EvilIcons name={'image'} size={50} color={orange}/>
+               ) : ( 
+            <Text
+              style={{
+                fontSize: hp(2.1),
+                fontWeight: '400',
+                color: textBlack,
+              }}>
+              Waiting
+            </Text>
+               )} 
+          </TouchableOpacity>
+
+          {/* <Text
             style={{
               fontSize: hp(2.1),
               fontWeight: '400',
               color: textBlack,
             }}>
             Waiting
-          </Text>
+          </Text> */}
         </View>
 
         <View
@@ -647,15 +681,13 @@ export default function SignalDetails({navigation}) {
             marginHorizontal: wp(5),
             alignItems: 'center',
           }}>
-            <TouchableOpacity onPress={()=> handleUpdatePasswordSignIn()}>
+          <TouchableOpacity onPress={() => handleUpdatePasswordSignIn()}>
+            <SignInBtn width={130} height={130} />
+          </TouchableOpacity>
 
-          <SignInBtn width={130} height={130} />
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={()=> handleUpdatePasswordSignUp()}>
-
-          <CreateBtn width={130} height={130} />
-            </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleUpdatePasswordSignUp()}>
+            <CreateBtn width={130} height={130} />
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity
@@ -678,6 +710,16 @@ export default function SignalDetails({navigation}) {
         onDismiss={dismissSnackbarCopied} // Make sure this function is defined
         visible={snackbarVisibleCopied}
       />
+
+      {isLightboxOpen && (
+        <Lightbox onClose={closeLightbox} backgroundColor={lightGrey} style={styles.lightboxContainer}>
+          <Image
+            resizeMode="contain"
+            style={{height: 400, width: 400}}
+            source={appImages.tradingAppImg}
+          />
+        </Lightbox>
+      )}
     </View>
   );
 }
@@ -685,5 +727,11 @@ export default function SignalDetails({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  lightboxContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Adjust the background color and opacity as needed
   },
 });

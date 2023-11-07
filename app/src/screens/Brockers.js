@@ -4,6 +4,7 @@ import {
   Text,
   Image,
   FlatList,
+  Linking,
   ScrollView,
   TouchableOpacity,
   View,
@@ -43,27 +44,23 @@ import Headers from '../Custom/Headers';
 
 import RBSheet from 'react-native-raw-bottom-sheet';
 
-
 export default function Brockers({navigation}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   const ref_RBSheet = useRef(null);
-  
-
 
   const dismissSnackbar = () => {
     setSnackbarVisible(true);
   };
 
   const handleUpdatePassword = async () => {
-
-     ref_RBSheet.current.close();
-     navigation.navigate("SignIn")
+    ref_RBSheet.current.close();
+    navigation.navigate('SignIn');
     // Perform the password update logic here
     // For example, you can make an API request to update the password
 
     // Assuming the update was successful
-   /*  setSnackbarVisible(true);
+    /*  setSnackbarVisible(true);
 
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
@@ -72,21 +69,34 @@ export default function Brockers({navigation}) {
   };
 
   const handleUpdatePasswordSignUp = async () => {
-
     ref_RBSheet.current.close();
-    navigation.navigate("SignUp")
-   // Perform the password update logic here
-   // For example, you can make an API request to update the password
+    navigation.navigate('SignUp');
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
 
-   // Assuming the update was successful
-  /*  setSnackbarVisible(true);
+    // Assuming the update was successful
+    /*  setSnackbarVisible(true);
 
    // Automatically hide the Snackbar after 3 seconds
    setTimeout(() => {
      setSnackbarVisible(false);
    }, 3000); */
- };
+  };
 
+  const openTelegramDirectMessage = () => {
+    // Replace 'username' with the actual username or user ID of the person you want to message
+    const username = 'Testing';
+    const userId = '123456789'; // Replace with the actual numeric user ID
+
+    // Form the deep link URL for the Telegram direct message
+    const telegramDeepLink = `https://t.me/${username}`;
+    //const telegramDeepLink = `https://t.me/user?id=${userId}`;
+
+  
+    // Try to open the Telegram deep link
+    Linking.openURL(telegramDeepLink)
+      .catch((err) => console.error('An error occurred: ', err));
+  };
 
   const data = [
     {
@@ -97,8 +107,7 @@ export default function Brockers({navigation}) {
       loss: '0.59038',
       date: '27-oct-2023, 08:20 AM',
       status: 'Buy',
-      showAlert:true
-
+      showAlert: true,
     },
     {
       id: 2,
@@ -108,8 +117,7 @@ export default function Brockers({navigation}) {
       loss: '0.59038',
       date: '27-oct-2023, 08:20 AM',
       status: 'Sell',
-      showAlert:false
-
+      showAlert: false,
     },
     {
       id: 3,
@@ -119,8 +127,7 @@ export default function Brockers({navigation}) {
       loss: '0.59038',
       date: '27-oct-2023, 08:20 AM',
       status: 'Sell',
-      showAlert:true
-
+      showAlert: true,
     },
     {
       id: 4,
@@ -130,8 +137,7 @@ export default function Brockers({navigation}) {
       loss: '0.59038',
       date: '27-oct-2023, 08:20 AM',
       status: 'Buy',
-      showAlert:false
-
+      showAlert: false,
     },
     {
       id: 5,
@@ -141,8 +147,7 @@ export default function Brockers({navigation}) {
       loss: '0.59038',
       date: '27-oct-2023, 08:20 AM',
       status: 'Sell',
-      showAlert:true
-
+      showAlert: true,
     },
   ];
 
@@ -187,7 +192,12 @@ export default function Brockers({navigation}) {
             </Text>
           </View>
 
-          <TouchableOpacity onPress={()=>item.showAlert===true?ref_RBSheet.current.open():navigation.navigate("Chat")}>
+          <TouchableOpacity
+            onPress={() =>
+              item.showAlert === true
+                ? ref_RBSheet.current.open()
+                : navigation.navigate('Chat')
+            }>
             <Chat />
           </TouchableOpacity>
         </View>
@@ -247,7 +257,152 @@ export default function Brockers({navigation}) {
         barStyle="dark-content" // You can set the StatusBar text color to dark or light
       />
 
-      <View style={{marginTop: hp(5)}}>
+      {/* text VIP */}
+
+      <Text
+        style={{
+          fontWeight: 'bold',
+          alignSelf: 'center',
+          marginTop: hp(10),
+          color: orange,
+          fontSize: hp(5),
+        }}>
+        FREE VIP
+      </Text>
+
+      <Text
+        style={{
+          fontWeight: 'bold',
+          alignSelf: 'center',
+          marginTop: hp(1),
+          color: textBlack,
+          fontSize: hp(2.3),
+        }}>
+        Unlock VIP Team Access 🏆
+      </Text>
+
+      <View style={{marginHorizontal: wp(5)}}>
+        <Text
+          style={{
+            fontWeight: 'bold',
+            alignSelf: 'center',
+            textAlign: 'center',
+            marginTop: hp(1),
+            color: textBlack,
+            fontSize: hp(2.1),
+          }}>
+          Gain lifetime access for free in just three easy step by using our
+          recommended Broker
+        </Text>
+      </View>
+
+      <View style={{marginHorizontal: wp(5)}}>
+        <Text
+          style={{
+            fontWeight: 'bold',
+            alignSelf: 'center',
+            textAlign: 'center',
+            marginTop: hp(3),
+            color: textBlack,
+            fontSize: hp(2.1),
+          }}>
+          1.Register and establish an account with our recommended broker:
+        </Text>
+      </View>
+
+      <View style={{marginHorizontal: wp(5)}}>
+        <TouchableOpacity onPress={()=>navigation.navigate('SignUp')}>
+
+        <Text
+          style={{
+            fontWeight: 'bold',
+            alignSelf: 'center',
+            textAlign: 'center',
+            marginTop: hp(1),
+            textDecorationLine:'underline',
+            color: textBlack,
+            fontSize: hp(2.1),
+          }}>
+          Sign Up Here
+        </Text>
+        </TouchableOpacity>
+      </View>
+
+      
+      <View style={{marginHorizontal: wp(10)}}>
+        <Text
+          style={{
+            fontWeight: '500',
+            alignSelf: 'center',
+            textAlign: 'center',
+            //marginTop: hp(1),
+            color: textBlack,
+            fontSize: hp(1.7),
+          }}>
+         (if you already have account with Vantagemarkets, reach out to us directly)
+        </Text>
+      </View>
+
+      
+      <View style={{marginHorizontal: wp(5)}}>
+        <Text
+          style={{
+            fontWeight: 'bold',
+            alignSelf: 'center',
+            textAlign: 'center',
+            marginTop: hp(3),
+            color: textBlack,
+            fontSize: hp(2.1),
+          }}>
+         Send us a message including your Name,Email, and Deposit Amount!
+        </Text>
+      </View>
+
+      <View style={{marginHorizontal: wp(5)}}>
+        <Text
+          style={{
+            fontWeight: 'bold',
+            alignSelf: 'center',
+            textAlign: 'center',
+            marginTop: hp(3),
+            color: textBlack,
+            fontSize: hp(2.1),
+          }}>
+         Recieve your exclusive invitation to join Team FOREX ARTIUM VIP, granting you access to an array of benefits, including in-depth analysis, a comprehensive education channel, and a wealth of additional signals!
+        </Text>
+      </View>
+
+      <View style={{marginHorizontal: wp(5)}}>
+        <Text
+          style={{
+            fontWeight: 'bold',
+            alignSelf: 'center',
+            textAlign: 'center',
+            marginTop: hp(3),
+            color: textBlack,
+            fontSize: hp(2.1),
+          }}>
+            Don't miss out on this opportunity to elevate your trading experience! 🚀
+        </Text>
+      </View>
+       
+      <View style={{justifyContent:'center', marginTop:hp(5), alignItems:'center'}}>
+
+      <TouchableOpacity onPress={()=>openTelegramDirectMessage()} style={{ width:wp(39), borderRadius:wp(8), height:hp(5), backgroundColor:orange, justifyContent:'center',alignItems:'center'}}>
+      <Text
+          style={{
+            fontWeight: 'bold',
+            color: textBlack,
+            fontSize: hp(2.1),
+          }}>
+            Contact Support
+        </Text>
+      </TouchableOpacity>
+       </View>
+
+      {/* //-------------\\ */}
+
+      {/* <View style={{marginTop: hp(5)}}>
         <Headers showText={true} text={'Brokers'} />
       </View>
 
@@ -336,14 +491,13 @@ export default function Brockers({navigation}) {
         </TouchableOpacity>
       </RBSheet>
 
-
-
+      
       <CustomSnackbar
         message={'Success'}
         messageDescription={'SIgnal Copied Successfully'}
         onDismiss={dismissSnackbar} // Make sure this function is defined
         visible={snackbarVisible}
-      />
+      /> */}
     </View>
   );
 }

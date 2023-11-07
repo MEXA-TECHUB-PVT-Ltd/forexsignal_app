@@ -30,15 +30,10 @@ export default function Onboarding({navigation}) {
         barStyle="dark-content" // You can set the StatusBar text color to dark or light
       />
       <View
-        style={{
-          height: hp(35),
-          marginTop: hp(15),
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
+        style={styles.imageContainer}>
         <Image
-          style={{width: wp(78), height: hp(77), resizeMode: 'contain'}}
-          source={appImages.card}
+          style={styles.roundedImage}
+          source={appImages.cardImg}
         />
       </View>
 
@@ -73,7 +68,6 @@ export default function Onboarding({navigation}) {
           backgroundColor: orange,
         }}>
        
-
         <Text style={{ flex:1, marginLeft:wp(30), fontWeight:'600',  color: white}}>
         Get Started
         </Text>
@@ -88,4 +82,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  roundedImage: {
+    width: wp(78),
+    height: wp(65),
+    resizeMode: 'stretch',
+    borderRadius: wp(8), // Set the same borderRadius as the wrapping View
+  },
+  imageContainer: {
+    //height: hp(35),
+    marginTop: hp(15),
+    borderRadius: wp(8),
+    //resizeMode:'contain',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    alignItems: 'center',
+  }
 });

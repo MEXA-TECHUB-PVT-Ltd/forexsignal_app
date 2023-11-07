@@ -17,6 +17,7 @@ import { darkGrey, orange } from '../assets/Colors';
 import Home from './../screens/Home';
 import Brockers from './../screens/Brockers';
 import Profile from '../screens/Profile';
+import  AntDesign  from 'react-native-vector-icons/AntDesign';
 
 const BottomTabNavigation = () => {
     const Bottom = createBottomTabNavigator();
@@ -61,13 +62,13 @@ const BottomTabNavigation = () => {
           options={({focused}) => ({
             tabBarIcon: ({focused}) =>
               focused ? (
-                <BrokersActive />
+                <AntDesign name={'star'} size={30} color={orange}/>
               ) : (
-                <BrokersInActive width={23} height={23} />
+                <AntDesign name={'staro'} size={30} color={'#707070'}/>
               ),
               tabBarLabel: ({focused}) => (
                 <Text style={focused ? styles.focusedLabel : styles.inactiveLabel}>
-                  Brokers
+                  VIP SIGNALS
                 </Text>
               ),
           })}

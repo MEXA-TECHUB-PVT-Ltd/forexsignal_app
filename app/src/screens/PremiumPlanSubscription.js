@@ -59,15 +59,15 @@ import {
           </Text>
   
           <Text
-            style={{
-              fontSize: hp(3.2),
-              marginLeft: wp(8),
-              marginTop:hp(3),
-              fontWeight: 'bold',
-              color: orange,
-            }}>
-            $ 700
-          </Text>
+          style={{
+            fontSize: hp(2.5),
+            marginLeft: wp(8),
+            marginTop:hp(3),
+            fontWeight: 'bold',
+            color: orange,
+          }}>
+          Premium Plan 6 Months Price 150 $
+        </Text>
   
           <View style={{flexDirection:'row', paddingHorizontal:wp(8), alignItems:'center', height:hp(10)}}>
               <View style={{marginTop:hp(-2)}}>
