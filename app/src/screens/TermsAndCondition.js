@@ -158,7 +158,6 @@ export default function TermsAndCondition({navigation}) {
           </Text>
         </View>
       </ScrollView>
-
       
     </View>
   );

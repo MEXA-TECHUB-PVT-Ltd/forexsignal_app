@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -18,6 +18,10 @@ import Notification from '../assets/svg/Notification.svg';
 import Copy from '../assets/svg/Copy.svg';
 import Buy from '../assets/svg/Buy.svg';
 import Sell from '../assets/svg/Sell.svg';
+import SignInBtn from '../assets/svg/SignIn';
+import CreateBtn from '../assets/svg/CreateAccount';
+import Cancel from '../assets/svg/Cancel';
+
 import Chat from '../assets/svg/Chat.svg';
 
 import {
@@ -37,25 +41,52 @@ import {
 import CustomSnackbar from '../Custom/CustomSnackBar';
 import Headers from '../Custom/Headers';
 
+import RBSheet from 'react-native-raw-bottom-sheet';
+
+
 export default function Brockers({navigation}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+  const ref_RBSheet = useRef(null);
+  
+
 
   const dismissSnackbar = () => {
     setSnackbarVisible(true);
   };
 
   const handleUpdatePassword = async () => {
+
+     ref_RBSheet.current.close();
+     navigation.navigate("SignIn")
     // Perform the password update logic here
     // For example, you can make an API request to update the password
 
     // Assuming the update was successful
-    setSnackbarVisible(true);
+   /*  setSnackbarVisible(true);
 
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
-    }, 3000);
+    }, 3000); */
   };
+
+  const handleUpdatePasswordSignUp = async () => {
+
+    ref_RBSheet.current.close();
+    navigation.navigate("SignUp")
+   // Perform the password update logic here
+   // For example, you can make an API request to update the password
+
+   // Assuming the update was successful
+  /*  setSnackbarVisible(true);
+
+   // Automatically hide the Snackbar after 3 seconds
+   setTimeout(() => {
+     setSnackbarVisible(false);
+   }, 3000); */
+ };
+
 
   const data = [
     {
@@ -66,6 +97,8 @@ export default function Brockers({navigation}) {
       loss: '0.59038',
       date: '27-oct-2023, 08:20 AM',
       status: 'Buy',
+      showAlert:true
+
     },
     {
       id: 2,
@@ -75,6 +108,8 @@ export default function Brockers({navigation}) {
       loss: '0.59038',
       date: '27-oct-2023, 08:20 AM',
       status: 'Sell',
+      showAlert:false
+
     },
     {
       id: 3,
@@ -84,6 +119,8 @@ export default function Brockers({navigation}) {
       loss: '0.59038',
       date: '27-oct-2023, 08:20 AM',
       status: 'Sell',
+      showAlert:true
+
     },
     {
       id: 4,
@@ -93,6 +130,8 @@ export default function Brockers({navigation}) {
       loss: '0.59038',
       date: '27-oct-2023, 08:20 AM',
       status: 'Buy',
+      showAlert:false
+
     },
     {
       id: 5,
@@ -102,6 +141,8 @@ export default function Brockers({navigation}) {
       loss: '0.59038',
       date: '27-oct-2023, 08:20 AM',
       status: 'Sell',
+      showAlert:true
+
     },
   ];
 
@@ -146,7 +187,7 @@ export default function Brockers({navigation}) {
             </Text>
           </View>
 
-          <TouchableOpacity onPress={()=>navigation.navigate("Chat")}>
+          <TouchableOpacity onPress={()=>item.showAlert===true?ref_RBSheet.current.open():navigation.navigate("Chat")}>
             <Chat />
           </TouchableOpacity>
         </View>
@@ -219,6 +260,83 @@ export default function Brockers({navigation}) {
           renderItem={({item}) => renderItems(item)}
         />
       </View>
+
+      <RBSheet
+        ref={ref_RBSheet}
+        height={250}
+        openDuration={250}
+        closeOnDragDown={true}
+        closeOnPressMask={true}
+        customStyles={{
+          container: {
+            // justifyContent: 'center',
+            // alignItems: 'center',
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            paddingTop: 0,
+            padding: 20,
+            zIndex: 999,
+          },
+          draggableIcon: {
+            backgroundColor: 'transparent',
+          },
+        }}>
+        <View style={{flex: 1, backgroundColor: 'white'}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: hp(5),
+            }}>
+            <Text
+              style={{
+                fontSize: hp(2.5),
+                fontWeight: 'bold',
+                color: orange,
+              }}>
+              Create Account
+            </Text>
+          </View>
+          <Text
+            style={{
+              fontSize: hp(2.3),
+              marginTop: hp(1),
+              fontWeight: '300',
+              textAlign: 'center',
+              color: textBlack,
+            }}>
+            Please create an account to add this trade to your Wishlist
+          </Text>
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            height: hp(8),
+            justifyContent: 'space-between',
+            marginHorizontal: wp(5),
+            alignItems: 'center',
+          }}>
+          <TouchableOpacity onPress={()=>handleUpdatePassword()}>
+          <SignInBtn width={130} height={130} />
+
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={()=>handleUpdatePasswordSignUp()}>
+
+          <CreateBtn width={130} height={130} />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity
+          onPress={() => ref_RBSheet.current.close()}
+          style={{marginHorizontal: wp(5)}}>
+          <Cancel width={290} />
+        </TouchableOpacity>
+      </RBSheet>
+
+
 
       <CustomSnackbar
         message={'Success'}

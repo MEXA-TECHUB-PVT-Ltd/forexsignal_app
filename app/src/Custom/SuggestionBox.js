@@ -5,7 +5,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import { orange } from '../assets/Colors';
+import { darkGrey, orange } from '../assets/Colors';
 
 const SuggestionBox = ({ data, query, onSuggestionSelect }) => {
   // Filter data based on the query and get up to 5 matching items
@@ -38,7 +38,7 @@ const highlightMatchingText = (text, query) => {
   const parts = text.split(new RegExp(`(${query})`, 'gi'));
   return parts.map((part, index) =>
     part.toLowerCase() === query.toLowerCase() ? (
-      <Text key={index} style={{ color: 'black', fontWeight: 'bold' }}>
+      <Text key={index} style={{ color: darkGrey, fontWeight: 'bold' }}>
         {part}
       </Text>
     ) : (

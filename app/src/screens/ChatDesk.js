@@ -59,7 +59,7 @@ export default function ChatDesk({navigation}) {
         Lets Talk!
       </Text>
 
-      <View style={{flex: 1, justifyContent: 'flex-end'}}>
+      <ScrollView contentContainerStyle={{flex: 1, justifyContent: 'flex-end'}}>
         <TouchableOpacity onPress={()=>navigation.navigate("Chat")}
           style={{
             marginLeft: wp(5),
@@ -172,7 +172,7 @@ export default function ChatDesk({navigation}) {
             How can I contact customer support?
           </Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
 
       <View style={{flexDirection:'row',height:hp(8), paddingHorizontal:wp(5), alignItems:'center'}}>
         <View style={{ flex:1, borderRadius:wp(5), alignItems:'center', flexDirection:'row', borderWidth:1, borderColor:'#00000017'}}>

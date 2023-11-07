@@ -51,7 +51,7 @@ export default function Profile({navigation}) {
 
   const closeDelete=()=>{
     ref_RBSheet.current.close()
-    navigation.navigate('SignUp')
+    navigation.navigate('SignIn')
   }
 
   const closeLogout=()=>{

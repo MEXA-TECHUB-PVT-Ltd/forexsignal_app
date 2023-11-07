@@ -52,13 +52,15 @@ const dummyData = [
 ];
 
 export default function SearchScreen({navigation}) {
-  const [query, setQuery] = useState('Straw');
+  const [query, setQuery] = useState('');
   const [queryShow, setQueryShow] = useState(false);
 
   const [selectedSuggestion, setSelectedSuggestion] = useState('');
 
   const handleQueryChange = text => {
     setQuery(text);
+    setSelectedSuggestion(''); // Clear selected suggestion when typing
+
   };
 
   const handleSuggestionSelect = suggestion => {
@@ -111,18 +113,19 @@ export default function SearchScreen({navigation}) {
           <TextInput
             value={query}
             onChangeText={handleQueryChange}
-            style={{flex: 1}}
+            style={{marginTop:hp(-0.5)}}
             placeholder="Search here"
           />
         </View>
       </View>
-      <View style={{marginHorizontal:wp(5)}}>
-
-    {query?  <SuggestionBox
-        data={dummyData}
-        query={query}
-        onSuggestionSelect={handleSuggestionSelect}
-      />:null}
+      <View style={{marginHorizontal: wp(5)}}>
+        {query && dummyData.filter(item => item.includes(query)).length > 0 ? (
+          <SuggestionBox
+            data={dummyData}
+            query={query}
+            onSuggestionSelect={handleSuggestionSelect}
+          />
+        ) : null}
       </View>
     </View>
   );
