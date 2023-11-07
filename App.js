@@ -53,15 +53,13 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-
-      
         <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}
           options={{headerShown: false}}
         />
 
-<Stack.Screen
+        <Stack.Screen
           name="RateApp"
           component={RateApp}
           options={{headerShown: false}}

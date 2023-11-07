@@ -218,7 +218,6 @@ export default function EditProfile({navigation}) {
           </View>
         </View>
 
-
         <View
           style={{
             marginHorizontal: wp(1),

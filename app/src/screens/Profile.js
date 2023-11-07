@@ -184,7 +184,7 @@ export default function Profile({navigation}) {
                 marginLeft: wp(5),
                 fontSize: hp(2.1),
               }}>
-              Live Chat
+              Contact Support
             </Text>
           </View>
 
