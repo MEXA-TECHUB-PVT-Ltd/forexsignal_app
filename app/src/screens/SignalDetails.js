@@ -22,6 +22,9 @@ import NewUpdates from '../assets/svg/NewUpdates.svg';
 
 import Buy from '../assets/svg/Buy.svg';
 
+import Sell from '../assets/svg/Sell.svg';
+
+
 import NewBrokerUpdate from '../assets/svg/NewBrokerUpdate.svg';
 
 import New from '../assets/svg/New.svg';
@@ -79,7 +82,7 @@ export default function SignalDetails({navigation, route}) {
 
   const receivedData = route.params?.signalDetails;
 
-  console.log('Recieved Data', receivedData);
+  console.log('Recieved Data:', receivedData.take_profit[0]);
 
   useEffect(() => {
     // Make the API request and update the 'data' state
@@ -199,7 +202,13 @@ export default function SignalDetails({navigation, route}) {
     setTimeout(() => {
       //setSnackbarVisible(false);
       setShowHeartFilled(!showHeartFilled);
-      ref_RBSheet.current.open();
+
+      if(userId!==''){
+
+      }else{
+
+        ref_RBSheet.current.open();
+      }
     }, 50);
   };
 
@@ -346,7 +355,7 @@ export default function SignalDetails({navigation, route}) {
             Action
           </Text>
 
-          <Buy width={65} />
+         { receivedData?.action==="SELL"? <Buy width={65} />:<Sell width={65} /> }
         </View>
 
         <View
@@ -373,7 +382,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-            Active
+            {receivedData?.signal_status}
           </Text>
         </View>
 
@@ -409,7 +418,9 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-            1.67890
+
+             {receivedData.take_profit[0].open_price}
+             {/* {receivedData?.signal_status?.take_profit[0]?.open_price} */}
           </Text>
         </View>
 
@@ -437,7 +448,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-            1.67890
+           {receivedData.take_profit[0]?.take_profit}
           </Text>
         </View>
 

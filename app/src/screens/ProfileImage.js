@@ -240,7 +240,7 @@ export default function ProfileImage({navigation}) {
 
     setLoading(true);
 
-    const apiUrl = `http://192.168.18.114:4000/user/updateuser/userprofile/${userId}`;
+    const apiUrl = `https://forex-be.mtechub.com/user/updateuser/userprofile/${userId}`;
 
     try {
       const response = await fetch(apiUrl, {
