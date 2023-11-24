@@ -3,6 +3,7 @@ import {
   StatusBar,
   Text,
   Image,
+  ActivityIndicator,
   FlatList,
   ScrollView,
   TouchableOpacity,
@@ -10,7 +11,7 @@ import {
   ImageBackground,
   TextInput,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -23,7 +24,7 @@ import Buy from '../assets/svg/Buy.svg';
 import Sell from '../assets/svg/Sell.svg';
 import Google from '../assets/svg/Google.svg';
 import FaceBook from '../assets/svg/FaceBook.svg';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -45,6 +46,63 @@ import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 
 export default function SignIn({navigation}) {
+  const [email, setEmail] = useState('');
+
+  const [loading, setLoading] = useState(false);
+
+  const [password, setPassword] = useState('');
+
+  const signIn = async () => {
+    setLoading(true);
+
+    const apiUrl = 'http://192.168.18.114:4000/user/usersignin';
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      // Handle the response data as needed
+      console.log('Response data:', data.msg);
+
+      console.log('Email:', email);
+      setLoading(false);
+
+      if (data.msg === 'Login successful') {
+        console.log('Data =email', data.data.email);
+        console.log('Data =id', data.data.id);
+
+        setLoading(false);
+
+        AsyncStorage.setItem('email', data.data.email.toString(), () => {
+          console.log('user email saved successfully');
+        });
+
+        AsyncStorage.setItem('userId', data.data.id.toString(), () => {
+          console.log('user id saved successfully of signup');
+        });
+
+        navigation.navigate('BottomTabNavigation');
+      }
+
+      // You can perform additional actions based on the response, e.g., navigate to another screen
+    } catch (error) {
+      // Handle errors
+      console.error('Error during sign up:', error);
+      setLoading(false);
+    }
+  };
+
   return (
     <ImageBackground
       source={appImages.backgroundImgAuth}
@@ -76,24 +134,24 @@ export default function SignIn({navigation}) {
           Sign In
         </Text>
 
-        <View style={{marginHorizontal:wp(8)}}>
-
-      <CPaperInput
-        placeholder="abc @ gmail.com"
-        left={true}
-        leftName="Mail"
-      />
-      </View>
-      <View style={{marginHorizontal:wp(8)}}>
-
-      <CPaperInput
-          left={true}
-          right={true}
-          placeholder={'Your Password'}
-          password={true}
-          leftName="Lock"
-        />
-      </View>
+        <View style={{marginHorizontal: wp(8)}}>
+          <CPaperInput
+            onChangeText={text => setEmail(text)}
+            placeholder="abc @ gmail.com"
+            left={true}
+            leftName="Mail"
+          />
+        </View>
+        <View style={{marginHorizontal: wp(8)}}>
+          <CPaperInput
+            onChangeText={text => setPassword(text)}
+            left={true}
+            right={true}
+            placeholder={'Your Password'}
+            password={true}
+            leftName="Lock"
+          />
+        </View>
         <View
           style={{
             height: hp(5),
@@ -122,7 +180,7 @@ export default function SignIn({navigation}) {
             marginTop: hp(3),
             alignItems: 'center',
           }}>
-          <TouchableOpacity onPress={()=>navigation.navigate("BottomTabNavigation")}>
+          <TouchableOpacity onPress={() => signIn()}>
             <CustomButton title={'Sign In'} />
           </TouchableOpacity>
         </View>
@@ -245,6 +303,21 @@ export default function SignIn({navigation}) {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {loading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" color="#FACA4E" />
+        </View>
+      )}
     </ImageBackground>
   );
 }

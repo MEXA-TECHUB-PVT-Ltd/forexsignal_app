@@ -1,6 +1,7 @@
 import {
   StyleSheet,
   StatusBar,
+  ActivityIndicator,
   Text,
   Image,
   FlatList,
@@ -9,7 +10,7 @@ import {
   View,
   TextInput,
 } from 'react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
@@ -39,6 +40,8 @@ import LogOut from '../assets/svg/LogOut.svg';
 
 import Users from '../assets/svg/Users.svg';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {
@@ -62,22 +65,58 @@ import CPaperInput from '../Custom/CPaperInput';
 export default function ProfileImage({navigation}) {
   const [openModel, setOpenModel] = useState(false);
   const [openGallery, setOpenGallery] = useState(false);
-  const [userName, setUserName] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState(null);
+  const [userId, setUserId] = useState('');
+  const [imageInfo, setImageInfo] = useState(null);
+
+  const [imageUrl, setImageUrl] = useState('');
+
+
   const ref_RBSheet = useRef(null);
   const ref_RBSheetCamera = useRef(null);
 
-  const [isActive, setIsActive ] = useState(false);
-  const [isActiveEmail, setIsActiveEmail ] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+  const [isActiveEmail, setIsActiveEmail] = useState(false);
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
+  useEffect(() => {
+    // Make the API request and update the 'data' state
+    console.log("Came to use effect")
+    fetchVideos();
+  }, [5]);
 
- const dismissSnackbar = () => {
+  const fetchVideos = async () => {
+    // Simulate loading
+    setLoading(true);
+
+    await getUserID();
+    // Fetch data one by one
+    // Once all data is fetched, set loading to false
+    setLoading(false);
+  };
+
+  const getUserID = async () => {
+    console.log("Id's");
+    try {
+      const result = await AsyncStorage.getItem('userId');
+      if (result !== null) {
+        setUserId(result);
+        console.log('user id retrieved:', result);
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error('Error retrieving user ID:', error);
+    }
+  };
+
+  const dismissSnackbar = () => {
     setSnackbarVisible(true);
   };
 
- const handleUpdatePassword = async () => {
+  const handleUpdatePassword = async () => {
     // Perform the password update logic here
     // For example, you can make an API request to update the password
 
@@ -87,20 +126,17 @@ export default function ProfileImage({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
-      navigation.navigate("BottomTabNavigation")
+      navigation.navigate('BottomTabNavigation');
     }, 3000);
   };
 
+  const onFocus = () => {
+    setIsActive(true);
+  };
 
-  const onFocus=()=>{
-    setIsActive(true)
-  }
-
-  const onBlur=()=>{
-    setIsActive(false)
-  }
-
-
+  const onBlur = () => {
+    setIsActive(false);
+  };
 
   const TakeImageFromCamera = () => {
     ImageCropPicker.openCamera({
@@ -128,6 +164,7 @@ export default function ProfileImage({navigation}) {
       console.log('image here', response);
       if (!response.didCancel && response.assets.length > 0) {
         setImageUri(response.assets[0].uri);
+        setImageInfo(response.assets[0]);
         console.log('response', imageUri);
       }
       ref_RBSheetCamera.current.close();
@@ -139,12 +176,108 @@ export default function ProfileImage({navigation}) {
       console.log('image here', response);
       if (!response.didCancel && response.assets.length > 0) {
         setImageUri(response.assets[0].uri);
+        setImageInfo(response.assets[0]);
+
       }
 
       console.log('response', imageUri);
 
       ref_RBSheetCamera.current.close();
     });
+  };
+
+  const upload = async () => {
+    if (imageUri !== null && fullName!==null) {
+         handleUploadImage()
+      //uploadVideo();
+    } else {
+      setModalVisible(true);
+    }
+  };
+
+
+  const handleUploadImage = (data) => {
+    setLoading(true);
+    const uri = imageInfo.uri;
+    const type = imageInfo.type;
+    const name = imageInfo.fileName;
+    const sourceImage = {uri, type, name};
+    console.log("Source Image",sourceImage);
+    const dataImage = new FormData();
+    dataImage.append('file', sourceImage);
+    dataImage.append('upload_preset', 'e6zfilan'); // Use your Cloudinary upload preset
+    dataImage.append('cloud_name', 'dxfdrtxi3'); // Use your Cloudinary cloud name
+
+    fetch('https://api.cloudinary.com/v1_1/dxfdrtxi3/image/upload', {
+      method: 'POST',
+      body: dataImage,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        setImageUrl(data.url); // Store the Cloudinary video URL in your state
+        //uploadVideo(data.url)
+        //uploadXpiVideo(data.url);
+        console.log("Image Url",data);
+        //uploadXpiVideo(data.url,data)
+        createProfile(data.url)  
+      })
+      .catch(err => {
+        setLoading(false)
+        console.log('Error While Uploading Video', err);
+      });
+  };
+
+  const createProfile = async (data) => {
+    
+    console.log( "User Id", userId);
+    console.log("Full Name", fullName);
+
+    console.log("image", data);
+
+    setLoading(true);
+
+    const apiUrl = `http://192.168.18.114:4000/user/updateuser/userprofile/${userId}`;
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: fullName,
+          image: data, 
+        }),
+      });
+
+      const data = await response.json();
+
+      // Handle the response data as needed
+      console.log('Response data:', data.msg);
+
+      //console.log('Email:', email);
+      setLoading(false);
+
+      if (data.msg === 'Profile updated successfully') {
+        console.log('Data =email', data.user);
+        //console.log('Data =id', data.user.id);
+
+        setLoading(false);
+
+       handleUpdatePassword()
+      }
+
+      // You can perform additional actions based on the response, e.g., navigate to another screen
+    } catch (error) {
+      // Handle errors
+      console.error('Error during sign up:', error);
+      setLoading(false);
+    }
   };
 
   return (
@@ -201,20 +334,16 @@ export default function ProfileImage({navigation}) {
             </TouchableOpacity>
           </View>
         </View>
-        
 
-        <View style={{marginTop:hp(5)}}>
-
-        <CPaperInput
-          left={false}
-          right={false}
-          placeholder={'Full Name'}
-        />
+        <View style={{marginTop: hp(5)}}>
+          <CPaperInput left={false} right={false} onChangeText={text => setFullName(text)} placeholder={'Full Name'} />
         </View>
 
-          <TouchableOpacity onPress={()=>handleUpdatePassword()} style={{marginTop:hp(35)}}>
-           <CustomButton title={'Create Profile'} />
-          </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => upload()}
+          style={{marginTop: hp(35)}}>
+          <CustomButton title={'Create Profile'} />
+        </TouchableOpacity>
       </View>
 
       <RBSheet
@@ -284,6 +413,21 @@ export default function ProfileImage({navigation}) {
         onDismiss={dismissSnackbar} // Make sure this function is defined
         visible={snackbarVisible}
       />
+
+      {loading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" color="#FACA4E" />
+        </View>
+      )}
     </View>
   );
 }
