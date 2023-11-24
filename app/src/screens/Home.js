@@ -2,13 +2,14 @@ import {
   StyleSheet,
   StatusBar,
   Text,
+  ActivityIndicator,
   Image,
   FlatList,
   ScrollView,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React,{useState, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -18,6 +19,7 @@ import Notification from '../assets/svg/Notification.svg';
 import Copy from '../assets/svg/Copy.svg';
 import Buy from '../assets/svg/Buy.svg';
 import Sell from '../assets/svg/Sell.svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   heightPercentageToDP as hp,
@@ -44,33 +46,101 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 export default function Home({navigation}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
+
+  const [allSignals, setAllSignals] = useState(null);
+
+  const [userId, setUserId] = useState('');
+
   const ref_RBSheet = useRef(null);
 
+  useEffect(() => {
+    // Make the API request and update the 'data' state
+    console.log('Came to use effect');
+    fetchVideos();
+  }, []);
 
- const dismissSnackbar = () => {
+  const fetchVideos = async () => {
+    // Simulate loading
+    setLoading(true);
+
+    await getUserID();
+
+    await getAllSignals(1, 10);
+    // Fetch data one by one
+    // Once all data is fetched, set loading to false
+    setLoading(false);
+  };
+
+  const getUserID = async () => {
+    console.log("Id's");
+    try {
+      const result = await AsyncStorage.getItem('userId');
+      if (result !== null) {
+        setUserId(result);
+        console.log('user id retrieved:', result);
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error('Error retrieving user ID:', error);
+    }
+  };
+
+  const getAllSignals = async (page = 1, limit = 10) => {
+    try {
+      const apiUrl = `http://192.168.18.114:4000/signal/getallsignals?page=${page}&limit=${limit}`;
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          // You can add additional headers if needed
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      console.log('All Signals', data.data);
+      setAllSignals(data.data);
+
+      // Handle the response data as needed
+      //console.log('Response data:', data);
+
+      // You can perform additional actions based on the response data
+    } catch (error) {
+      // Handle errors
+      console.error('Error during API request:', error);
+    }
+  };
+
+  const dismissSnackbar = () => {
     setSnackbarVisible(true);
-
-   
   };
 
   const handleUpdatePasswordShow = async () => {
-    ref_RBSheet.current.close()
-  
-      // Perform the password update logic here
-      // For example, you can make an API request to update the password
-  
-      // Assuming the update was successful
-      setSnackbarVisible(true);
-  
-      // Automatically hide the Snackbar after 3 seconds
-      setTimeout(() => {
-        setSnackbarVisible(false);
-       // navigation.navigate("SignIn")
-      }, 3000);
-    };
+    ref_RBSheet.current.close();
 
- const handleUpdatePassword = async () => {
-  ref_RBSheet.current.close()
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    setSnackbarVisible(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      setSnackbarVisible(false);
+      // navigation.navigate("SignIn")
+    }, 3000);
+  };
+
+  const handleUpdatePassword = async () => {
+    ref_RBSheet.current.close();
 
     // Perform the password update logic here
     // For example, you can make an API request to update the password
@@ -81,12 +151,12 @@ export default function Home({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       //setSnackbarVisible(false);
-      navigation.navigate("SignIn")
+      navigation.navigate('SignIn');
     }, 10);
   };
 
   const handleUpdatePasswordSignUp = async () => {
-    ref_RBSheet.current.close()
+    ref_RBSheet.current.close();
     // Perform the password update logic here
     // For example, you can make an API request to update the password
 
@@ -96,12 +166,12 @@ export default function Home({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       //setSnackbarVisible(false);
-      navigation.navigate("SignIn")
+      navigation.navigate('SignIn');
     }, 10);
   };
 
   const handleUpdatePasswordCancel = async () => {
-    ref_RBSheet.current.close()
+    ref_RBSheet.current.close();
 
     // Perform the password update logic here
     // For example, you can make an API request to update the password
@@ -116,130 +186,122 @@ export default function Home({navigation}) {
     }, 3000);
   };
 
-    const data = [
-        {
-          id: 1,
-          currency: 'NZD/USD',
-          buy: Buy,
-          sell:Sell,
-          price:'$113.22',
-          profit:'0.59038',
-          loss:'0.59038',
-          date:'27-oct-2023, 08:20 AM',
-          status:'Buy',
-          showAlert:true
-        },
-        {
-            id: 2,
-            currency: 'EUR/USD',
-            buy: Buy,
-            sell:Sell,
-            price:'$113.22',
-            profit:'0.59038',
-            loss:'0.59038',
-            date:'27-oct-2023, 08:20 AM',
-            status:'Sell',
-            showAlert:false
+  const data = [
+    {
+      id: 1,
+      currency: 'NZD/USD',
+      buy: Buy,
+      sell: Sell,
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Buy',
+      showAlert: true,
+    },
+    {
+      id: 2,
+      currency: 'EUR/USD',
+      buy: Buy,
+      sell: Sell,
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Sell',
+      showAlert: false,
+    },
+    {
+      id: 3,
+      currency: 'CAD/CHF',
+      buy: Buy,
+      sell: Sell,
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Sell',
+      showAlert: true,
+    },
+    {
+      id: 4,
+      currency: 'GBP/CAD',
+      buy: Buy,
+      sell: Sell,
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Buy',
+      showAlert: false,
+    },
+    {
+      id: 5,
+      currency: 'GBP/CAD',
+      buy: Buy,
+      sell: Sell,
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Sell',
+      showAlert: true,
+    },
+    {
+      id: 6,
+      currency: 'GBP/CAD',
+      buy: Buy,
+      sell: Sell,
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Sell',
+      showAlert: false,
+    },
+    {
+      id: 8,
+      currency: 'GBP/CAD',
+      buy: Buy,
+      sell: Sell,
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Sell',
+      showAlert: false,
+    },
+    {
+      id: 9,
+      currency: 'GBP/CAD',
+      buy: Buy,
+      sell: Sell,
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Sell',
+      showAlert: true,
+    },
+    {
+      id: 10,
+      currency: 'GBP/CAD',
+      buy: Buy,
+      sell: Sell,
+      price: '$113.22',
+      profit: '0.59038',
+      loss: '0.59038',
+      date: '27-oct-2023, 08:20 AM',
+      status: 'Sell',
+      showAlert: false,
+    },
+  ];
 
-          },
-          {
-            id: 3,
-            currency: 'CAD/CHF',
-            buy: Buy,
-            sell:Sell,
-            price:'$113.22',
-            profit:'0.59038',
-            loss:'0.59038',
-            date:'27-oct-2023, 08:20 AM',
-            status:'Sell',
-            showAlert:true
-
-          },
-          {
-            id: 4,
-            currency: 'GBP/CAD',
-            buy: Buy,
-            sell:Sell,
-            price:'$113.22',
-            profit:'0.59038',
-            loss:'0.59038',
-            date:'27-oct-2023, 08:20 AM',
-            status:'Buy',
-            showAlert:false
-
-          },
-          {
-            id: 5,
-            currency: 'GBP/CAD',
-            buy: Buy,
-            sell:Sell,
-            price:'$113.22',
-            profit:'0.59038',
-            loss:'0.59038',
-            date:'27-oct-2023, 08:20 AM',
-            status:'Sell',
-            showAlert:true
-
-          },
-          {
-            id: 6,
-            currency: 'GBP/CAD',
-            buy: Buy,
-            sell:Sell,
-            price:'$113.22',
-            profit:'0.59038',
-            loss:'0.59038',
-            date:'27-oct-2023, 08:20 AM',
-            status:'Sell',
-            showAlert:false
-
-          },
-          {
-            id: 8,
-            currency: 'GBP/CAD',
-            buy: Buy,
-            sell:Sell,
-            price:'$113.22',
-            profit:'0.59038',
-            loss:'0.59038',
-            date:'27-oct-2023, 08:20 AM',
-            status:'Sell',
-            showAlert:false
-
-          },
-          {
-            id: 9,
-            currency: 'GBP/CAD',
-            buy: Buy,
-            sell:Sell,
-            price:'$113.22',
-            profit:'0.59038',
-            loss:'0.59038',
-            date:'27-oct-2023, 08:20 AM',
-            status:'Sell',
-            showAlert:true
-
-          },
-          {
-            id: 10,
-            currency: 'GBP/CAD',
-            buy: Buy,
-            sell:Sell,
-            price:'$113.22',
-            profit:'0.59038',
-            loss:'0.59038',
-            date:'27-oct-2023, 08:20 AM',
-            status:'Sell',
-            showAlert:false
-
-          }
-
-      ];
-    
   const renderItems = item => {
+    console.log("REnder Items Called", item.take_profit[0].open_price)
     return (
       <TouchableOpacity
-      onPress={()=>navigation.navigate("SignalDetails")}
+        onPress={() => navigation.navigate('SignalDetails', {signalDetails:item})}
         style={{
           marginTop: hp(3),
           justifyContent: 'space-around',
@@ -268,14 +330,13 @@ export default function Home({navigation}) {
             }}>
             <Text
               style={{fontSize: hp(2.1), fontWeight: '500', color: textBlack}}>
-              {item.currency}
+               {item.title}
             </Text>
-            {
-                item.status==='Buy'?
-                <Buy width={50} height={50} />:
-                <Sell width={50} height={50} />
-            }
-            
+            {item.action === 'SELL' ? (
+              <Sell width={50} height={50} />
+            ) : (
+              <Buy width={50} height={50} />
+            )}
           </View>
 
           <Text style={{fontSize: hp(2.1), fontWeight: '500', color: orange}}>
@@ -295,9 +356,13 @@ export default function Home({navigation}) {
             style={{fontSize: hp(1.7), fontWeight: '500', color: lightGrey}}>
             {item.date}
           </Text>
-          <TouchableOpacity onPress={()=>item.showAlert===true?handleUpdatePasswordShow():ref_RBSheet.current.open() }>
-
-          <Copy width={60} height={80} />
+          <TouchableOpacity
+            onPress={() =>
+              item.showAlert === true
+                ? handleUpdatePasswordShow()
+                : ref_RBSheet.current.open()
+            }>
+            <Copy width={60} height={80} />
           </TouchableOpacity>
         </View>
 
@@ -324,7 +389,7 @@ export default function Home({navigation}) {
             </Text>
 
             <Text style={{fontSize: hp(1.5), fontWeight: 'bold', color: green}}>
-              {item.profit}
+              {item.take_profit[0].open_price}
             </Text>
           </View>
 
@@ -341,7 +406,7 @@ export default function Home({navigation}) {
             </Text>
 
             <Text style={{fontSize: hp(1.5), fontWeight: 'bold', color: red}}>
-            {item.loss}
+               {item.stop_loss}
             </Text>
           </View>
         </View>
@@ -366,7 +431,7 @@ export default function Home({navigation}) {
             flexDirection: 'row',
           }}>
           <Text style={{fontSize: hp(2.5), fontWeight: '500', color: white}}>
-           Forex Artium
+            Forex Artium
           </Text>
 
           <View
@@ -376,11 +441,13 @@ export default function Home({navigation}) {
               alignItems: 'center',
               width: wp(20),
             }}>
-            <TouchableOpacity onPress={()=>navigation.navigate("SearchScreen")}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('SearchScreen')}>
               <Search width={25} height={25} />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={()=>navigation.navigate("Notifications")}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Notifications')}>
               <Notification width={25} height={25} />
             </TouchableOpacity>
           </View>
@@ -390,17 +457,17 @@ export default function Home({navigation}) {
         <Image style={{resizeMode: 'contain'}} source={appImages.homeTopBar} />
       </View>
 
-      <View style={{flex:1}}>
-            <FlatList
-              style={{flexGrow:1}}
-              showsVerticalScrollIndicator={false}
-              data={data}
-              keyExtractor={item => item.id.toString()}
-              renderItem={({item}) => renderItems(item)}
-            />
-          </View>
+      <View style={{flex: 1}}>
+        <FlatList
+          style={{flexGrow: 1}}
+          showsVerticalScrollIndicator={false}
+          data={allSignals}
+          //keyExtractor={item => item.signal_id.toString()}
+          renderItem={({item}) => renderItems(item)}
+        />
+      </View>
 
-          <RBSheet
+      <RBSheet
         ref={ref_RBSheet}
         height={250}
         openDuration={250}
@@ -457,14 +524,12 @@ export default function Home({navigation}) {
             marginHorizontal: wp(5),
             alignItems: 'center',
           }}>
-          <TouchableOpacity onPress={()=>handleUpdatePassword()}>
-          <SignInBtn width={130} height={130} />
-
+          <TouchableOpacity onPress={() => handleUpdatePassword()}>
+            <SignInBtn width={130} height={130} />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={()=>handleUpdatePasswordSignUp()}>
-
-          <CreateBtn width={130} height={130} />
+          <TouchableOpacity onPress={() => handleUpdatePasswordSignUp()}>
+            <CreateBtn width={130} height={130} />
           </TouchableOpacity>
         </View>
 
@@ -475,17 +540,28 @@ export default function Home({navigation}) {
         </TouchableOpacity>
       </RBSheet>
 
-
-          <CustomSnackbar
+      <CustomSnackbar
         message={'Success'}
         messageDescription={'Signal Copied Successfully'}
         onDismiss={dismissSnackbar} // Make sure this function is defined
         visible={snackbarVisible}
       />
+      {loading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" color="#FACA4E" />
+        </View>
+      )}
     </View>
   );
-
-
 }
 
 const styles = StyleSheet.create({

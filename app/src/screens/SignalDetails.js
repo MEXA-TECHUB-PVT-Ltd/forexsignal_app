@@ -1,6 +1,7 @@
 import {
   StyleSheet,
   StatusBar,
+  ActivityIndicator,
   Text,
   Image,
   FlatList,
@@ -10,7 +11,7 @@ import {
   ImageBackground,
   TextInput,
 } from 'react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 
 import Copy from '../assets/svg/Copy.svg';
 import ClipBoard from '../assets/svg/ClipBoard.svg';
@@ -57,8 +58,16 @@ import Cancel from '../assets/svg/Cancel';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
-export default function SignalDetails({navigation}) {
+export default function SignalDetails({navigation, route}) {
+  const [loading, setLoading] = useState(false);
+
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+  const [convertedDate, setConvertedDate] = useState('');
+
+  const [convertedTime, setConvertedTime] = useState('');
+
+  const [userId, setUserId] = useState('');
 
   const [showHeartFilled, setShowHeartFilled] = useState(false);
 
@@ -68,6 +77,69 @@ export default function SignalDetails({navigation}) {
 
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
+  const receivedData = route.params?.signalDetails;
+
+  console.log('Recieved Data', receivedData);
+
+  useEffect(() => {
+    // Make the API request and update the 'data' state
+    console.log('Came to use effect');
+
+    fetchVideos();
+  }, []);
+
+  const fetchVideos = async () => {
+    // Simulate loading
+    setLoading(true);
+
+    await getUserID();
+
+    await covertTimeAndDate(receivedData?.date);
+    // Fetch data one by one
+    // Once all data is fetched, set loading to false
+    setLoading(false);
+  };
+
+  const getUserID = async () => {
+    console.log("Id's");
+    try {
+      const result = await AsyncStorage.getItem('userId');
+      if (result !== null) {
+        setUserId(result);
+        console.log('user id retrieved:', result);
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error('Error retrieving user ID:', error);
+    }
+  };
+
+  const covertTimeAndDate = async data => {
+    const originalDateString = data;
+    const originalDate = new Date(originalDateString);
+
+    // Format the date in a readable way
+    const formattedDateValue = originalDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    // Format the time in a readable way
+    const formattedTimeValue = originalDate.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+    
+    console.log("Formatted Date", formattedDateValue)
+    console.log("Formatted Time", formattedTimeValue)
+
+    // Save formatted date and time in states
+    setConvertedDate(formattedDateValue);
+    setConvertedTime(formattedTimeValue);
+  };
+
   const openLightbox = () => {
     setIsLightboxOpen(true);
     //setWaitingVisible(false)
@@ -76,7 +148,6 @@ export default function SignalDetails({navigation}) {
   const closeLightbox = () => {
     setIsLightboxOpen(false);
     setWaitingVisible(!waitingVisible);
-
   };
 
   const ref_RBSheet = useRef(null);
@@ -202,7 +273,8 @@ export default function SignalDetails({navigation}) {
                   fontWeight: '500',
                   color: textBlack,
                 }}>
-                NZD/USD
+                {/* NZD/USD */}
+                {receivedData?.title}
               </Text>
               {/* {
                 item.status==='Buy'?
@@ -212,7 +284,7 @@ export default function SignalDetails({navigation}) {
             </View>
 
             <Text style={{fontSize: hp(2.1), fontWeight: '500', color: orange}}>
-              $113.22
+              {/* $113.22 */}${receivedData?.price}
             </Text>
           </View>
 
@@ -226,7 +298,8 @@ export default function SignalDetails({navigation}) {
             }}>
             <Text
               style={{fontSize: hp(1.7), fontWeight: '500', color: lightGrey}}>
-              27-oct-2023, 08:00 AM
+              {/*  27-oct-2023, 08:00 AM */}
+              {convertedDate}
             </Text>
 
             <TouchableOpacity onPress={() => handleUpdateCopied()}>
@@ -508,17 +581,17 @@ export default function SignalDetails({navigation}) {
 
           <TouchableOpacity onPress={() => openLightbox()}>
             {waitingVisible === true ? (
-             <EvilIcons name={'image'} size={50} color={orange}/>
-               ) : ( 
-            <Text
-              style={{
-                fontSize: hp(2.1),
-                fontWeight: '400',
-                color: textBlack,
-              }}>
-              Waiting
-            </Text>
-               )} 
+              <EvilIcons name={'image'} size={50} color={orange} />
+            ) : (
+              <Text
+                style={{
+                  fontSize: hp(2.1),
+                  fontWeight: '400',
+                  color: textBlack,
+                }}>
+                Waiting
+              </Text>
+            )}
           </TouchableOpacity>
 
           {/* <Text
@@ -712,13 +785,31 @@ export default function SignalDetails({navigation}) {
       />
 
       {isLightboxOpen && (
-        <Lightbox onClose={closeLightbox} backgroundColor={lightGrey} style={styles.lightboxContainer}>
+        <Lightbox
+          onClose={closeLightbox}
+          backgroundColor={lightGrey}
+          style={styles.lightboxContainer}>
           <Image
             resizeMode="contain"
             style={{height: 400, width: 400}}
             source={appImages.tradingAppImg}
           />
         </Lightbox>
+      )}
+
+      {loading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" color="#FACA4E" />
+        </View>
       )}
     </View>
   );
