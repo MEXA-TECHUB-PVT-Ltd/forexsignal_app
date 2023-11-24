@@ -231,16 +231,16 @@ export default function ProfileImage({navigation}) {
       });
   };
 
-  const createProfile = async (data) => {
+  const createProfile = async (data1) => {
     
     console.log( "User Id", userId);
     console.log("Full Name", fullName);
 
-    console.log("image", data);
+    console.log("image", data1);
 
     setLoading(true);
 
-    const apiUrl = `https://forex-be.mtechub.com/user/updateuser/userprofile/${userId}`;
+    const apiUrl = `http://192.168.18.114:4000/user/updateuser/userprofile/${userId}`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -251,7 +251,7 @@ export default function ProfileImage({navigation}) {
         },
         body: JSON.stringify({
           name: fullName,
-          image: data, 
+          image: data1, 
         }),
       });
 
@@ -266,6 +266,10 @@ export default function ProfileImage({navigation}) {
       if (data.msg === 'Profile updated successfully') {
         console.log('Data =email', data.user);
         //console.log('Data =id', data.user.id);
+
+       /*  AsyncStorage.setItem('userName', data.data.name.toString(), () => {
+          console.log('user id saved successfully of signup');
+        }); */
 
         setLoading(false);
 
