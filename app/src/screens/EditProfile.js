@@ -70,11 +70,16 @@ export default function EditProfile({navigation}) {
 
   const [fullName, setFullName] = useState('');
   const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+
   const [imageUri, setImageUri] = useState(null);
   const ref_RBSheet = useRef(null);
   const ref_RBSheetCamera = useRef(null);
 
   const [isActive, setIsActive] = useState(false);
+
+  const [userData, setUserData] = useState(null);
+
   const [isActiveEmail, setIsActiveEmail] = useState(false);
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -83,7 +88,7 @@ export default function EditProfile({navigation}) {
     // Make the API request and update the 'data' state
     console.log('Came to use effect');
     fetchVideos();
-  }, [5]);
+  }, [userId]);
 
   const fetchVideos = async () => {
     // Simulate loading
@@ -92,6 +97,8 @@ export default function EditProfile({navigation}) {
     await getUserID();
     // Fetch data one by one
     // Once all data is fetched, set loading to false
+
+    await fetchByUserId();
     setLoading(false);
   };
 
@@ -106,6 +113,49 @@ export default function EditProfile({navigation}) {
     } catch (error) {
       // Handle errors here
       console.error('Error retrieving user ID:', error);
+    }
+  };
+
+  const fetchByUserId = async () => {
+
+    if(userId!==''){
+
+      console.log("User Id of signals", userId)
+    }else{
+      console.log("Empty signals", userId)
+
+    }
+    try {
+      const apiUrl = `http://192.168.18.114:4000/user/getuser/userbyID/${userId}`;
+  
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          // You can add additional headers if needed
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+  
+      console.log('User Info', data.data);
+      setUserData(data.data);
+      setFullName(data.data.name)
+      setUserEmail(data.data.email)
+      setImageUri(data.data.image)
+
+      // Handle the response data as needed
+      //console.log('Response data:', data);
+  
+      // You can perform additional actions based on the response data
+    } catch (error) {
+      // Handle errors
+      console.error('Error during API request:', error);
     }
   };
 
@@ -226,15 +276,15 @@ export default function EditProfile({navigation}) {
       });
   };
 
-  const createProfile = async data => {
+  const createProfile = async data1 => {
     console.log('User Id', userId);
     console.log('Full Name', fullName);
 
-    console.log('image', data);
+    console.log('image', data1);
 
     setLoading(true);
 
-    const apiUrl = `https://forex-be.mtechub.com/user/updateuser/userprofile/${userId}`;
+    const apiUrl = `http://192.168.18.114:4000/user/updateuser/userprofile/${userId}`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -245,7 +295,7 @@ export default function EditProfile({navigation}) {
         },
         body: JSON.stringify({
           name: fullName,
-          image: data,
+          image: data1,
         }),
       });
 
@@ -258,7 +308,7 @@ export default function EditProfile({navigation}) {
       setLoading(false);
 
       if (data.msg === 'Profile updated successfully') {
-        console.log('Data =email', data.user);
+        console.log('Data =email', data);
         //console.log('Data =id', data.user.id);
 
         setLoading(false);
@@ -356,6 +406,7 @@ export default function EditProfile({navigation}) {
               onChangeText={text => setFullName(text)}
               onFocus={() => onFocus()}
               onBlur={() => onBlur()}
+              value={fullName}
               placeholder="Andrew Ansely"
               style={{flex: 1}}
             />
@@ -383,7 +434,7 @@ export default function EditProfile({navigation}) {
             }}>
             <TextInput
               editable={false}
-              placeholder="Andrew_Ansely@gmail.com"
+              placeholder={userEmail}
               style={{flex: 1}}
             />
           </View>
@@ -400,9 +451,7 @@ export default function EditProfile({navigation}) {
           You can't update your email address
         </Text>
 
-        <TouchableOpacity
-          onPress={() => upload()}
-          style={{marginTop: hp(10)}}>
+        <TouchableOpacity onPress={() => upload()} style={{marginTop: hp(10)}}>
           <CustomButton title={'Edit'} />
         </TouchableOpacity>
       </View>

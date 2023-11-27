@@ -57,6 +57,7 @@ import Lightbox from 'react-native-lightbox';
 import SignInBtn from '../assets/svg/SignIn';
 import CreateBtn from '../assets/svg/CreateAccount';
 import Cancel from '../assets/svg/Cancel';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import RBSheet from 'react-native-raw-bottom-sheet';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -82,7 +83,7 @@ export default function SignalDetails({navigation, route}) {
 
   const receivedData = route.params?.signalDetails;
 
-  console.log('Recieved Data:', receivedData.take_profit[0]);
+  console.log('Recieved Data:', receivedData);
 
   useEffect(() => {
     // Make the API request and update the 'data' state
@@ -205,12 +206,111 @@ export default function SignalDetails({navigation, route}) {
 
       if(userId!==''){
 
+        console.log("Empty", showHeartFilled)
+
+        if(showHeartFilled==false){
+          createWishList()
+
+        }else{
+           removeWishList()
+        }
       }else{
 
         ref_RBSheet.current.open();
       }
     }, 50);
   };
+
+
+  const createWishList = async () => {
+
+    console.log("Create Wish List Called")
+
+    setLoading(true);
+
+    const apiUrl = `http://192.168.18.114:4000/wishlist/createwishlist`;
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          signal_id: receivedData?.signal_id,
+        }),
+      });
+
+      const data = await response.json();
+
+      // Handle the response data as needed
+      console.log('Response data:', data.signal);
+
+      //console.log('Email:', email);
+      setLoading(false);
+
+      if (data.msg === `Signal added to user's wishlist successfully`) {
+        console.log('Data =email', data.signal);
+        //console.log('Data =id', data.user.id);
+
+        setLoading(false);
+
+        //handleUpdatePassword();
+      }
+
+      // You can perform additional actions based on the response, e.g., navigate to another screen
+    } catch (error) {
+      // Handle errors
+      console.error('Error during sign up:', error);
+      setLoading(false);
+    }
+  };
+
+  const removeWishList = async () => {
+
+    console.log("Remove Wish List Called")
+
+    setLoading(true);
+  
+    const apiUrl = `http://192.168.18.114:4000/wishlist/deletewishlist/signal_id/${receivedData?.signal_id}`;
+  
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        // No need to include a body for a DELETE request
+      });
+  
+      const data = await response.json();
+  
+      // Handle the response data as needed
+      console.log('Response data:', data.msg);
+  
+      setLoading(false);
+  
+      if (data.msg === `Signal removed from the wishlist successfully`) {
+        console.log('Data =email', data.msg);
+        //console.log('Data =id', data.user.id);
+  
+        setLoading(false);
+  
+        // handleUpdatePassword();
+      }
+  
+      // You can perform additional actions based on the response, e.g., navigate to another screen
+    } catch (error) {
+      // Handle errors
+      console.error('Error during sign up:', error);
+      setLoading(false);
+    }
+  };
+  
+  
 
   const dismissSnackbarCopied = () => {
     setSnackbarVisibleCopied(true);
@@ -355,7 +455,7 @@ export default function SignalDetails({navigation, route}) {
             Action
           </Text>
 
-         { receivedData?.action==="SELL"? <Buy width={65} />:<Sell width={65} /> }
+          { receivedData?.action==="SELL"? <Sell width={65} />:<Buy width={65} /> } 
         </View>
 
         <View

@@ -58,7 +58,7 @@ export default function SignUp({navigation}) {
   const signUp = async () => {
     setLoading(true);
 
-    const apiUrl = 'https://forex-be.mtechub.com/user/usersignup';
+    const apiUrl = 'http://192.168.18.114:4000/user/usersignup';
 
     try {
       const response = await fetch(apiUrl, {

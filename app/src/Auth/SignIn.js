@@ -55,7 +55,7 @@ export default function SignIn({navigation}) {
   const signIn = async () => {
     setLoading(true);
 
-    const apiUrl = 'https://forex-be.mtechub.com/user/usersignin';
+    const apiUrl = 'http://192.168.18.114:4000/user/usersignin';
 
     try {
       const response = await fetch(apiUrl, {
@@ -73,7 +73,7 @@ export default function SignIn({navigation}) {
       const data = await response.json();
 
       // Handle the response data as needed
-      console.log('Response data:', data.msg);
+      console.log('Response data:', data);
 
       console.log('Email:', email);
       setLoading(false);
@@ -91,6 +91,11 @@ export default function SignIn({navigation}) {
         AsyncStorage.setItem('userId', data.data.id.toString(), () => {
           console.log('user id saved successfully of signup');
         });
+
+        AsyncStorage.setItem('userName', data.data.name.toString(), () => {
+          console.log('user id saved successfully of signup');
+        });
+
 
         navigation.navigate('BottomTabNavigation');
       }

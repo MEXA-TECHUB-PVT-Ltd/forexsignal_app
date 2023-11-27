@@ -79,25 +79,46 @@ export default function TermsAndCondition({navigation}) {
       <ScrollView style={{flexGrow: 1}}>
         <View style={{marginHorizontal: wp(8), marginTop: hp(5)}}>
           <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
-            The following terminology applies to these Terms and Conditions,
-            Privacy Statement and Disclaimer Notice and all Agreements:
-            "Client", "You" and "Your" refers to you, the person log on this
-            website and compliant to the Company’s terms and conditions. "The
-            Company", "Ourselves", "We", "Our" and "Us", refers to our Company.
-            "Party", "Parties", or "Us", refers to both the Client and
-            ourselves. All terms refer to the offer, acceptance and
-            consideration of payment necessary to undertake the process of our
-            assistance to the Client in the most appropriate manner for the
-            express purpose of meeting the Client’s needs in respect of
-            provision of the Company’s stated services, in accordance with and
-            subject to, prevailing law of Netherlands. Any use of the above
-            terminology or other words in the singular, plural, capitalization
-            and/or he/she or they, are taken as interchangeable and therefore as
-            referring to same.
+            1. Introduction Welcome to Forex Trading App ("we," "our," or "us").
+            This Privacy Policy is designed to help you understand how we
+            collect, use, share, and safeguard your personal information when
+            you use our Forex trading app and related services. By accessing or
+            using our app, you consent to the terms of this Privacy Policy. {'\n'}2.
+            Information We Collect a. User-Provided Information: When you create
+            an account, we collect your name, email address, and other necessary
+            information. If you choose to enable notifications, we collect your
+            device ID to send you alerts about new signals. b. Automatically
+            Collected Information: We may collect information about your device,
+            including IP address, device type, and operating system, to ensure a
+            seamless user experience. {'\n'}3. How We Use Your Information a.
+            Providing Signals: We use your information to deliver Forex trading
+            signals, which are created by our admin, to your app. b.
+            Notifications: If you enable notifications, we use your device ID to
+            send you alerts when new signals are added. c. Wishlist
+            Functionality: The app allows users to add or remove signals to/from
+            their wishlist. We use this information to customize your
+            experience. {'\n'} 4. Sharing Your Information a. Admin Access: Our admin
+            has access to user data to manage and create Forex signals. b.
+            Third-Party Services: We may share non-personal information with
+            third-party service providers to improve app functionality. c. Legal
+            Requirements: We may disclose your information in response to a
+            court order, legal process, or other legal requests. {'\n'}5. Security
+            Measures We employ industry-standard security measures to protect
+            your personal information from unauthorized access or disclosure.{'\n'} 6.
+            Your Choices a. Account Information: You can review and update your
+            account information at any time within the app. b. Notifications:
+            You can enable or disable notifications through your device
+            settings. {'\n'} 7. Children's Privacy Our app is not intended for users
+            under the age of 18. We do not knowingly collect or solicit personal
+            information from minors. {'\n'} 8. Changes to this Privacy Policy We
+            reserve the right to update this Privacy Policy to reflect changes
+            in our practices. We will notify you of any material changes via the
+            app. {'\n'} 9. Contact Us If you have any questions or concerns about this
+            Privacy Policy, please contact us
           </Text>
         </View>
 
-        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+        {/* <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
           <Text
             style={{
               color: textBlack,
@@ -127,8 +148,8 @@ export default function TermsAndCondition({navigation}) {
             number.
           </Text>
         </View>
-
-        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+ */}
+        {/* <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
           <Text
             style={{
               color: textBlack,
@@ -156,9 +177,8 @@ export default function TermsAndCondition({navigation}) {
             marketing and promotional purposes Send you emails Find and prevent
             fraud
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
-      
     </View>
   );
 }

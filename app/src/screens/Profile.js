@@ -2,6 +2,7 @@ import {
   StyleSheet,
   StatusBar,
   Text,
+  ActivityIndicator,
   Image,
   FlatList,
   ScrollView,
@@ -9,7 +10,7 @@ import {
   View,
   TextInput,
 } from 'react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
@@ -25,7 +26,7 @@ import Sell from '../assets/svg/Sell.svg';
 import Headers from '../Custom/Headers';
 import {appImages} from '../assets/utilities';
 import Edit from '../assets/svg/Edit.svg';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Premium from '../assets/svg/Premium.svg';
 import ChatProfile from '../assets/svg/ChatProfile.svg';
 import HeartProfile from '../assets/svg/HeartProfile.svg';
@@ -47,6 +48,61 @@ export default function Profile({navigation}) {
   const ref_RBSheet = useRef(null);
 
   const ref_RBSheetLogOut = useRef(null);
+
+  const [loading, setLoading] = useState(false);
+
+  const [allSignals, setAllSignals] = useState(null);
+
+  const [userId, setUserId] = useState('');
+
+  const [userName, setUserName] = useState('');
+
+  const [userEmail, setUserEmail] = useState('');
+
+
+  useEffect(() => {
+    // Make the API request and update the 'data' state
+    console.log('Came to use effect');
+    fetchVideos();
+  }, [userId]);
+  
+  const fetchVideos = async () => {
+    // Simulate loading
+    setLoading(true);
+  
+    // Wait for getUserID to complete before calling getAllSignals
+    await getUserID();
+      
+    // Fetch data one by one
+    // Once all data is fetched, set loading to false
+    setLoading(false);
+  };
+  
+  const getUserID = async () => {
+    console.log("Id's");
+    try {
+      const result = await AsyncStorage.getItem('userId');
+      if (result !== null) {
+        console.log('user id retrieved:', result);
+        setUserId(result);
+      }
+      
+      const userName = await AsyncStorage.getItem('userName');
+      if (userName !== null) {
+        console.log('user name retrieved:', userName);
+        setUserName(userName);
+      }
+
+      const email = await AsyncStorage.getItem('email');
+      if (email !== null) {
+        console.log('user id retrieved:', email);
+        setUserEmail(email);
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error('Error retrieving user ID:', error);
+    }
+  };
 
 
   const closeDelete=()=>{
@@ -103,12 +159,12 @@ export default function Profile({navigation}) {
           <View style={{marginLeft: wp(3)}}>
             <Text
               style={{fontSize: hp(2.1), fontWeight: 'bold', color: textBlack}}>
-              Andrew Ainsley
+               {userName}
             </Text>
 
             <Text
               style={{fontSize: hp(1.7), fontWeight: '400', color: textGrey}}>
-              andrew-ainsley@gmail.com
+              {userEmail}
             </Text>
           </View>
         </View>
@@ -603,6 +659,22 @@ export default function Profile({navigation}) {
           </TouchableOpacity>
         </View>
       </RBSheet>
+
+      {loading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" color="#FACA4E" />
+        </View>
+      )}
+
     </ScrollView>
   );
 }
