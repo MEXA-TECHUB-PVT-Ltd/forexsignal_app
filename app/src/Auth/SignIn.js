@@ -55,6 +55,16 @@ export default function SignIn({navigation}) {
 
   const [password, setPassword] = useState('');
 
+  const skipforNow = () => {
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+
+      navigation.navigate('BottomTabNavigation');
+    }, 2000);
+  };
+
   const signIn = async () => {
     setLoading(true);
 
@@ -243,6 +253,21 @@ export default function SignIn({navigation}) {
               backgroundColor: '#3333332B',
             }}></View>
         </View>
+
+        <TouchableOpacity onPress={() => skipforNow()}>
+              <Text
+                style={{
+                  color: '#FACA4E',
+                  fontSize: wp(4),
+                  textDecorationLine: 'underline',
+                  fontFamily: 'Inter-Bold',
+                  marginRight: '5%',
+                  alignSelf: 'center',
+                  marginTop: '3%',
+                }}>
+                Skip For Now
+              </Text>
+            </TouchableOpacity>
 
         <View
           style={{

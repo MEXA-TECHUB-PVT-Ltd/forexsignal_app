@@ -235,9 +235,10 @@ export default function SignalDetails({navigation, route}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       //setSnackbarVisible(false);
-      setShowHeartFilled(!showHeartFilled);
 
       if (userId !== '') {
+        setShowHeartFilled(!showHeartFilled);
+
         console.log('Empty', showHeartFilled);
 
         if (showHeartFilled == false) {

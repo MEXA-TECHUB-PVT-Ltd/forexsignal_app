@@ -296,6 +296,15 @@ export default function Home({navigation}) {
     },
   ];
 
+  const showAlerts = () => {
+    console.log("Id", userId)
+    if (userId !== '') {
+      handleUpdatePasswordShow()
+    } else {
+      ref_RBSheet.current.open();
+    }
+  };
+
   const renderItems = item => {
     console.log('REnder Items Called', item.price);
     return (
@@ -358,10 +367,10 @@ export default function Home({navigation}) {
             {item.date}
           </Text>
           <TouchableOpacity
-            onPress={() =>
-              item.showAlert === true
+            onPress={() => showAlerts()
+              /*  item.showAlert === true
                 ? handleUpdatePasswordShow()
-                : ref_RBSheet.current.open()
+                : ref_RBSheet.current.open() */
             }>
             <Copy width={60} height={80} />
           </TouchableOpacity>
