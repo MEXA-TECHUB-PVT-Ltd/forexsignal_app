@@ -55,6 +55,53 @@ export default function SignUp({navigation}) {
 
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  // all Error Statements
+
+  const [signUpUserNameError, setSignUpUserNameError] = useState(false);
+
+  const [signUpEmailError, setSignUpEmailError] = useState(false);
+
+  const [signUpPasswordError, setSignUpPasswordError] = useState(false);
+
+  const [emailNotCorrectSignUp, setemailNotCorrectSignUp] = useState(false);
+
+  const [signUpConfirmPasswordError, setSignUpConfirmPasswordError] =
+    useState(false);
+
+  //---------------------------------\\
+
+  const checkSignUp = () => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+    console.log('Sign Up');
+
+    setSignUpEmailError(false);
+    setSignUpPasswordError(false);
+    setSignUpConfirmPasswordError(false);
+
+    if (email === '' && password === '' && confirmPassword === '') {
+      setSignUpEmailError(true);
+      setSignUpPasswordError(true);
+      setSignUpConfirmPasswordError(true);
+    } else if (email !== '' && password == '' && confirmPassword === '') {
+      setSignUpEmailError(false);
+      setSignUpPasswordError(true);
+      setSignUpConfirmPasswordError(true);
+    } else if (email !== '' && password !== '' && confirmPassword === '') {
+      setSignUpEmailError(false);
+      setSignUpPasswordError(false);
+      setSignUpConfirmPasswordError(true);
+    } else if (email !== '' && password == '' && confirmPassword!== '') {
+      setSignUpEmailError(false);
+      setSignUpPasswordError(true);
+      setSignUpConfirmPasswordError(false);
+    } else if (!emailRegex.test(email)) {
+      setemailNotCorrectSignUp(true);
+    } else {
+      signUp();
+    }
+  };
+
   const signUp = async () => {
     setLoading(true);
 
@@ -69,7 +116,7 @@ export default function SignUp({navigation}) {
         },
         body: JSON.stringify({
           email: email,
-          password:password,
+          password: password,
           signup_type: 'email',
           device_id: '576765876',
           token: 'token',
@@ -82,11 +129,11 @@ export default function SignUp({navigation}) {
       console.log('Response data:', data.msg);
 
       console.log('Email:', email);
-      setLoading(false)
+      setLoading(false);
 
       if (data.msg === 'User signed up successfully') {
-        console.log("Data =email", data.data.email)
-        console.log("Data =id", data.data.id)
+        console.log('Data =email', data.data.email);
+        console.log('Data =id', data.data.id);
 
         setLoading(false);
 
@@ -147,6 +194,31 @@ export default function SignUp({navigation}) {
             leftName="Mail"
           />
         </View>
+
+        {signUpEmailError === true ? (
+          <Text
+            style={{
+              color: 'red',
+              marginLeft: wp(10),
+              marginTop: hp(1.8),
+              fontSize: hp(1.8),
+            }}>
+            Please Enter Your Email!
+          </Text>
+        ) : null}
+
+        {emailNotCorrectSignUp === true ? (
+          <Text
+            style={{
+              color: 'red',
+              marginLeft: wp(10),
+              marginTop: hp(1.8),
+              fontSize: hp(1.8),
+            }}>
+            Please Enter Correct Email!
+          </Text>
+        ) : null}
+
         <View style={{marginHorizontal: wp(8)}}>
           <CPaperInput
             left={true}
@@ -156,7 +228,20 @@ export default function SignUp({navigation}) {
             password={true}
             leftName="Lock"
           />
+
+          {signUpPasswordError === true ? (
+            <Text
+              style={{
+                color: 'red',
+                marginLeft: wp(10),
+                marginTop: hp(1.8),
+                fontSize: hp(1.8),
+              }}>
+              Please Enter Your Password!
+            </Text>
+          ) : null}
         </View>
+
         <View style={{marginHorizontal: wp(8)}}>
           <CPaperInput
             left={true}
@@ -166,6 +251,18 @@ export default function SignUp({navigation}) {
             password={true}
             leftName="Lock"
           />
+
+          {signUpConfirmPasswordError === true ? (
+            <Text
+              style={{
+                color: 'red',
+                marginLeft: wp(10),
+                marginTop: hp(1.8),
+                fontSize: hp(1.8),
+              }}>
+              Please Enter Your Password!
+            </Text>
+          ) : null}
         </View>
         <View
           style={{
@@ -173,7 +270,7 @@ export default function SignUp({navigation}) {
             marginTop: hp(3),
             alignItems: 'center',
           }}>
-          <TouchableOpacity onPress={() => signUp()}>
+          <TouchableOpacity onPress={() => checkSignUp()}>
             <CustomButton title={'Create'} />
           </TouchableOpacity>
         </View>
@@ -311,6 +408,13 @@ export default function SignUp({navigation}) {
           <ActivityIndicator size="large" color="#FACA4E" />
         </View>
       )}
+
+      {/*  <CustomSnackbar
+        message={'Success'}
+        messageDescription={'Password Reset  Successfully'}
+        onDismiss={dismissSnackbar} // Make sure this function is defined
+        visible={snackbarVisible}
+      /> */}
     </ImageBackground>
   );
 }

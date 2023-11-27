@@ -48,7 +48,6 @@ export default function Home({navigation}) {
 
   const [loading, setLoading] = useState(false);
 
-
   const [allSignals, setAllSignals] = useState(null);
 
   const [userId, setUserId] = useState('');
@@ -298,10 +297,12 @@ export default function Home({navigation}) {
   ];
 
   const renderItems = item => {
-    console.log("REnder Items Called", item.take_profit[0].open_price)
+    console.log('REnder Items Called', item.price);
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('SignalDetails', {signalDetails:item})}
+        onPress={() =>
+          navigation.navigate('SignalDetails', {signalDetails: item})
+        }
         style={{
           marginTop: hp(3),
           justifyContent: 'space-around',
@@ -330,7 +331,7 @@ export default function Home({navigation}) {
             }}>
             <Text
               style={{fontSize: hp(2.1), fontWeight: '500', color: textBlack}}>
-               {item.title}
+              {item.title}
             </Text>
             {item.action === 'SELL' ? (
               <Sell width={50} height={50} />
@@ -389,7 +390,7 @@ export default function Home({navigation}) {
             </Text>
 
             <Text style={{fontSize: hp(1.5), fontWeight: 'bold', color: green}}>
-              {item.take_profit[0].open_price}
+              {item.profit_loss}
             </Text>
           </View>
 
@@ -406,7 +407,7 @@ export default function Home({navigation}) {
             </Text>
 
             <Text style={{fontSize: hp(1.5), fontWeight: 'bold', color: red}}>
-               {item.stop_loss}
+              {item.stop_loss}
             </Text>
           </View>
         </View>

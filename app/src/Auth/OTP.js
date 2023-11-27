@@ -2,6 +2,7 @@ import {
   StyleSheet,
   StatusBar,
   Text,
+  ActivityIndicator,
   Image,
   FlatList,
   ScrollView,
@@ -10,7 +11,7 @@ import {
   ImageBackground,
   TextInput,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -47,10 +48,48 @@ import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
 
-export default function OTP({navigation}) {
+export default function OTP({navigation, route}) {
   const [otpCode, setOtpCode] = useState('');
 
+  const [email, setEmail] = useState('');
+
+
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+ 
+
+  useEffect(() => {
+    // Make the API request and update the 'data' state
+    console.log('Came to use effect');
+    fetchOTP();
+  }, []);
+
+  const fetchOTP = async () => {
+    // Simulate loading
+    setLoading(true);
+
+    await getOTP();
+
+    setLoading(false);
+  };
+
+  const getOTP = async () => {
+
+    const receivedData = route.params?.OTP;
+
+    console.log('Recieved Data:', receivedData);
+
+    setOtpCode(receivedData)
+
+    const receivedDataEmail = route.params?.email;
+
+    console.log('Recieved Data:', receivedDataEmail);
+
+    setEmail(receivedDataEmail)
+
+  };
 
   const dismissSnackbar = () => {
     setSnackbarVisible(true);
@@ -65,7 +104,7 @@ export default function OTP({navigation}) {
 
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
-      navigation.navigate('ResetPassword');
+      navigation.navigate('ResetPassword', {email:email});
       setSnackbarVisible(false);
     }, 3000);
   };
@@ -173,10 +212,25 @@ export default function OTP({navigation}) {
 
       <CustomSnackbar
         message={'Success'}
-        messageDescription={'Code Resent Successfully'}
+        messageDescription={'Code Verified Successfully'}
         onDismiss={dismissSnackbar} // Make sure this function is defined
         visible={snackbarVisible}
       />
+
+      {loading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" color="#FACA4E" />
+        </View>
+      )}
     </ImageBackground>
   );
 }

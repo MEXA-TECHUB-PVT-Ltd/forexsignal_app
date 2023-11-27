@@ -1,6 +1,7 @@
 import {
   StyleSheet,
   StatusBar,
+  ActivityIndicator,
   Text,
   Image,
   FlatList,
@@ -10,7 +11,7 @@ import {
   ImageBackground,
   TextInput,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import ClipBoard from '../assets/svg/ClipBoard.svg';
 
@@ -45,7 +46,61 @@ import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
 
 export default function Notifications({navigation}) {
-  const [notifications, setNotifications] = useState(true);
+  const [notifications, setNotifications] = useState(false);
+
+  const [loading, setLoading] = useState(null);
+
+  const [notificationData, setNotificationData] = useState(null);
+
+  useEffect(() => {
+    // Make the API request and update the 'data' state
+    console.log('Came to use effect');
+    fetchVideos();
+  }, []);
+
+  const fetchVideos = async () => {
+    // Simulate loading
+    setLoading(true);
+
+    await getNotifications();
+    // Fetch data one by one
+    // Once all data is fetched, set loading to false
+    setLoading(false);
+  };
+
+  const getNotifications = async () => {
+    const apiUrl = `http://192.168.18.114:4000/notifications/getall`;
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+
+      // Handle the response data as needed
+      console.log('Response data:', data.msg);
+
+      setLoading(false);
+
+      if (data.msg === 'Notifications retrieved successfully') {
+        console.log('Notification Data', data.data);
+        if (data.data.length === 0) {
+          setNotifications(false);
+        }
+      }
+
+      // You can perform additional actions based on the response, e.g., navigate to another screen
+    } catch (error) {
+      // Handle errors
+      console.error('Error during sign up:', error);
+      setLoading(false);
+    }
+  };
 
   const data = [
     {
@@ -166,7 +221,7 @@ export default function Notifications({navigation}) {
             </View>
           </View>
 
-          {items.status==='New'?<New width={55} />:null}
+          {items.status === 'New' ? <New width={55} /> : null}
         </View>
 
         <Text
@@ -207,13 +262,13 @@ export default function Notifications({navigation}) {
       </View>
       {notifications == true ? (
         <View style={{flex: 1}}>
-            <FlatList
-              style={{flexGrow:1}}
-              showsVerticalScrollIndicator={false}
-              data={data}
-              keyExtractor={item => item.id.toString()}
-              renderItem={({item}) => renderItems(item)}
-            />
+          <FlatList
+            style={{flexGrow: 1}}
+            showsVerticalScrollIndicator={false}
+            data={data}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({item}) => renderItems(item)}
+          />
         </View>
       ) : (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -241,6 +296,21 @@ export default function Notifications({navigation}) {
               You don’t have any notifications at this time
             </Text>
           </View>
+        </View>
+      )}
+
+      {loading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" color="#FACA4E" />
         </View>
       )}
     </View>

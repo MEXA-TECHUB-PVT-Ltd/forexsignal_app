@@ -44,8 +44,11 @@ import {
 import Headers from '../Custom/Headers';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
+import CustomSnackbar from '../Custom/CustomSnackBar';
 
 export default function SignIn({navigation}) {
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+
   const [email, setEmail] = useState('');
 
   const [loading, setLoading] = useState(false);
@@ -92,21 +95,40 @@ export default function SignIn({navigation}) {
           console.log('user id saved successfully of signup');
         });
 
-        AsyncStorage.setItem('userName', data.data.name.toString(), () => {
-          console.log('user id saved successfully of signup');
-        });
-
-
         navigation.navigate('BottomTabNavigation');
+      }else{
+        handleUpdatePassword()
+
       }
 
       // You can perform additional actions based on the response, e.g., navigate to another screen
     } catch (error) {
       // Handle errors
       console.error('Error during sign up:', error);
+      handleUpdatePassword()
       setLoading(false);
     }
   };
+
+  const dismissSnackbar = () => {
+    setSnackbarVisible(true);
+  };
+
+  const handleUpdatePassword = async () => {
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    setSnackbarVisible(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      setSnackbarVisible(false);
+      //navigation.navigate('SignIn');
+    }, 3000);
+  };
+
+  
 
   return (
     <ImageBackground
@@ -189,7 +211,7 @@ export default function SignIn({navigation}) {
             <CustomButton title={'Sign In'} />
           </TouchableOpacity>
         </View>
-
+       
         <View
           style={{
             height: hp(8),
@@ -323,6 +345,13 @@ export default function SignIn({navigation}) {
           <ActivityIndicator size="large" color="#FACA4E" />
         </View>
       )}
+       
+      <CustomSnackbar
+        message={'Alert'}
+        messageDescription={'Wrong Email Or Password'}
+        onDismiss={dismissSnackbar} // Make sure this function is defined
+        visible={snackbarVisible}
+      />
     </ImageBackground>
   );
 }

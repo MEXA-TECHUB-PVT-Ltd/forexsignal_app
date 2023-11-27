@@ -35,8 +35,12 @@ import InviteProfile from '../assets/svg/InviteProfile.svg';
 import PrivacyPolicyProfile from '../assets/svg/PrivacyPolicyProfile.svg';
 import TermsAndConditionProfile from '../assets/svg/TermsAndConditionProfile.svg';
 import DeleteAccountProfile from '../assets/svg/DeleteAccountProfile.svg';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 import LogOut from '../assets/svg/LogOut.svg';
+
+import Entypo from 'react-native-vector-icons/Entypo';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -59,6 +63,8 @@ export default function Profile({navigation}) {
 
   const [userEmail, setUserEmail] = useState('');
 
+  const [userImage, setUserImage] = useState('');
+
 
   useEffect(() => {
     // Make the API request and update the 'data' state
@@ -72,6 +78,8 @@ export default function Profile({navigation}) {
   
     // Wait for getUserID to complete before calling getAllSignals
     await getUserID();
+
+    await getUserById();
       
     // Fetch data one by one
     // Once all data is fetched, set loading to false
@@ -90,7 +98,6 @@ export default function Profile({navigation}) {
       const userName = await AsyncStorage.getItem('userName');
       if (userName !== null) {
         console.log('user name retrieved:', userName);
-        setUserName(userName);
       }
 
       const email = await AsyncStorage.getItem('email');
@@ -105,10 +112,84 @@ export default function Profile({navigation}) {
   };
 
 
+  const getUserById = async () => {
+   
+    const apiUrl = `http://192.168.18.114:4000/user/getuser/userbyID/${userId}`;
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        
+      });
+
+      const data = await response.json();
+
+      // Handle the response data as needed
+      console.log('Response data:', data.msg);
+
+      setLoading(false);
+
+      if (data.msg === 'User fetched') {
+        console.log("User Name", data.data.name)
+        console.log("User Image",data.data.image)
+        setUserName(data.data.name)
+        setUserImage(data.data.image)
+
+      }
+
+      // You can perform additional actions based on the response, e.g., navigate to another screen
+    } catch (error) {
+      // Handle errors
+      console.error('Error during sign up:', error);
+      setLoading(false);
+    }
+
+  }
+
   const closeDelete=()=>{
     ref_RBSheet.current.close()
-    navigation.navigate('SignIn')
+    deleteUser()
   }
+
+  const deleteUser = async () => {
+    try {
+      const apiUrl = `http://192.168.18.114:4000/user/deleteuser/${userId}`;
+  
+      const response = await fetch(apiUrl, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          // You can add additional headers if needed
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+  
+      console.log('Delete User Response:', data);
+  
+      // Handle the response data as needed
+      if (!data.error) {
+        console.log('User account deleted successfully.');
+        navigation.navigate('SignIn')
+
+      } else {
+        console.error('Error deleting user:', data.msg);
+      }
+    } catch (error) {
+      // Handle errors
+      console.error('Error during DELETE request:', error);
+    }
+  };
+  
 
   const closeLogout=()=>{
     ref_RBSheetLogOut.current.close()
@@ -144,7 +225,7 @@ export default function Profile({navigation}) {
             height: '100%',
           }}>
           <View style={styles.circleBox}>
-            <Image
+            {userImage!==null?<Image
               style={{
                 flex: 1,
                 width: '100%',
@@ -152,8 +233,13 @@ export default function Profile({navigation}) {
                 //borderRadius: wp(25) / 2, // Half of the width (25/2)
                 resizeMode: 'contain',
               }}
-              source={appImages.profileImg}
-            />
+              source={{uri:userImage}}
+            />:<MaterialCommunityIcons
+            style={{marginTop: hp(0.5)}}
+            name={'account-circle'}
+            size={50}
+            color={'#FACA4E'}
+          />}
           </View>
 
           <View style={{marginLeft: wp(3)}}>

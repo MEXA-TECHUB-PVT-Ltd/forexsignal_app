@@ -24,7 +24,6 @@ import Buy from '../assets/svg/Buy.svg';
 
 import Sell from '../assets/svg/Sell.svg';
 
-
 import NewBrokerUpdate from '../assets/svg/NewBrokerUpdate.svg';
 
 import New from '../assets/svg/New.svg';
@@ -36,6 +35,8 @@ import {
 import {appImages} from '../assets/utilities';
 import CustomSnackbar from '../Custom/CustomSnackBar';
 import Bars from '../assets/svg/Bars.svg';
+import {CandlestickChart} from 'react-native-wagmi-charts';
+
 import {
   borderLineGrey,
   green,
@@ -53,11 +54,12 @@ import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 
 import Lightbox from 'react-native-lightbox';
-
+import HapticFeedback from 'react-native-haptic-feedback';
 import SignInBtn from '../assets/svg/SignIn';
 import CreateBtn from '../assets/svg/CreateAccount';
 import Cancel from '../assets/svg/Cancel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import RBSheet from 'react-native-raw-bottom-sheet';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -135,14 +137,45 @@ export default function SignalDetails({navigation, route}) {
       minute: '2-digit',
       second: '2-digit',
     });
-    
-    console.log("Formatted Date", formattedDateValue)
-    console.log("Formatted Time", formattedTimeValue)
+
+    console.log('Formatted Date', formattedDateValue);
+    console.log('Formatted Time', formattedTimeValue);
 
     // Save formatted date and time in states
     setConvertedDate(formattedDateValue);
     setConvertedTime(formattedTimeValue);
   };
+
+  const data = [
+    {
+      timestamp: 1625945400000,
+      open: 33575.25,
+      high: 33600.52,
+      low: 33475.12,
+      close: 33520.11,
+    },
+    {
+      timestamp: 1625946300000,
+      open: 33545.25,
+      high: 33560.52,
+      low: 33510.12,
+      close: 33520.11,
+    },
+    {
+      timestamp: 1625947200000,
+      open: 33510.25,
+      high: 33515.52,
+      low: 33250.12,
+      close: 33250.11,
+    },
+    {
+      timestamp: 1625948100000,
+      open: 33215.25,
+      high: 33430.52,
+      low: 33215.12,
+      close: 33420.11,
+    },
+  ];
 
   const openLightbox = () => {
     setIsLightboxOpen(true);
@@ -204,27 +237,22 @@ export default function SignalDetails({navigation, route}) {
       //setSnackbarVisible(false);
       setShowHeartFilled(!showHeartFilled);
 
-      if(userId!==''){
+      if (userId !== '') {
+        console.log('Empty', showHeartFilled);
 
-        console.log("Empty", showHeartFilled)
-
-        if(showHeartFilled==false){
-          createWishList()
-
-        }else{
-           removeWishList()
+        if (showHeartFilled == false) {
+          createWishList();
+        } else {
+          removeWishList();
         }
-      }else{
-
+      } else {
         ref_RBSheet.current.open();
       }
     }, 50);
   };
 
-
   const createWishList = async () => {
-
-    console.log("Create Wish List Called")
+    console.log('Create Wish List Called');
 
     setLoading(true);
 
@@ -269,13 +297,12 @@ export default function SignalDetails({navigation, route}) {
   };
 
   const removeWishList = async () => {
-
-    console.log("Remove Wish List Called")
+    console.log('Remove Wish List Called');
 
     setLoading(true);
-  
+
     const apiUrl = `http://192.168.18.114:4000/wishlist/deletewishlist/signal_id/${receivedData?.signal_id}`;
-  
+
     try {
       const response = await fetch(apiUrl, {
         method: 'DELETE',
@@ -285,23 +312,23 @@ export default function SignalDetails({navigation, route}) {
         },
         // No need to include a body for a DELETE request
       });
-  
+
       const data = await response.json();
-  
+
       // Handle the response data as needed
       console.log('Response data:', data.msg);
-  
+
       setLoading(false);
-  
+
       if (data.msg === `Signal removed from the wishlist successfully`) {
         console.log('Data =email', data.msg);
         //console.log('Data =id', data.user.id);
-  
+
         setLoading(false);
-  
+
         // handleUpdatePassword();
       }
-  
+
       // You can perform additional actions based on the response, e.g., navigate to another screen
     } catch (error) {
       // Handle errors
@@ -309,8 +336,6 @@ export default function SignalDetails({navigation, route}) {
       setLoading(false);
     }
   };
-  
-  
 
   const dismissSnackbarCopied = () => {
     setSnackbarVisibleCopied(true);
@@ -333,8 +358,17 @@ export default function SignalDetails({navigation, route}) {
     }, 3000);
   };
 
+  function invokeHaptic() {
+    const options = {
+      enableVibrateFallback: true,
+      ignoreAndroidSystemSettings: false,
+    };
+
+    HapticFeedback.trigger('impactLight', options);
+  }
+
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       <StatusBar
         translucent={true}
         backgroundColor="transparent"
@@ -423,14 +457,23 @@ export default function SignalDetails({navigation, route}) {
             marginTop: hp(3),
             marginHorizontal: wp(8),
           }}>
-          <Bars width={300} height={230} />
+          {/* <Bars width={300} height={230} /> */}
+
+          <CandlestickChart.Provider data={data}>
+            <CandlestickChart width={wp(80)} height={hp(30)}>
+              <CandlestickChart.Candles />
+              <CandlestickChart.Crosshair onCurrentXChange={invokeHaptic}>
+                <CandlestickChart.Tooltip />
+              </CandlestickChart.Crosshair>
+            </CandlestickChart>
+          </CandlestickChart.Provider>
         </View>
 
         <Text
           style={{
             fontSize: hp(2.8),
             marginLeft: wp(8),
-            marginTop: hp(5),
+            marginTop: hp(8),
             fontWeight: 'bold',
             color: orange,
           }}>
@@ -455,7 +498,11 @@ export default function SignalDetails({navigation, route}) {
             Action
           </Text>
 
-          { receivedData?.action==="SELL"? <Sell width={65} />:<Buy width={65} /> } 
+          {receivedData?.action === 'SELL' ? (
+            <Sell width={65} />
+          ) : (
+            <Buy width={65} />
+          )}
         </View>
 
         <View
@@ -518,9 +565,8 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-
-             {receivedData.take_profit[0].open_price}
-             {/* {receivedData?.signal_status?.take_profit[0]?.open_price} */}
+            {receivedData.price}
+            {/* {receivedData?.signal_status?.take_profit[0]?.open_price} */}
           </Text>
         </View>
 
@@ -548,7 +594,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-           {receivedData.take_profit[0]?.take_profit}
+            {receivedData.price}
           </Text>
         </View>
 
@@ -922,7 +968,7 @@ export default function SignalDetails({navigation, route}) {
           <ActivityIndicator size="large" color="#FACA4E" />
         </View>
       )}
-    </View>
+    </GestureHandlerRootView>
   );
 }
 
