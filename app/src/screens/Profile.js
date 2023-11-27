@@ -36,7 +36,10 @@ import PrivacyPolicyProfile from '../assets/svg/PrivacyPolicyProfile.svg';
 import TermsAndConditionProfile from '../assets/svg/TermsAndConditionProfile.svg';
 import DeleteAccountProfile from '../assets/svg/DeleteAccountProfile.svg';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Cancel from '../assets/svg/Cancel';
 
+import SignInBtn from '../assets/svg/SignIn';
+import CreateBtn from '../assets/svg/CreateAccount';
 
 import LogOut from '../assets/svg/LogOut.svg';
 
@@ -50,6 +53,9 @@ import {greyBold, orange, textBlack, textGrey, white} from '../assets/Colors';
 
 export default function Profile({navigation}) {
   const ref_RBSheet = useRef(null);
+
+  const ref_RBSheetCreateAccount = useRef(null);
+
 
   const ref_RBSheetLogOut = useRef(null);
 
@@ -138,13 +144,13 @@ export default function Profile({navigation}) {
         console.log("User Image",data.data.image)
         setUserName(data.data.name)
         setUserImage(data.data.image)
-
       }
 
       // You can perform additional actions based on the response, e.g., navigate to another screen
     } catch (error) {
       // Handle errors
       console.error('Error during sign up:', error);
+      //ref_RBSheetCreateAccount.current.open();
       setLoading(false);
     }
 
@@ -189,12 +195,59 @@ export default function Profile({navigation}) {
       console.error('Error during DELETE request:', error);
     }
   };
-  
 
   const closeLogout=()=>{
     ref_RBSheetLogOut.current.close()
     navigation.navigate('SignIn')
   }
+
+  const navigateToEditPassword=()=>{
+    if(userId!==''){
+      navigation.navigate('EditProfile')
+    }else{
+      ref_RBSheetCreateAccount.current.open();
+    }
+  }
+
+  const changePassword=()=>{
+    if(userId!==''){
+      navigation.navigate('ChangePassword');
+    }else{
+      ref_RBSheetCreateAccount.current.open();
+    }
+  }
+
+  const handleUpdatePassword = async () => {
+    ref_RBSheet.current.close();
+
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    //setSnackbarVisible(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      //setSnackbarVisible(false);
+      navigation.navigate('SignIn');
+    }, 10);
+  };
+
+  const handleUpdatePasswordSignUp = async () => {
+    ref_RBSheet.current.close();
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    //setSnackbarVisible(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      //setSnackbarVisible(false);
+      navigation.navigate('SignIn');
+    }, 10);
+  };
+
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
@@ -256,7 +309,7 @@ export default function Profile({navigation}) {
         </View>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate('EditProfile')}
+          onPress={() => navigateToEditPassword()}
           style={{marginLeft: wp(5), marginRight: wp(5)}}>
           <Edit width={23} height={30} />
         </TouchableOpacity>
@@ -363,7 +416,7 @@ export default function Profile({navigation}) {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate('ChangePassword')}
+          onPress={() => changePassword()}
           style={{
             marginHorizontal: wp(5),
             flexDirection: 'row',
@@ -746,6 +799,80 @@ export default function Profile({navigation}) {
         </View>
       </RBSheet>
 
+      <RBSheet
+        ref={ref_RBSheetCreateAccount}
+        height={250}
+        openDuration={250}
+        closeOnDragDown={true}
+        closeOnPressMask={true}
+        customStyles={{
+          container: {
+            // justifyContent: 'center',
+            // alignItems: 'center',
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            paddingTop: 0,
+            padding: 20,
+            zIndex: 999,
+          },
+          draggableIcon: {
+            backgroundColor: 'transparent',
+          },
+        }}>
+        <View style={{flex: 1, backgroundColor: 'white'}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: hp(5),
+            }}>
+            <Text
+              style={{
+                fontSize: hp(2.5),
+                fontWeight: 'bold',
+                color: orange,
+              }}>
+              Create Account
+            </Text>
+          </View>
+          <Text
+            style={{
+              fontSize: hp(2.3),
+              marginTop: hp(1),
+              fontWeight: '300',
+              textAlign: 'center',
+              color: textBlack,
+            }}>
+            Please create an account to add this trade to your Wishlist
+          </Text>
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            height: hp(8),
+            justifyContent: 'space-between',
+            marginHorizontal: wp(5),
+            alignItems: 'center',
+          }}>
+          <TouchableOpacity onPress={() => handleUpdatePassword()}>
+            <SignInBtn width={130} height={130} />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => handleUpdatePasswordSignUp()}>
+            <CreateBtn width={130} height={130} />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity
+          onPress={() => ref_RBSheet.current.close()}
+          style={{marginHorizontal: wp(5)}}>
+          <Cancel width={290} />
+        </TouchableOpacity>
+      </RBSheet>
+
+
       {loading && (
         <View
           style={{
@@ -760,6 +887,8 @@ export default function Profile({navigation}) {
           <ActivityIndicator size="large" color="#FACA4E" />
         </View>
       )}
+
+
 
     </ScrollView>
   );

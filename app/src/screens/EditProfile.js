@@ -173,7 +173,7 @@ export default function EditProfile({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
-      navigation.goBack();
+      navigation.navigate("Profile");
     }, 3000);
   };
 
