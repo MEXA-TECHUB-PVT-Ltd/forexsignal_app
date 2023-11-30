@@ -58,6 +58,11 @@ export default function ChangePassword({navigation}) {
   const [snackbarVisibleConfirmPassword, setSnackbarVisibleConfirmPassword] =
     useState(false);
 
+  const [
+    snackbarVisibleConfirmPasswordAlert,
+    setSnackbarVisibleConfirmPasswordAlert,
+  ] = useState(false);
+
   const [oldPassword, setOldPassword] = useState('');
 
   const [password, setPassword] = useState('');
@@ -130,19 +135,41 @@ export default function ChangePassword({navigation}) {
     }, 3000);
   };
 
+  const dismissSnackbarConfirmPasswordAlert = () => {
+    setSnackbarVisibleConfirmPasswordAlert(false);
+  };
+
+  const handleUpdateConfirmPasswordAlert = async () => {
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    setSnackbarVisibleConfirmPasswordAlert(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      setSnackbarVisibleConfirmPasswordAlert(false);
+      //navigation.navigate('SignIn');
+    }, 3000);
+  };
+
   const checkPassword = () => {
     console.log('Came to confirm password');
-    if (password === confirmPassword) {
-      resetPassword();
-    } else {
+   
+    if (password !== confirmPassword) {
       handleUpdateConfirmPassword();
+    } else if (oldPassword !== '' && password !== '' && confirmPassword !== '') {
+      resetPassword();
+      
+    } else {
+      handleUpdateConfirmPasswordAlert();
     }
   };
 
   const resetPassword = async () => {
     setLoading(true);
 
-    const apiUrl = 'http://192.168.18.114:4000/user/password/resetpassword';
+    const apiUrl = 'https://forexs-be.mtechub.com/user/password/resetpassword';
 
     try {
       const response = await fetch(apiUrl, {
@@ -192,7 +219,6 @@ export default function ChangePassword({navigation}) {
           left={true}
           right={true}
           onChangeText={text => setOldPassword(text)}
-
           placeholder={'Old Password'}
           password={true}
           leftName="Lock"
@@ -257,6 +283,13 @@ export default function ChangePassword({navigation}) {
         messageDescription={'Please Match The Below Passwords'}
         onDismiss={dismissSnackbarConfirmPassword} // Make sure this function is defined
         visible={snackbarVisibleConfirmPassword}
+      />
+
+      <CustomSnackbar
+        message={'Alert!'}
+        messageDescription={'Kindly Fill All Fields'}
+        onDismiss={dismissSnackbarConfirmPasswordAlert} // Make sure this function is defined
+        visible={snackbarVisibleConfirmPasswordAlert}
       />
     </View>
   );

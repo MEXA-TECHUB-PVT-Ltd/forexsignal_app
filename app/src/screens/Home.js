@@ -88,7 +88,7 @@ export default function Home({navigation}) {
 
   const getAllSignals = async (page = 1, limit = 10) => {
     try {
-      const apiUrl = `http://192.168.18.114:4000/signal/getallsignals?page=${page}&limit=${limit}`;
+      const apiUrl = `https://forexs-be.mtechub.com/signal/getallsignals?page=${page}&limit=${limit}`;
 
       const response = await fetch(apiUrl, {
         method: 'GET',

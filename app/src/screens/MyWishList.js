@@ -56,11 +56,15 @@ export default function MyWishList({navigation}) {
 
   const [userId, setUserId] = useState('');
 
+  const [forceUpdateFlag, setForceUpdateFlag] = useState(false);
+
+  const forceUpdate = () => setForceUpdateFlag((prev) => !prev);
+
   useEffect(() => {
     // Make the API request and update the 'data' state
     console.log('Came to use effect');
     fetchVideos();
-  }, [userId]);
+  }, [forceUpdateFlag]);
   
   const fetchVideos = async () => {
     // Simulate loading
@@ -68,8 +72,6 @@ export default function MyWishList({navigation}) {
   
     // Wait for getUserID to complete before calling getAllSignals
     await getUserID();
-  
-    await getAllSignals();
     
     // Fetch data one by one
     // Once all data is fetched, set loading to false
@@ -83,6 +85,9 @@ export default function MyWishList({navigation}) {
       if (result !== null) {
         console.log('user id retrieved:', result);
         setUserId(result);
+        await getAllSignals(result);
+      }else{
+        setAllSignals([])
       }
     } catch (error) {
       // Handle errors here
@@ -90,9 +95,9 @@ export default function MyWishList({navigation}) {
     }
   };
   
-  const getAllSignals = async () => {
+  const getAllSignals = async (id) => {
 
-    if(userId!==''){
+    if(id!==''){
 
       console.log("User Id of signals", userId)
     }else{
@@ -100,7 +105,7 @@ export default function MyWishList({navigation}) {
 
     }
     try {
-      const apiUrl = `http://192.168.18.114:4000/wishlist/getSignalsByUserId/${userId}`;
+      const apiUrl = `https://forexs-be.mtechub.com/wishlist/getSignalsByUserId/${id}`;
   
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -130,6 +135,51 @@ export default function MyWishList({navigation}) {
     }
   };
 
+
+  const deleteSignals = async (value) => {
+
+    console.log("Deleting signal", value);
+    
+    console.log("Deleting signal user Id", userId);
+    try {
+      const apiUrl = `https://forexs-be.mtechub.com/wishlist/removesignalbyuserID`;
+  
+      const response = await fetch(apiUrl, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          // You can add additional headers if needed
+        },
+        body: JSON.stringify({
+          signal_id: value,
+          user_id: userId,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+  
+      console.log('All Signals', data);
+
+      if(data.msg===`Signal removed from user's wishlist successfully`){
+        forceUpdate();
+      }
+  
+      // Handle the response data as needed
+      //console.log('Response data:', data);
+  
+      // You can perform additional actions based on the response data
+    } catch (error) {
+      // Handle errors
+      console.error('Error during API request:', error);
+    }
+  };
+  
+  
 
   const data = [
     {
@@ -238,7 +288,8 @@ export default function MyWishList({navigation}) {
     console.log("Render Items", item)
     return (
       <TouchableOpacity
-       // onPress={() => navigation.navigate('SignalDetails')}
+      
+       onPress={() =>  navigation.navigate('SignalDetails', {signalDetails: item})}
         style={{
           marginTop: hp(3),
           justifyContent: 'space-around',
@@ -275,8 +326,11 @@ export default function MyWishList({navigation}) {
               <Buy width={50} height={50} />
             )}
           </View>
+          
+          <TouchableOpacity onPress={()=>deleteSignals(item.signal_id)}>
 
           <Fontiso name="heart" size={15} color={orange} />
+          </TouchableOpacity>
         </View>
 
         <View
@@ -354,14 +408,25 @@ export default function MyWishList({navigation}) {
         />
       </View>
 
-      <View style={{flex: 1}}>
-        <FlatList
-          style={{flexGrow: 1}}
-          showsVerticalScrollIndicator={false}
-          data={allSignals}
-          keyExtractor={item => item.signal_id.toString()}
-          renderItem={({item}) => renderItems(item)}/>
-      </View>
+      {allSignals && allSignals.length === 0 ? (
+        // Display a message when the wishlist is empty
+        <View style={styles.emptyWishlistContainer}>
+          <Text style={styles.emptyWishlistText}>
+            Your wishlist is empty. Add signals to your wishlist!
+          </Text>
+        </View>
+      ) : (
+        // Render the FlatList when there are wishlist items
+        <View style={{ flex: 1 }}>
+          <FlatList
+            style={{ flexGrow: 1 }}
+            showsVerticalScrollIndicator={false}
+            data={allSignals}
+            keyExtractor={(item) => item.signal_id.toString()}
+            renderItem={({ item }) => renderItems(item)}
+          />
+        </View>
+      )}
 
       {loading && (
         <View
@@ -385,5 +450,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  },
+  emptyWishlistContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyWishlistText: {
+    fontSize: hp(2),
+    color: textGrey,
+    textAlign: 'center',
   },
 });

@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
+import messaging from '@react-native-firebase/messaging';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -19,6 +19,12 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+
+import {
+  getToken,
+  notificationListener,
+  requestUserPermission,
+} from './app/src/assets/utilities/CommonUtils';
 
 // screen
 import SplashScreen from './app/src/screens/SplashScreen';
@@ -44,12 +50,29 @@ import PrivacyPolicy from './app/src/screens/PrivacyPolicy';
 import TermsAndCondition from './app/src/screens/TermsAndCondition';
 import ProfileImage from './app/src/screens/ProfileImage';
 import RateApp from './app/src/screens/RateApp';
+import WebViews from './app/src/screens/WebViews';
 
 //---------------\\
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 export default function App() {
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    requestUserPermission();
+    notificationListener();
+    getToken();
+  }, []);
+
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -170,6 +193,12 @@ export default function App() {
         <Stack.Screen
           name="SignIn"
           component={SignIn}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="WebViews"
+          component={WebViews}
           options={{headerShown: false}}
         />
 

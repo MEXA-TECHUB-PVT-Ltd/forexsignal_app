@@ -66,6 +66,9 @@ export default function EditProfile({navigation}) {
   const [openGallery, setOpenGallery] = useState(false);
   const [imageInfo, setImageInfo] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
+
+  const [url, setUrl] = useState('');
+
   const [userId, setUserId] = useState('');
 
   const [fullName, setFullName] = useState('');
@@ -73,6 +76,7 @@ export default function EditProfile({navigation}) {
   const [userEmail, setUserEmail] = useState('');
 
   const [imageUri, setImageUri] = useState(null);
+
   const ref_RBSheet = useRef(null);
   const ref_RBSheetCamera = useRef(null);
 
@@ -126,7 +130,7 @@ export default function EditProfile({navigation}) {
 
     }
     try {
-      const apiUrl = `http://192.168.18.114:4000/user/getuser/userbyID/${userId}`;
+      const apiUrl = `https://forexs-be.mtechub.com/user/getuser/userbyID/${userId}`;
   
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -147,7 +151,7 @@ export default function EditProfile({navigation}) {
       setUserData(data.data);
       setFullName(data.data.name)
       setUserEmail(data.data.email)
-      setImageUri(data.data.image)
+      setUrl(data.data.image)
 
       // Handle the response data as needed
       //console.log('Response data:', data);
@@ -233,10 +237,15 @@ export default function EditProfile({navigation}) {
   };
 
   const upload = async () => {
-    if (imageUri !== null && fullName !== null) {
+    if (imageInfo !== null && fullName !== '') {
+      console.log("In Upload Image Info")
       handleUploadImage();
       //uploadVideo();
-    } else {
+    } else if(url!==null && fullName!=='') {
+      console.log("In Upload Image URL")
+
+         createProfile(url)
+    }else{
       setModalVisible(true);
     }
   };
@@ -284,7 +293,7 @@ export default function EditProfile({navigation}) {
 
     setLoading(true);
 
-    const apiUrl = `http://192.168.18.114:4000/user/updateuser/userprofile/${userId}`;
+    const apiUrl = `https://forexs-be.mtechub.com/user/updateuser/userprofile/${userId}`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -325,7 +334,7 @@ export default function EditProfile({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={{marginTop: hp(5)}}>
         <Headers
           showBackIcon={true}
@@ -345,7 +354,7 @@ export default function EditProfile({navigation}) {
             <TouchableOpacity
               onPress={() => ref_RBSheetCamera.current.open()}
               style={styles.circleBox}>
-              {imageUri == null ? (
+              {url == null ? (
                 <Users width={30} height={30} />
               ) : (
                 <Image
@@ -356,7 +365,7 @@ export default function EditProfile({navigation}) {
                     borderRadius: wp(25) / 2, // Half of the width (25/2)
                     resizeMode: 'contain',
                   }}
-                  source={{uri: imageUri}}
+                  source={{uri: url}}
                 />
               )}
             </TouchableOpacity>
@@ -538,7 +547,7 @@ export default function EditProfile({navigation}) {
           <ActivityIndicator size="large" color="#FACA4E" />
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 }
 

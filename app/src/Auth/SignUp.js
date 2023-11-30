@@ -11,7 +11,8 @@ import {
   ImageBackground,
   TextInput,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -45,6 +46,7 @@ import Headers from '../Custom/Headers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
+import CustomSnackbar from '../Custom/CustomSnackBar';
 
 export default function SignUp({navigation}) {
   const [email, setEmail] = useState('');
@@ -53,7 +55,22 @@ export default function SignUp({navigation}) {
 
   const [password, setPassword] = useState('');
 
+  const [googleToken, setGoogleToken] = useState('');
+
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+  const [authToken, setAuthToken] = useState('');
+
+  useEffect(() => {
+    getUserID()
+}, []);
+
+  useEffect(() => {
+    configureGoogleSignIn();
+  }, []);
+
 
   // all Error Statements
 
@@ -69,6 +86,24 @@ export default function SignUp({navigation}) {
     useState(false);
 
   //---------------------------------\\
+
+  const getUserID = async () => {
+    console.log("Id's");
+    try {
+      const result = await AsyncStorage.getItem('UserToken');
+      if (result !== null) {
+        setAuthToken(result);
+        console.log('user token retrieved:', result);
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error('Error retrieving user ID:', error);
+    }
+  };
+
+
+ 
+
 
   const checkSignUp = () => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -102,10 +137,130 @@ export default function SignUp({navigation}) {
     }
   };
 
+  // Google Sign In Functionality
+
+  const configureGoogleSignIn = async () => {
+    console.log('google Sign in');
+    try {
+      await GoogleSignin.configure({
+        webClientId:
+          '567068341135-kcqvi7gvfk47jj5m2rfn5r6nb48dmj0n.apps.googleusercontent.com',
+       /*  androidClientId:
+          '736037778215-hjmnkaj86ssnqp0m2hh9kpcikh33obss.apps.googleusercontent.com', */
+
+        offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+        forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+      });
+    } catch (error) {
+      console.error('Google Sign-In configuration error:', error);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    console.log('Sign in');
+    setLoading(true); // Show the loader
+
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const {user} = userInfo;
+      const userName = user.name;
+      //console.log('User Name:', user);
+      signUpWithGoogle(user, userInfo )
+      setLoading(false);
+
+      // Handle the signed-in user data
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // User cancelled the sign-in process
+        console.log('Sign-in cancelled');
+        setLoading(false);
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // Sign-in is in progress
+        console.log('Sign-in in progress');
+        //setIsLoading(false);
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // Play services not available or outdated
+        console.log('Play services not available or outdated');
+        setLoading(false);
+      } else {
+        // Some other error occurred
+        console.log('Sign-in error:', error);
+        setLoading(false);
+      }
+    }
+  };
+
+  //-----------------------\\
+
+  //--------Sign Up With Google-----------\\
+
+  const signUpWithGoogle = async (user,userInfo) => {
+    console.log('User Name:', user);
+    console.log('User Info:', userInfo);
+    setLoading(true);
+    
+    const apiUrl = 'https://forexs-be.mtechub.com/user/usersignup';
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: user.email,
+          password: 'Qwerty',
+          signup_type: 'Google',
+          device_id: authToken,
+          token: userInfo.idToken,
+        }),
+      });
+
+      const data = await response.json();
+
+      // Handle the response data as needed
+      console.log('Response data:', data.msg);
+
+      console.log('Email:', email);
+      setLoading(false);
+      
+      if (data.msg === 'User signed up successfully') {
+        console.log('Data =email', data.data.email);
+        console.log('Data =id', data.data.id);
+        
+        setLoading(false);
+
+        AsyncStorage.setItem('email', data.data.email.toString(), () => {
+          console.log('user email saved successfully');
+        });
+
+        AsyncStorage.setItem('userId', data.data.id.toString(), () => {
+          console.log('user id saved successfully of signup');
+        });
+        navigation.navigate('ProfileImage');
+      }else if(data.msg=== 'Email already exists'){
+        signInWithGoogle(user.email)
+
+      }
+
+      // You can perform additional actions based on the response, e.g., navigate to another screen
+    } catch (error) {
+      // Handle errors
+      console.error('Error during sign up:', error);
+      setLoading(false);
+    }
+  };
+
+
+
+  //--------------------------\\
+
   const signUp = async () => {
     setLoading(true);
 
-    const apiUrl = 'http://192.168.18.114:4000/user/usersignup';
+    const apiUrl = 'https://forexs-be.mtechub.com/user/usersignup';
 
     try {
       const response = await fetch(apiUrl, {
@@ -130,8 +285,80 @@ export default function SignUp({navigation}) {
 
       console.log('Email:', email);
       setLoading(false);
-
+      
       if (data.msg === 'User signed up successfully') {
+        console.log('Data =email', data.data.email);
+        console.log('Data =id', data.data.id);
+        
+        setLoading(false);
+
+        AsyncStorage.setItem('email', data.data.email.toString(), () => {
+          console.log('user email saved successfully');
+        });
+
+        AsyncStorage.setItem('userId', data.data.id.toString(), () => {
+          console.log('user id saved successfully of signup');
+        });
+        navigation.navigate('ProfileImage');
+      }else if(data.msg=== 'Email already exists'){
+        handleUpdatePassword();
+      }
+
+      // You can perform additional actions based on the response, e.g., navigate to another screen
+    } catch (error) {
+      // Handle errors
+      console.error('Error during sign up:', error);
+      setLoading(false);
+    }
+  };
+
+  const dismissSnackbar = () => {
+    setSnackbarVisible(false);
+  };
+
+  const handleUpdatePassword = async () => {
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    setSnackbarVisible(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      setSnackbarVisible(false);
+      //navigation.navigate('SignIn');
+    }, 3000);
+  };
+
+  //sign in with with google 
+
+  const signInWithGoogle = async (email) => {
+    setLoading(true);
+
+    const apiUrl = 'https://forexs-be.mtechub.com/user/usersignin';
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: 'Qwerty',
+        }),
+      });
+
+      const data = await response.json();
+
+      // Handle the response data as needed
+      console.log('Response data:', data);
+
+      console.log('Email:', email);
+      setLoading(false);
+
+      if (data.msg === 'Login successful') {
         console.log('Data =email', data.data.email);
         console.log('Data =id', data.data.id);
 
@@ -144,16 +371,22 @@ export default function SignUp({navigation}) {
         AsyncStorage.setItem('userId', data.data.id.toString(), () => {
           console.log('user id saved successfully of signup');
         });
-        navigation.navigate('ProfileImage');
+
+        navigation.navigate('BottomTabNavigation');
+      } else {
+        handleUpdatePassword();
       }
 
       // You can perform additional actions based on the response, e.g., navigate to another screen
     } catch (error) {
       // Handle errors
       console.error('Error during sign up:', error);
+      handleUpdatePassword();
       setLoading(false);
     }
   };
+
+
 
   return (
     <ImageBackground
@@ -317,6 +550,7 @@ export default function SignUp({navigation}) {
             marginHorizontal: wp(8),
           }}>
           <TouchableOpacity
+          onPress={()=>handleGoogleSignIn()}
             style={{
               height: hp(6),
               paddingHorizontal: wp(3),
@@ -409,12 +643,12 @@ export default function SignUp({navigation}) {
         </View>
       )}
 
-      {/*  <CustomSnackbar
-        message={'Success'}
-        messageDescription={'Password Reset  Successfully'}
+        <CustomSnackbar
+        message={'Alert!'}
+        messageDescription={'Email Already Exists!'}
         onDismiss={dismissSnackbar} // Make sure this function is defined
         visible={snackbarVisible}
-      /> */}
+      /> 
     </ImageBackground>
   );
 }

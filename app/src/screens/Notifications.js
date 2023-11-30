@@ -69,7 +69,7 @@ export default function Notifications({navigation}) {
   };
 
   const getNotifications = async () => {
-    const apiUrl = `http://192.168.18.114:4000/notifications/getall`;
+    const apiUrl = `https://forexs-be.mtechub.com/notifications/getall`;
 
     try {
       const response = await fetch(apiUrl, {
