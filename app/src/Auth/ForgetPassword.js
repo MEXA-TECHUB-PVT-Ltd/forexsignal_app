@@ -55,7 +55,7 @@ export default function ForgetPassword({navigation, route}) {
   const getOTP = async () => {
     setLoading(true);
 
-    const apiUrl = 'http://192.168.18.114:4000/user/password/forgetpassword';
+    const apiUrl = 'https://forexs-be.mtechub.com/user/password/forgetpassword';
 
     try {
       const response = await fetch(apiUrl, {

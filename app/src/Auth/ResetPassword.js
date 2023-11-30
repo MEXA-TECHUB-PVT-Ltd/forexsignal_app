@@ -96,7 +96,7 @@ export default function ResetPassword({navigation, route}) {
   const resetPassword = async () => {
     setLoading(true);
 
-    const apiUrl = 'http://192.168.18.114:4000/user/password/resetpassword';
+    const apiUrl = 'https://forexs-be.mtechub.com/user/password/resetpassword';
 
     try {
       const response = await fetch(apiUrl, {

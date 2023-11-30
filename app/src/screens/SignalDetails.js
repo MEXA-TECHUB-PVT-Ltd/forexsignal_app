@@ -112,11 +112,51 @@ export default function SignalDetails({navigation, route}) {
       const result = await AsyncStorage.getItem('userId');
       if (result !== null) {
         setUserId(result);
+
+        await checkWishList(result);
         console.log('user id retrieved:', result);
       }
     } catch (error) {
       // Handle errors here
       console.error('Error retrieving user ID:', error);
+    }
+  };
+
+  const checkWishList = async (id) => {
+
+    console.log(' Check Wish List User Id', id);
+    console.log(' Check Wish List Signal Id', receivedData?.signal_id);
+
+    const apiUrl = 'https://forexs-be.mtechub.com/wishlist/check_save_item';
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: id,
+          signal_id: receivedData?.signal_id,
+        }),
+      });
+
+      const data = await response.json();
+
+      // Handle the response data as needed
+      console.log('Response data:', data);
+
+      if (data.save_status === true) {
+        setShowHeartFilled(true);
+      } else {
+        setShowHeartFilled(false);
+      }
+
+      // You can perform additional actions based on the response, e.g., navigate to another screen
+    } catch (error) {
+      // Handle errors
+      console.error('Error during sign up:', error);
     }
   };
 
@@ -257,7 +297,7 @@ export default function SignalDetails({navigation, route}) {
 
     setLoading(true);
 
-    const apiUrl = `http://192.168.18.114:4000/wishlist/createwishlist`;
+    const apiUrl = `https://forexs-be.mtechub.com/wishlist/createwishlist`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -595,7 +635,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-            {receivedData.price}
+            {receivedData?.take_profit[0]?.take_profit}
           </Text>
         </View>
 
@@ -623,7 +663,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-            1.67890
+            {receivedData?.take_profit[1]?.take_profit}
           </Text>
         </View>
 
@@ -651,7 +691,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-            1.67890
+             {receivedData?.take_profit[1]?.take_profit}
           </Text>
         </View>
 
@@ -687,7 +727,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-            1.67890
+            {receivedData?.stop_loss}
           </Text>
         </View>
 
@@ -794,7 +834,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-            70 %
+            {receivedData?.trade_probability}
           </Text>
         </View>
 
@@ -822,7 +862,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-            H - 1
+            {receivedData?.time_frame}
           </Text>
         </View>
 
@@ -850,7 +890,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-            26-oct-2023
+               {convertedDate}
           </Text>
         </View>
       </ScrollView>

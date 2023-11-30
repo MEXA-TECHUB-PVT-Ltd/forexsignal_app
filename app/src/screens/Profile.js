@@ -120,7 +120,7 @@ export default function Profile({navigation}) {
 
   const getUserById = async () => {
    
-    const apiUrl = `http://192.168.18.114:4000/user/getuser/userbyID/${userId}`;
+    const apiUrl = `https://forexs-be.mtechub.com/user/getuser/userbyID/${userId}`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -161,9 +161,40 @@ export default function Profile({navigation}) {
     deleteUser()
   }
 
+  const closeLogOut=()=>{
+    ref_RBSheetLogOut.current.close()
+    logOutUser()
+  }
+
+  const logOutUser= async ()=>{
+    try {
+      // Get all keys in AsyncStorage
+      const keys = await AsyncStorage.getAllKeys();
+
+      // Remove all items corresponding to the retrieved keys
+      await AsyncStorage.multiRemove(keys);
+      
+      // Check if keys are deleted
+      const remainingKeys = await AsyncStorage.getAllKeys();
+
+      if (remainingKeys.length === 0) {
+        // Optionally, you can perform additional actions after clearing AsyncStorage
+        // For example, display a success message        
+        // Move to the next page (replace 'NextScreen' with your actual screen name)
+        navigation.replace('SignIn');
+      } else {
+        // Handle the case where keys are not deleted successfully
+        console.log("Failed To Delete Keys")
+      }
+    } catch (error) {
+      // Handle errors, such as AsyncStorage access issues
+      console.error('Error clearing AsyncStorage:', error);
+    }
+  }
+
   const deleteUser = async () => {
     try {
-      const apiUrl = `http://192.168.18.114:4000/user/deleteuser/${userId}`;
+      const apiUrl = `https://forexs-be.mtechub.com/user/deleteuser/${userId}`;
   
       const response = await fetch(apiUrl, {
         method: 'DELETE',
@@ -260,7 +291,7 @@ export default function Profile({navigation}) {
       <View style={{marginTop: hp(5)}}>
         <Headers showText={true} text={'My Account'} />
       </View>
-
+       
       <View
         style={{
           flexDirection: 'row',
@@ -358,7 +389,7 @@ export default function Profile({navigation}) {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate('ChatDesk')}
+          onPress={() => navigation.navigate('WebViews')} //navigation.navigate('ChatDesk')}
           style={{
             marginHorizontal: wp(5),
             flexDirection: 'row',
@@ -756,7 +787,7 @@ export default function Profile({navigation}) {
             alignItems: 'center',
           }}>
           <TouchableOpacity
-            onPress={() => ref_RBSheet.current.close()}
+            onPress={() => ref_RBSheetLogOut.current.close()}
             style={{
               height: hp(6),
               justifyContent: 'center',
@@ -777,7 +808,7 @@ export default function Profile({navigation}) {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => closeDelete()}
+            onPress={() => closeLogOut()}
             style={{
               height: hp(6),
               justifyContent: 'center',

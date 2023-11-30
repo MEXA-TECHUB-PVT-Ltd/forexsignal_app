@@ -71,8 +71,9 @@ export default function ProfileImage({navigation}) {
   const [userId, setUserId] = useState('');
   const [imageInfo, setImageInfo] = useState(null);
 
-  const [imageUrl, setImageUrl] = useState('');
+  const [fullNameError, setFullNameError] = useState(false);
 
+  const [imageUrl, setImageUrl] = useState('');
 
   const ref_RBSheet = useRef(null);
   const ref_RBSheetCamera = useRef(null);
@@ -82,9 +83,11 @@ export default function ProfileImage({navigation}) {
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
+  const [snackbarVisibleAlert, setSnackbarVisibleAlert] = useState(false);
+
   useEffect(() => {
     // Make the API request and update the 'data' state
-    console.log("Came to use effect")
+    console.log('Came to use effect');
     fetchVideos();
   }, [5]);
 
@@ -113,7 +116,7 @@ export default function ProfileImage({navigation}) {
   };
 
   const dismissSnackbar = () => {
-    setSnackbarVisible(true);
+    setSnackbarVisible(false);
   };
 
   const handleUpdatePassword = async () => {
@@ -127,6 +130,23 @@ export default function ProfileImage({navigation}) {
     setTimeout(() => {
       setSnackbarVisible(false);
       navigation.navigate('BottomTabNavigation');
+    }, 3000);
+  };
+
+  const dismissSnackbarAlert = () => {
+    setSnackbarVisibleAlert(false);
+  };
+
+  const handleUpdatePasswordAlert = async () => {
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    setSnackbarVisibleAlert(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      setSnackbarVisible(false);
     }, 3000);
   };
 
@@ -177,7 +197,6 @@ export default function ProfileImage({navigation}) {
       if (!response.didCancel && response.assets.length > 0) {
         setImageUri(response.assets[0].uri);
         setImageInfo(response.assets[0]);
-
       }
 
       console.log('response', imageUri);
@@ -187,22 +206,22 @@ export default function ProfileImage({navigation}) {
   };
 
   const upload = async () => {
-    if (imageUri !== null && fullName!==null) {
-         handleUploadImage()
+    if (imageUri !== null && fullName !== '') {
+      handleUploadImage();
       //uploadVideo();
     } else {
-      setModalVisible(true);
+      handleUpdatePasswordAlert();
+      //setModalVisible(true);
     }
   };
 
-
-  const handleUploadImage = (data) => {
+  const handleUploadImage = data => {
     setLoading(true);
     const uri = imageInfo.uri;
     const type = imageInfo.type;
     const name = imageInfo.fileName;
     const sourceImage = {uri, type, name};
-    console.log("Source Image",sourceImage);
+    console.log('Source Image', sourceImage);
     const dataImage = new FormData();
     dataImage.append('file', sourceImage);
     dataImage.append('upload_preset', 'e6zfilan'); // Use your Cloudinary upload preset
@@ -221,26 +240,25 @@ export default function ProfileImage({navigation}) {
         setImageUrl(data.url); // Store the Cloudinary video URL in your state
         //uploadVideo(data.url)
         //uploadXpiVideo(data.url);
-        console.log("Image Url",data);
+        console.log('Image Url', data);
         //uploadXpiVideo(data.url,data)
-        createProfile(data.url)  
+        createProfile(data.url);
       })
       .catch(err => {
-        setLoading(false)
+        setLoading(false);
         console.log('Error While Uploading Video', err);
       });
   };
 
-  const createProfile = async (data1) => {
-    
-    console.log( "User Id", userId);
-    console.log("Full Name", fullName);
+  const createProfile = async data1 => {
+    console.log('User Id', userId);
+    console.log('Full Name', fullName);
 
-    console.log("image", data1);
+    console.log('image', data1);
 
     setLoading(true);
 
-    const apiUrl = `http://192.168.18.114:4000/user/updateuser/userprofile/${userId}`;
+    const apiUrl = `https://forexs-be.mtechub.com/user/updateuser/userprofile/${userId}`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -251,7 +269,7 @@ export default function ProfileImage({navigation}) {
         },
         body: JSON.stringify({
           name: fullName,
-          image: data1, 
+          image: data1,
         }),
       });
 
@@ -267,13 +285,13 @@ export default function ProfileImage({navigation}) {
         console.log('Data =email', data.user);
         //console.log('Data =id', data.user.id);
 
-       /*  AsyncStorage.setItem('userName', data.data.name.toString(), () => {
+        /*  AsyncStorage.setItem('userName', data.data.name.toString(), () => {
           console.log('user id saved successfully of signup');
         }); */
 
         setLoading(false);
 
-       handleUpdatePassword()
+        handleUpdatePassword();
       }
 
       // You can perform additional actions based on the response, e.g., navigate to another screen
@@ -285,7 +303,7 @@ export default function ProfileImage({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={{marginTop: hp(5)}}>
         <Headers
           showBackIcon={true}
@@ -333,19 +351,22 @@ export default function ProfileImage({navigation}) {
               }}>
               <Text
                 style={{fontSize: hp(1.7), fontWeight: 'bold', color: white}}>
-                Change Image
+                Upload Image
               </Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={{marginTop: hp(5)}}>
-          <CPaperInput left={false} right={false} onChangeText={text => setFullName(text)} placeholder={'Full Name'} />
+          <CPaperInput
+            left={false}
+            right={false}
+            onChangeText={text => setFullName(text)}
+            placeholder={'Full Name'}
+          />
         </View>
 
-        <TouchableOpacity
-          onPress={() => upload()}
-          style={{marginTop: hp(35)}}>
+        <TouchableOpacity onPress={() => upload()} style={{marginTop: hp(35)}}>
           <CustomButton title={'Create Profile'} />
         </TouchableOpacity>
       </View>
@@ -418,6 +439,13 @@ export default function ProfileImage({navigation}) {
         visible={snackbarVisible}
       />
 
+      <CustomSnackbar
+        message={'Alert!'}
+        messageDescription={'Kindly Fill All Fields Below'}
+        onDismiss={dismissSnackbarAlert} // Make sure this function is defined
+        visible={snackbarVisibleAlert}
+      />
+
       {loading && (
         <View
           style={{
@@ -432,7 +460,7 @@ export default function ProfileImage({navigation}) {
           <ActivityIndicator size="large" color="#FACA4E" />
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 }
 
