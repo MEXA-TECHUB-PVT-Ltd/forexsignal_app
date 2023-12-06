@@ -1,0 +1,1 @@
+export const baseUrl = 'https://forexs-be.mtechub.com';

@@ -26,7 +26,6 @@ import Sell from '../assets/svg/Sell.svg';
 import Headers from '../Custom/Headers';
 import {appImages} from '../assets/utilities';
 import Fontiso from 'react-native-vector-icons/Fontisto';
-
 import Happiness from '../assets/svg/Happiness.svg';
 
 import Send from '../assets/svg/Send.svg';
@@ -59,6 +58,7 @@ import {
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
+import { baseUrl } from '../assets/utilities/BaseUrl';
 
 export default function EditProfile({navigation}) {
   const [openModel, setOpenModel] = useState(false);
@@ -130,7 +130,7 @@ export default function EditProfile({navigation}) {
 
     }
     try {
-      const apiUrl = `https://forexs-be.mtechub.com/user/getuser/userbyID/${userId}`;
+      const apiUrl = `${baseUrl}/user/getuser/userbyID/${userId}`;
   
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -293,7 +293,7 @@ export default function EditProfile({navigation}) {
 
     setLoading(true);
 
-    const apiUrl = `https://forexs-be.mtechub.com/user/updateuser/userprofile/${userId}`;
+    const apiUrl = `${baseUrl}/user/updateuser/userprofile/${userId}`;
 
     try {
       const response = await fetch(apiUrl, {

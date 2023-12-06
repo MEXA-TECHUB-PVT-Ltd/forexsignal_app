@@ -44,6 +44,7 @@ import Headers from '../Custom/Headers';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
+import { baseUrl } from '../assets/utilities/BaseUrl';
 
 export default function Notifications({navigation}) {
   const [notifications, setNotifications] = useState(false);
@@ -69,7 +70,7 @@ export default function Notifications({navigation}) {
   };
 
   const getNotifications = async () => {
-    const apiUrl = `https://forexs-be.mtechub.com/notifications/getall`;
+    const apiUrl = `${baseUrl}/notifications/getall`;
 
     try {
       const response = await fetch(apiUrl, {

@@ -20,7 +20,6 @@ import Copy from '../assets/svg/Copy.svg';
 import Buy from '../assets/svg/Buy.svg';
 import Sell from '../assets/svg/Sell.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -42,6 +41,7 @@ import CreateBtn from '../assets/svg/CreateAccount';
 import Cancel from '../assets/svg/Cancel';
 
 import RBSheet from 'react-native-raw-bottom-sheet';
+import { baseUrl } from '../assets/utilities/BaseUrl';
 
 export default function Home({navigation}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -88,7 +88,7 @@ export default function Home({navigation}) {
 
   const getAllSignals = async (page = 1, limit = 10) => {
     try {
-      const apiUrl = `https://forexs-be.mtechub.com/signal/getallsignals?page=${page}&limit=${limit}`;
+      const apiUrl = `${baseUrl}/signal/getallsignals?page=${page}&limit=${limit}`;
 
       const response = await fetch(apiUrl, {
         method: 'GET',
