@@ -24,7 +24,6 @@ import Buy from '../assets/svg/Buy.svg';
 import Sell from '../assets/svg/Sell.svg';
 import Google from '../assets/svg/Google.svg';
 import FaceBook from '../assets/svg/FaceBook.svg';
-
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -47,6 +46,7 @@ import Headers from '../Custom/Headers';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
+import { baseUrl } from '../assets/utilities/BaseUrl';
 
 export default function ChangePassword({navigation}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -169,7 +169,7 @@ export default function ChangePassword({navigation}) {
   const resetPassword = async () => {
     setLoading(true);
 
-    const apiUrl = 'https://forexs-be.mtechub.com/user/password/resetpassword';
+    const apiUrl = `${baseUrl}/user/password/resetpassword`;
 
     try {
       const response = await fetch(apiUrl, {

@@ -50,6 +50,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import RBSheet from 'react-native-raw-bottom-sheet';
 
 import {greyBold, orange, textBlack, textGrey, white} from '../assets/Colors';
+import { baseUrl } from '../assets/utilities/BaseUrl';
 
 export default function Profile({navigation}) {
   const ref_RBSheet = useRef(null);
@@ -120,7 +121,7 @@ export default function Profile({navigation}) {
 
   const getUserById = async () => {
    
-    const apiUrl = `https://forexs-be.mtechub.com/user/getuser/userbyID/${userId}`;
+    const apiUrl = `${baseUrl}/user/getuser/userbyID/${userId}`;
 
     try {
       const response = await fetch(apiUrl, {

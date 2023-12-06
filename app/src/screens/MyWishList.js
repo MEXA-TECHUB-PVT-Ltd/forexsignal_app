@@ -48,6 +48,7 @@ import {
   textGrey,
   white,
 } from '../assets/Colors';
+import { baseUrl } from '../assets/utilities/BaseUrl';
 
 export default function MyWishList({navigation}) {
   const [loading, setLoading] = useState(false);
@@ -105,7 +106,7 @@ export default function MyWishList({navigation}) {
 
     }
     try {
-      const apiUrl = `https://forexs-be.mtechub.com/wishlist/getSignalsByUserId/${id}`;
+      const apiUrl = `${baseUrl}/wishlist/getSignalsByUserId/${id}`;
   
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -142,7 +143,7 @@ export default function MyWishList({navigation}) {
     
     console.log("Deleting signal user Id", userId);
     try {
-      const apiUrl = `https://forexs-be.mtechub.com/wishlist/removesignalbyuserID`;
+      const apiUrl = `${baseUrl}/wishlist/removesignalbyuserID`;
   
       const response = await fetch(apiUrl, {
         method: 'DELETE',
