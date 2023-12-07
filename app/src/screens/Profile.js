@@ -11,6 +11,8 @@ import {
   TextInput,
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
+import { useIsFocused } from '@react-navigation/native';
+
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
@@ -57,6 +59,7 @@ export default function Profile({navigation}) {
 
   const ref_RBSheetCreateAccount = useRef(null);
 
+  const isFocused = useIsFocused();
 
   const ref_RBSheetLogOut = useRef(null);
 
@@ -75,9 +78,12 @@ export default function Profile({navigation}) {
 
   useEffect(() => {
     // Make the API request and update the 'data' state
-    console.log('Came to use effect');
-    fetchVideos();
-  }, [userId]);
+    if(isFocused){
+
+      console.log('Came to use effect');
+      fetchVideos();
+    }
+  }, [isFocused]);
   
   const fetchVideos = async () => {
     // Simulate loading
@@ -86,7 +92,6 @@ export default function Profile({navigation}) {
     // Wait for getUserID to complete before calling getAllSignals
     await getUserID();
 
-    await getUserById();
       
     // Fetch data one by one
     // Once all data is fetched, set loading to false
@@ -96,11 +101,6 @@ export default function Profile({navigation}) {
   const getUserID = async () => {
     console.log("Id's");
     try {
-      const result = await AsyncStorage.getItem('userId');
-      if (result !== null) {
-        console.log('user id retrieved:', result);
-        setUserId(result);
-      }
       
       const userName = await AsyncStorage.getItem('userName');
       if (userName !== null) {
@@ -112,6 +112,14 @@ export default function Profile({navigation}) {
         console.log('user id retrieved:', email);
         setUserEmail(email);
       }
+
+      const result = await AsyncStorage.getItem('userId');
+      if (result !== null) {
+        console.log('user id retrieved:', result);
+        setUserId(result);
+        await getUserById(result);
+
+      }
     } catch (error) {
       // Handle errors here
       console.error('Error retrieving user ID:', error);
@@ -119,9 +127,9 @@ export default function Profile({navigation}) {
   };
 
 
-  const getUserById = async () => {
+  const getUserById = async (id) => {
    
-    const apiUrl = `${baseUrl}/user/getuser/userbyID/${userId}`;
+    const apiUrl = `${baseUrl}/user/getuser/userbyID/${id}`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -182,7 +190,11 @@ export default function Profile({navigation}) {
         // Optionally, you can perform additional actions after clearing AsyncStorage
         // For example, display a success message        
         // Move to the next page (replace 'NextScreen' with your actual screen name)
-        navigation.replace('SignIn');
+        //navigation.replace('SignIn');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'SignIn' }],
+        });
       } else {
         // Handle the case where keys are not deleted successfully
         console.log("Failed To Delete Keys")

@@ -337,6 +337,41 @@ export default function SignalDetails({navigation, route}) {
     }
   };
 
+  const renderTakeProfit=(item, index)=>{
+     console.log("Item Profit", item)
+    return(
+    
+    <View
+          style={{
+            flexDirection: 'row',
+            marginTop: hp(5),
+            marginHorizontal: wp(8),
+            height: hp(5),
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              fontSize: hp(2.1),
+              fontWeight: '300',
+              color: textGrey,
+            }}>
+            Take profit {index + 1}
+          </Text>
+
+          <Text
+            style={{
+              fontSize: hp(2.1),
+              fontWeight: '400',
+              color: textBlack,
+            }}>
+            {item?.take_profit}
+          </Text>
+        </View>
+    )
+
+  }
+
   const removeWishList = async () => {
     console.log('Remove Wish List Called');
 
@@ -611,7 +646,17 @@ export default function SignalDetails({navigation, route}) {
           </Text>
         </View>
 
-        <View
+        <FlatList
+          style={{flexGrow: 1}}
+          showsVerticalScrollIndicator={false}
+          data={receivedData?.take_profit}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item, index}) => renderTakeProfit(item, index)}
+
+          //keyExtractor={item => item.signal_id.toString()}
+        />
+
+        {/* <View
           style={{
             flexDirection: 'row',
             marginTop: hp(1),
@@ -637,8 +682,8 @@ export default function SignalDetails({navigation, route}) {
             }}>
             {receivedData?.take_profit[0]?.take_profit}
           </Text>
-        </View>
-
+        </View> */}
+{/* 
         <View
           style={{
             flexDirection: 'row',
@@ -665,8 +710,8 @@ export default function SignalDetails({navigation, route}) {
             }}>
             {receivedData?.take_profit[1]?.take_profit}
           </Text>
-        </View>
-
+        </View> */}
+{/* 
         <View
           style={{
             flexDirection: 'row',
@@ -693,7 +738,7 @@ export default function SignalDetails({navigation, route}) {
             }}>
              {receivedData?.take_profit[1]?.take_profit}
           </Text>
-        </View>
+        </View> */}
 
         <View
           style={{
@@ -755,7 +800,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-            Waiting
+           {receivedData?.result===false? "Waiting" : "Profit"}
           </Text>
         </View>
 
@@ -778,7 +823,7 @@ export default function SignalDetails({navigation, route}) {
           </Text>
 
           <TouchableOpacity onPress={() => openLightbox()}>
-            {waitingVisible === true ? (
+            {receivedData?.result === true ? (
               <EvilIcons name={'image'} size={50} color={orange} />
             ) : (
               <Text

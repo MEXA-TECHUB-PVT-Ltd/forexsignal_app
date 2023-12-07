@@ -46,6 +46,8 @@ import Headers from '../Custom/Headers';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
+import CustomSnackbarAlert from '../Custom/CustomSnackBarAlert';
+import { baseUrl } from '../assets/utilities/BaseUrl';
 
 export default function ResetPassword({navigation, route}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -96,7 +98,7 @@ export default function ResetPassword({navigation, route}) {
   const resetPassword = async () => {
     setLoading(true);
 
-    const apiUrl = 'https://forexs-be.mtechub.com/user/password/resetpassword';
+    const apiUrl = `${baseUrl}/user/password/resetpassword`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -247,7 +249,7 @@ export default function ResetPassword({navigation, route}) {
         visible={snackbarVisible}
       />
 
-      <CustomSnackbar
+      <CustomSnackbarAlert
         message={'Alert!'}
         messageDescription={'Please Match The Below Passwords'}
         onDismiss={dismissSnackbarConfirmPassword} // Make sure this function is defined

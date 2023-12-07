@@ -26,7 +26,7 @@ import Google from '../assets/svg/Google.svg';
 import FaceBook from '../assets/svg/FaceBook.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 import {useFormik} from 'formik';
 import * as yup from 'yup';
@@ -50,8 +50,8 @@ import Headers from '../Custom/Headers';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
-
-
+import {baseUrl} from '../assets/utilities/BaseUrl';
+import CustomSnackbarAlert from '../Custom/CustomSnackBarAlert';
 
 export default function SignIn({navigation}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -64,7 +64,6 @@ export default function SignIn({navigation}) {
 
   const [authToken, setAuthToken] = useState('');
 
-
   const skipforNow = () => {
     setLoading(true);
 
@@ -76,7 +75,7 @@ export default function SignIn({navigation}) {
   };
 
   useEffect(() => {
-       getUserID()
+    getUserID();
   }, []);
 
   useEffect(() => {
@@ -97,12 +96,10 @@ export default function SignIn({navigation}) {
     }
   };
 
-
-
-  const signIn = async (values) => {
+  const signIn = async values => {
     setLoading(true);
 
-    const apiUrl = 'https://forexs-be.mtechub.com/user/usersignin';
+    const apiUrl = `${baseUrl}/user/usersignin`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -137,6 +134,13 @@ export default function SignIn({navigation}) {
 
         AsyncStorage.setItem('userId', data.data.id.toString(), () => {
           console.log('user id saved successfully of signup');
+        });
+
+        AsyncStorage.setItem('password', values.password, () => {
+          console.log(
+            'user password saved successfully of signup',
+            password.toString(),
+          );
         });
 
         navigation.navigate('BottomTabNavigation');
@@ -185,14 +189,13 @@ export default function SignIn({navigation}) {
       password: '',
     },
     validationSchema: validationSchema,
-    
+
     onSubmit: async values => {
       // Your form submission logic goes here
       console.log('Form submitted with values:', values);
-      signIn(values)
+      signIn(values);
     },
   });
-
 
   // Google Sign In Functionality
 
@@ -202,7 +205,7 @@ export default function SignIn({navigation}) {
       await GoogleSignin.configure({
         webClientId:
           '567068341135-kcqvi7gvfk47jj5m2rfn5r6nb48dmj0n.apps.googleusercontent.com',
-       /*  androidClientId:
+        /*  androidClientId:
           '736037778215-hjmnkaj86ssnqp0m2hh9kpcikh33obss.apps.googleusercontent.com', */
 
         offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
@@ -223,7 +226,7 @@ export default function SignIn({navigation}) {
       const {user} = userInfo;
       const userName = user.name;
       //console.log('User Name:', user);
-      signUpWithGoogle(user, userInfo )
+      signUpWithGoogle(user, userInfo);
       setLoading(false);
 
       // Handle the signed-in user data
@@ -248,13 +251,12 @@ export default function SignIn({navigation}) {
     }
   };
 
-
-  const signUpWithGoogle = async (user,userInfo) => {
+  const signUpWithGoogle = async (user, userInfo) => {
     console.log('User Name:', user);
     console.log('User Info:', userInfo);
     setLoading(true);
-    
-    const apiUrl = 'https://forexs-be.mtechub.com/user/usersignup';
+
+    const apiUrl = `${baseUrl}/user/usersignup`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -279,11 +281,11 @@ export default function SignIn({navigation}) {
 
       console.log('Email:', email);
       setLoading(false);
-      
+
       if (data.msg === 'User signed up successfully') {
         console.log('Data =email', data.data.email);
         console.log('Data =id', data.data.id);
-        
+
         setLoading(false);
 
         AsyncStorage.setItem('email', data.data.email.toString(), () => {
@@ -292,20 +294,22 @@ export default function SignIn({navigation}) {
 
         AsyncStorage.setItem('userId', data.data.id.toString(), () => {
           console.log('user id saved successfully of signup');
+
+          AsyncStorage.setItem('password', "Qwerty", () => {
+            console.log(
+              'user password saved successfully of signup',
+            );
+          });
         });
         navigation.navigate('BottomTabNavigation');
-      }else if(data.msg=== 'Email already exists'){
-            
-        signInWithGoogle(user.email)
+      } else if (data.msg === 'Email already exists') {
+        signInWithGoogle(user.email);
 
-
-        console.log("Email data", data)
+        console.log('Email data', data);
 
         setLoading(false);
 
-
-
-       /*  AsyncStorage.setItem('email', data.data.email.toString(), () => {
+        /*  AsyncStorage.setItem('email', data.data.email.toString(), () => {
           console.log('user email saved successfully');
         });
 
@@ -313,7 +317,7 @@ export default function SignIn({navigation}) {
           console.log('user id saved successfully of signup');
         });
         navigation.navigate('BottomTabNavigation'); */
-      } 
+      }
 
       // You can perform additional actions based on the response, e.g., navigate to another screen
     } catch (error) {
@@ -323,11 +327,10 @@ export default function SignIn({navigation}) {
     }
   };
 
-
-  const signInWithGoogle = async (email) => {
+  const signInWithGoogle = async email => {
     setLoading(true);
 
-    const apiUrl = 'https://forexs-be.mtechub.com/user/usersignin';
+    const apiUrl = `${baseUrl}/user/usersignin`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -378,9 +381,7 @@ export default function SignIn({navigation}) {
     }
   };
 
-
   //-----------------------\\
-
 
   return (
     <ImageBackground
@@ -531,7 +532,7 @@ export default function SignIn({navigation}) {
             marginHorizontal: wp(8),
           }}>
           <TouchableOpacity
-          onPress={()=>handleGoogleSignIn()}
+            onPress={() => handleGoogleSignIn()}
             style={{
               height: hp(6),
               paddingHorizontal: wp(5),
@@ -624,8 +625,8 @@ export default function SignIn({navigation}) {
         </View>
       )}
 
-      <CustomSnackbar
-        message={'Alert'}
+      <CustomSnackbarAlert
+        message={'Alert!'}
         messageDescription={'Wrong Email Or Password'}
         onDismiss={dismissSnackbar} // Make sure this function is defined
         visible={snackbarVisible}

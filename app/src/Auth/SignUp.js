@@ -25,6 +25,7 @@ import Buy from '../assets/svg/Buy.svg';
 import Sell from '../assets/svg/Sell.svg';
 import Google from '../assets/svg/Google.svg';
 import FaceBook from '../assets/svg/FaceBook.svg';
+import CustomSnackbarAlert from '../Custom/CustomSnackBarAlert';
 
 import {
   heightPercentageToDP as hp,
@@ -47,6 +48,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
+import { baseUrl } from '../assets/utilities/BaseUrl';
+import { getToken } from '../assets/utilities/CommonUtils';
 
 export default function SignUp({navigation}) {
   const [email, setEmail] = useState('');
@@ -93,7 +96,7 @@ export default function SignUp({navigation}) {
       const result = await AsyncStorage.getItem('UserToken');
       if (result !== null) {
         setAuthToken(result);
-        console.log('user token retrieved:', result);
+        console.log('user token retrieved:', result.replace(/\"/g, ''));
       }
     } catch (error) {
       // Handle errors here
@@ -200,7 +203,7 @@ export default function SignUp({navigation}) {
     console.log('User Info:', userInfo);
     setLoading(true);
     
-    const apiUrl = 'https://forexs-be.mtechub.com/user/usersignup';
+    const apiUrl = `${baseUrl}/user/usersignup`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -239,6 +242,12 @@ export default function SignUp({navigation}) {
         AsyncStorage.setItem('userId', data.data.id.toString(), () => {
           console.log('user id saved successfully of signup');
         });
+
+        AsyncStorage.setItem('password', "Qwerty", () => {
+          console.log(
+            'user password saved successfully of signup',
+          );
+        });
         navigation.navigate('ProfileImage');
       }else if(data.msg=== 'Email already exists'){
         signInWithGoogle(user.email)
@@ -260,7 +269,7 @@ export default function SignUp({navigation}) {
   const signUp = async () => {
     setLoading(true);
 
-    const apiUrl = 'https://forexs-be.mtechub.com/user/usersignup';
+    const apiUrl = `${baseUrl}/user/usersignup`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -273,8 +282,8 @@ export default function SignUp({navigation}) {
           email: email,
           password: password,
           signup_type: 'email',
-          device_id: '576765876',
-          token: 'token',
+          device_id: authToken.replace(/\"/g, '') ,
+          token: authToken.replace(/\"/g, ''),
         }),
       });
 
@@ -299,6 +308,12 @@ export default function SignUp({navigation}) {
         AsyncStorage.setItem('userId', data.data.id.toString(), () => {
           console.log('user id saved successfully of signup');
         });
+
+        AsyncStorage.setItem('password', password.toString(), () => {
+          console.log('user password saved successfully of signup', password.toString() );
+        });
+
+
         navigation.navigate('ProfileImage');
       }else if(data.msg=== 'Email already exists'){
         handleUpdatePassword();
@@ -335,7 +350,7 @@ export default function SignUp({navigation}) {
   const signInWithGoogle = async (email) => {
     setLoading(true);
 
-    const apiUrl = 'https://forexs-be.mtechub.com/user/usersignin';
+    const apiUrl = `${baseUrl}/user/usersignin`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -643,7 +658,7 @@ export default function SignUp({navigation}) {
         </View>
       )}
 
-        <CustomSnackbar
+        <CustomSnackbarAlert
         message={'Alert!'}
         messageDescription={'Email Already Exists!'}
         onDismiss={dismissSnackbar} // Make sure this function is defined

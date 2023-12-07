@@ -25,7 +25,6 @@ import Buy from '../assets/svg/Buy.svg';
 import Sell from '../assets/svg/Sell.svg';
 import Google from '../assets/svg/Google.svg';
 import FaceBook from '../assets/svg/FaceBook.svg';
-
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -47,18 +46,23 @@ import Headers from '../Custom/Headers';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
+import {baseUrl} from '../assets/utilities/BaseUrl';
+import CustomSnackbarAlert from '../Custom/CustomSnackBarAlert';
 
 export default function OTP({navigation, route}) {
   const [otpCode, setOtpCode] = useState('');
 
-  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
 
+
+  const [email, setEmail] = useState('');
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  const [snackbarVisibleAlert, setSnackbarVisibleAlert] = useState(false);
 
- 
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Make the API request and update the 'data' state
@@ -76,24 +80,30 @@ export default function OTP({navigation, route}) {
   };
 
   const getOTP = async () => {
-
     const receivedData = route.params?.OTP;
 
     console.log('Recieved Data:', receivedData);
 
-    setOtpCode(receivedData)
+    setOtp(receivedData)
 
     const receivedDataEmail = route.params?.email;
 
     console.log('Recieved Data:', receivedDataEmail);
 
-    setEmail(receivedDataEmail)
-
+    setEmail(receivedDataEmail);
   };
 
   const dismissSnackbar = () => {
-    setSnackbarVisible(true);
+    setSnackbarVisible(false);
   };
+
+  const checkOTPVerification=()=>{
+    if (otp === otpCode) {
+      handleUpdatePassword()
+    } else {
+      handleUpdateConfirmAlert()
+    }
+  }
 
   const handleUpdatePassword = async () => {
     // Perform the password update logic here
@@ -104,10 +114,32 @@ export default function OTP({navigation, route}) {
 
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
-      navigation.navigate('ResetPassword', {email:email});
       setSnackbarVisible(false);
+      navigation.navigate('ResetPassword', {email: email});
+      setSnackbarVisible(false);
+
     }, 3000);
   };
+
+  const dismissSnackbarAlert = () => {
+    setSnackbarVisibleAlert(false);
+  };
+
+
+  const handleUpdateConfirmAlert = async () => {
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    setSnackbarVisibleAlert(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      setSnackbarVisibleAlert(false);
+      //navigation.navigate('SignIn');
+    }, 3000);
+  };
+
 
   return (
     <ImageBackground
@@ -205,7 +237,7 @@ export default function OTP({navigation, route}) {
           paddingBottom: hp(2),
           marginHorizontal: wp(8),
         }}>
-        <TouchableOpacity onPress={() => handleUpdatePassword()}>
+        <TouchableOpacity onPress={() => checkOTPVerification()}>
           <CustomButton title={'Confirm'} />
         </TouchableOpacity>
       </View>
@@ -231,6 +263,13 @@ export default function OTP({navigation, route}) {
           <ActivityIndicator size="large" color="#FACA4E" />
         </View>
       )}
+
+      <CustomSnackbarAlert
+        message={'Alert!'}
+        messageDescription={'Otp Verification Failed!'}
+        onDismiss={dismissSnackbarAlert} // Make sure this function is defined
+        visible={snackbarVisibleAlert}
+      />
     </ImageBackground>
   );
 }

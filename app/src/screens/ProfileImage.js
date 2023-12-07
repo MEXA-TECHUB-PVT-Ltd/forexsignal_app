@@ -61,6 +61,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
 import CPaperInput from '../Custom/CPaperInput';
+import CustomSnackbarAlert from '../Custom/CustomSnackBarAlert';
 
 export default function ProfileImage({navigation}) {
   const [openModel, setOpenModel] = useState(false);
@@ -439,7 +440,7 @@ export default function ProfileImage({navigation}) {
         visible={snackbarVisible}
       />
 
-      <CustomSnackbar
+      <CustomSnackbarAlert
         message={'Alert!'}
         messageDescription={'Kindly Fill All Fields Below'}
         onDismiss={dismissSnackbarAlert} // Make sure this function is defined

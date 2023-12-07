@@ -2,6 +2,7 @@ import {
   StyleSheet,
   StatusBar,
   Text,
+  RefreshControl,
   ActivityIndicator,
   Image,
   FlatList,
@@ -13,6 +14,8 @@ import React, {useState, useEffect, useRef} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 
+/* import Clipboard from '@react-native-community/clipboard';
+ */
 import Search from '../assets/svg/Search.svg';
 import Notification from '../assets/svg/Notification.svg';
 
@@ -46,6 +49,8 @@ import { baseUrl } from '../assets/utilities/BaseUrl';
 export default function Home({navigation}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
+  const [refreshing, setRefreshing] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
   const [allSignals, setAllSignals] = useState(null);
@@ -54,11 +59,31 @@ export default function Home({navigation}) {
 
   const ref_RBSheet = useRef(null);
 
+  const [copiedText, setCopiedText] = useState('');
+
+ /*  const copyToClipboard = (value) => {
+    Clipboard.setString(value);
+  };
+ */
+  
+
   useEffect(() => {
     // Make the API request and update the 'data' state
     console.log('Came to use effect');
     fetchVideos();
   }, []);
+
+  const onRefresh = () => {
+    // Set refreshing to true when pull-to-refresh is triggered
+    setRefreshing(true);
+
+    // Fetch the updated data
+    fetchVideos();
+
+    // Set refreshing to false after data is fetched
+    setRefreshing(false);
+  };
+
 
   const fetchVideos = async () => {
     // Simulate loading
@@ -122,7 +147,7 @@ export default function Home({navigation}) {
     setSnackbarVisible(true);
   };
 
-  const handleUpdatePasswordShow = async () => {
+  const handleUpdatePasswordShow = async (value) => {
     ref_RBSheet.current.close();
 
     // Perform the password update logic here
@@ -134,6 +159,7 @@ export default function Home({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
+      copyToClipboard(value)
       // navigation.navigate("SignIn")
     }, 3000);
   };
@@ -296,10 +322,10 @@ export default function Home({navigation}) {
     },
   ];
 
-  const showAlerts = () => {
+  const showAlerts = (value) => {
     console.log("Id", userId)
     if (userId !== '') {
-      handleUpdatePasswordShow()
+      handleUpdatePasswordShow(value)
     } else {
       ref_RBSheet.current.open();
     }
@@ -367,7 +393,7 @@ export default function Home({navigation}) {
             {item.date}
           </Text>
           <TouchableOpacity
-            onPress={() => showAlerts()
+            onPress={() => showAlerts(item)
               /*  item.showAlert === true
                 ? handleUpdatePasswordShow()
                 : ref_RBSheet.current.open() */
@@ -474,6 +500,9 @@ export default function Home({navigation}) {
           data={allSignals}
           //keyExtractor={item => item.signal_id.toString()}
           renderItem={({item}) => renderItems(item)}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       </View>
 

@@ -39,6 +39,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomSnackbar from '../Custom/CustomSnackBar';
 import SuggestionBox from '../Custom/SuggestionBox';
+import { baseUrl } from '../assets/utilities/BaseUrl';
 
 const dummyData = [
   'Apple',
@@ -115,7 +116,7 @@ export default function SearchScreen({navigation}) {
   const getAllSignalsBYName = async name => {
     setLoading(true);
     try {
-      const apiUrl = `http://192.168.18.114:4000/signal/search_signal_byname`;
+      const apiUrl = `${baseUrl}/signal/search_signal_byname`;
   
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -291,7 +292,7 @@ export default function SearchScreen({navigation}) {
 
   const getAllSignals = async (page = 1, limit = 10) => {
     try {
-      const apiUrl = `http://192.168.18.114:4000/signal/getallsignals?page=${page}&limit=${limit}`;
+      const apiUrl = `${baseUrl}/signal/getallsignals?page=${page}&limit=${limit}`;
 
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -380,7 +381,7 @@ export default function SearchScreen({navigation}) {
           <TextInput
             value={query}
             onChangeText={handleQueryChange}
-            style={{marginTop: hp(-0.5)}}
+            style={{marginTop: hp(-0.5), flex:1}}
             placeholder="Search here"
           />
         </View>

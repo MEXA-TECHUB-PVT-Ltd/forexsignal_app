@@ -58,7 +58,7 @@ import {
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
-import { baseUrl } from '../assets/utilities/BaseUrl';
+import {baseUrl} from '../assets/utilities/BaseUrl';
 
 export default function EditProfile({navigation}) {
   const [openModel, setOpenModel] = useState(false);
@@ -102,7 +102,6 @@ export default function EditProfile({navigation}) {
     // Fetch data one by one
     // Once all data is fetched, set loading to false
 
-    await fetchByUserId();
     setLoading(false);
   };
 
@@ -113,6 +112,8 @@ export default function EditProfile({navigation}) {
       if (result !== null) {
         setUserId(result);
         console.log('user id retrieved:', result);
+
+        await fetchByUserId(result);
       }
     } catch (error) {
       // Handle errors here
@@ -120,18 +121,17 @@ export default function EditProfile({navigation}) {
     }
   };
 
-  const fetchByUserId = async () => {
-
-    if(userId!==''){
+  const fetchByUserId = async id => {
+    /* if(userId!==''){
 
       console.log("User Id of signals", userId)
     }else{
       console.log("Empty signals", userId)
 
-    }
+    } */
     try {
-      const apiUrl = `${baseUrl}/user/getuser/userbyID/${userId}`;
-  
+      const apiUrl = `${baseUrl}/user/getuser/userbyID/${id}`;
+
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
@@ -140,22 +140,22 @@ export default function EditProfile({navigation}) {
           // You can add additional headers if needed
         },
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-  
+
       console.log('User Info', data.data);
       setUserData(data.data);
-      setFullName(data.data.name)
-      setUserEmail(data.data.email)
-      setUrl(data.data.image)
+      setFullName(data.data.name);
+      setUserEmail(data.data.email);
+      setUrl(data.data.image);
 
       // Handle the response data as needed
       //console.log('Response data:', data);
-  
+
       // You can perform additional actions based on the response data
     } catch (error) {
       // Handle errors
@@ -177,7 +177,7 @@ export default function EditProfile({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
-      navigation.navigate("Profile");
+      navigation.navigate('Profile');
     }, 3000);
   };
 
@@ -217,6 +217,7 @@ export default function EditProfile({navigation}) {
         setImageUri(response.assets[0].uri);
         console.log('response', imageUri);
         setImageInfo(response.assets[0]);
+        setUrl('');
       }
       ref_RBSheetCamera.current.close();
     });
@@ -228,6 +229,7 @@ export default function EditProfile({navigation}) {
       if (!response.didCancel && response.assets.length > 0) {
         setImageUri(response.assets[0].uri);
         setImageInfo(response.assets[0]);
+        setUrl('');
       }
 
       console.log('response', imageUri);
@@ -238,14 +240,14 @@ export default function EditProfile({navigation}) {
 
   const upload = async () => {
     if (imageInfo !== null && fullName !== '') {
-      console.log("In Upload Image Info")
+      console.log('In Upload Image Info');
       handleUploadImage();
       //uploadVideo();
-    } else if(url!==null && fullName!=='') {
-      console.log("In Upload Image URL")
+    } else if (url !== null && fullName !== '') {
+      console.log('In Upload Image URL');
 
-         createProfile(url)
-    }else{
+      createProfile(url);
+    } else {
       setModalVisible(true);
     }
   };
@@ -354,7 +356,7 @@ export default function EditProfile({navigation}) {
             <TouchableOpacity
               onPress={() => ref_RBSheetCamera.current.open()}
               style={styles.circleBox}>
-              {url == null ? (
+              {/* {url == null ? (
                 <Users width={30} height={30} />
               ) : (
                 <Image
@@ -367,6 +369,32 @@ export default function EditProfile({navigation}) {
                   }}
                   source={{uri: url}}
                 />
+              )} */}
+
+              {url !== '' ? (
+                <Image
+                  style={{
+                    flex: 1,
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: wp(25) / 2, // Half of the width (25/2)
+                    resizeMode: 'contain',
+                  }}
+                  source={{uri: url}}
+                />
+              ) : imageInfo !== null ? (
+                <Image
+                  style={{
+                    flex: 1,
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: wp(25) / 2, // Half of the width (25/2)
+                    resizeMode: 'contain',
+                  }}
+                  source={{uri: imageInfo.uri}}
+                />
+              ) : (
+                <Users width={30} height={30} />
               )}
             </TouchableOpacity>
             <TouchableOpacity
