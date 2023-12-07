@@ -70,7 +70,7 @@ export default function SignIn({navigation}) {
     setTimeout(() => {
       setLoading(false);
 
-      navigation.navigate('BottomTabNavigation');
+      navigation.replace('BottomTabNavigation');
     }, 2000);
   };
 
@@ -143,7 +143,7 @@ export default function SignIn({navigation}) {
           );
         });
 
-        navigation.navigate('BottomTabNavigation');
+        navigation.replace('BottomTabNavigation');
       } else {
         handleUpdatePassword();
       }
@@ -301,7 +301,7 @@ export default function SignIn({navigation}) {
             );
           });
         });
-        navigation.navigate('BottomTabNavigation');
+        navigation.replace('BottomTabNavigation');
       } else if (data.msg === 'Email already exists') {
         signInWithGoogle(user.email);
 
@@ -367,7 +367,7 @@ export default function SignIn({navigation}) {
           console.log('user id saved successfully of signup');
         });
 
-        navigation.navigate('BottomTabNavigation');
+        navigation.replace('BottomTabNavigation');
       } else {
         handleUpdatePassword();
       }
@@ -452,7 +452,7 @@ export default function SignIn({navigation}) {
             marginHorizontal: wp(8),
           }}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('ForgetPassword')}>
+            onPress={() => navigation.replace('ForgetPassword')}>
             <Text
               style={{
                 fontSize: hp(2),
@@ -597,7 +597,7 @@ export default function SignIn({navigation}) {
             Don’t have an account?
           </Text>
 
-          <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+          <TouchableOpacity onPress={() => navigation.replace('SignUp')}>
             <Text
               style={{
                 fontSize: hp(2.3),

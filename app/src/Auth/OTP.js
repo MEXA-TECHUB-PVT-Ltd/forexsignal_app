@@ -115,7 +115,7 @@ export default function OTP({navigation, route}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
-      navigation.navigate('ResetPassword', {email: email});
+      navigation.replace('ResetPassword', {email: email});
       setSnackbarVisible(false);
 
     }, 3000);

@@ -164,7 +164,7 @@ export default function ResetPassword({navigation, route}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
-      navigation.navigate('SignIn');
+      navigation.replace('SignIn');
     }, 3000);
   };
 

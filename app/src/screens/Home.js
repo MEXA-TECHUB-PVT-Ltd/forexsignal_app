@@ -144,7 +144,7 @@ export default function Home({navigation}) {
   };
 
   const dismissSnackbar = () => {
-    setSnackbarVisible(true);
+    setSnackbarVisible(false);
   };
 
   const handleUpdatePasswordShow = async (value) => {
@@ -159,7 +159,7 @@ export default function Home({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
-      copyToClipboard(value)
+      //copyToClipboard(value)
       // navigation.navigate("SignIn")
     }, 3000);
   };
@@ -368,11 +368,15 @@ export default function Home({navigation}) {
               style={{fontSize: hp(2.1), fontWeight: '500', color: textBlack}}>
               {item.title}
             </Text>
+            <View style={{marginLeft:wp(3)}}>
+
             {item.action === 'SELL' ? (
+                
               <Sell width={50} height={50} />
             ) : (
               <Buy width={50} height={50} />
             )}
+            </View>
           </View>
 
           <Text style={{fontSize: hp(2.1), fontWeight: '500', color: orange}}>

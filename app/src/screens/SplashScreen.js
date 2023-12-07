@@ -49,11 +49,11 @@ export default function SplashScreen({navigation}) {
           const result = await AsyncStorage.getItem('userId');
           if (result !== null) {
             console.log('user id retrieved:', result);
-            navigation.navigate("BottomTabNavigation")
+            navigation.replace("BottomTabNavigation")
 
           }else{
 
-            navigation.navigate('OnBoarding');
+            navigation.replace('OnBoarding');
 
           }
           

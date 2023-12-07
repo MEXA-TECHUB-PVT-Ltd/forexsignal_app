@@ -82,7 +82,7 @@ export default function ForgetPassword({navigation, route}) {
         console.log("User OTP", data.otp)
         setLoading(false);
 
-        navigation.navigate('OTP', {email:email,OTP:data.otp});
+        navigation.replace('OTP', {email:email,OTP:data.otp});
       }
 
       // You can perform additional actions based on the response, e.g., navigate to another screen

@@ -248,7 +248,7 @@ export default function SignUp({navigation}) {
             'user password saved successfully of signup',
           );
         });
-        navigation.navigate('ProfileImage');
+        navigation.replace('ProfileImage');
       }else if(data.msg=== 'Email already exists'){
         signInWithGoogle(user.email)
 
@@ -314,7 +314,7 @@ export default function SignUp({navigation}) {
         });
 
 
-        navigation.navigate('ProfileImage');
+        navigation.replace('ProfileImage');
       }else if(data.msg=== 'Email already exists'){
         handleUpdatePassword();
       }
@@ -387,7 +387,7 @@ export default function SignUp({navigation}) {
           console.log('user id saved successfully of signup');
         });
 
-        navigation.navigate('BottomTabNavigation');
+        navigation.replace('BottomTabNavigation');
       } else {
         handleUpdatePassword();
       }
@@ -630,7 +630,7 @@ export default function SignUp({navigation}) {
             Already have an account?
           </Text>
 
-          <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+          <TouchableOpacity onPress={() => navigation.replace('SignIn')}>
             <Text
               style={{
                 fontSize: hp(2.3),
