@@ -46,17 +46,26 @@ import Headers from '../Custom/Headers';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
-import { baseUrl } from '../assets/utilities/BaseUrl';
+import CustomSnackbarAlert from '../Custom/CustomSnackBarAlert';
+
+import {baseUrl} from '../assets/utilities/BaseUrl';
 
 export default function ChangePassword({navigation}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   const [email, setEmail] = useState('');
 
+  const [oldPasswordAccount, setPasswordAccount] = useState('');
+
   const [loading, setLoading] = useState(false);
 
   const [snackbarVisibleConfirmPassword, setSnackbarVisibleConfirmPassword] =
     useState(false);
+
+  const [
+    snackbarVisibleConfirmPasswordOld,
+    setSnackbarVisibleConfirmPasswordOld,
+  ] = useState(false);
 
   const [
     snackbarVisibleConfirmPasswordAlert,
@@ -92,6 +101,14 @@ export default function ChangePassword({navigation}) {
       if (result !== null) {
         setEmail(result);
         console.log('user email retrieved:', result);
+      }
+
+      const passwordResult = await AsyncStorage.getItem('password');
+      if (passwordResult !== null) {
+        setPasswordAccount(passwordResult);
+        console.log('password recieved', passwordResult);
+      } else {
+        console.log('no password recieved');
       }
     } catch (error) {
       // Handle errors here
@@ -135,6 +152,28 @@ export default function ChangePassword({navigation}) {
     }, 3000);
   };
 
+  //----------------\\
+
+  const dismissSnackbarConfirmPasswordOld = () => {
+    setSnackbarVisibleConfirmPasswordOld(false);
+  };
+
+  const handleUpdateConfirmPasswordOld = async () => {
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    setSnackbarVisibleConfirmPasswordOld(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      setSnackbarVisibleConfirmPassword(false);
+      //navigation.navigate('SignIn');
+    }, 3000);
+  };
+
+  //------------------\\
+
   const dismissSnackbarConfirmPasswordAlert = () => {
     setSnackbarVisibleConfirmPasswordAlert(false);
   };
@@ -155,13 +194,22 @@ export default function ChangePassword({navigation}) {
 
   const checkPassword = () => {
     console.log('Came to confirm password');
-   
+
     if (password !== confirmPassword) {
       handleUpdateConfirmPassword();
-    } else if (oldPassword !== '' && password !== '' && confirmPassword !== '') {
-      resetPassword();
-      
-    } else {
+    } else if (
+      oldPassword !== '' &&
+      password !== '' &&
+      confirmPassword !== ''
+    ) {
+
+      if (oldPassword !== oldPasswordAccount) {
+        handleUpdateConfirmPasswordOld()
+      }else{
+
+        resetPassword();
+      }
+    }  else {
       handleUpdateConfirmPasswordAlert();
     }
   };
@@ -204,7 +252,7 @@ export default function ChangePassword({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={{marginTop: hp(5)}}>
         <Headers
           showBackIcon={true}
@@ -248,7 +296,12 @@ export default function ChangePassword({navigation}) {
       </View>
 
       <View
-        style={{flex: 1, paddingBottom: hp(10), justifyContent: 'flex-end'}}>
+        style={{
+          flex: 1,
+          paddingBottom: hp(1),
+          marginTop: hp(8),
+          justifyContent: 'flex-end',
+        }}>
         <TouchableOpacity
           onPress={() => checkPassword()}
           style={{alignSelf: 'center'}}>
@@ -278,20 +331,27 @@ export default function ChangePassword({navigation}) {
         </View>
       )}
 
-      <CustomSnackbar
+      <CustomSnackbarAlert
         message={'Alert!'}
         messageDescription={'Please Match The Below Passwords'}
         onDismiss={dismissSnackbarConfirmPassword} // Make sure this function is defined
         visible={snackbarVisibleConfirmPassword}
       />
 
-      <CustomSnackbar
+      <CustomSnackbarAlert
         message={'Alert!'}
         messageDescription={'Kindly Fill All Fields'}
         onDismiss={dismissSnackbarConfirmPasswordAlert} // Make sure this function is defined
         visible={snackbarVisibleConfirmPasswordAlert}
       />
-    </View>
+
+      <CustomSnackbarAlert
+        message={'Alert!'}
+        messageDescription={'Old Password Doesnot Match'}
+        onDismiss={dismissSnackbarConfirmPasswordOld} // Make sure this function is defined
+        visible={snackbarVisibleConfirmPasswordOld}
+      />
+    </ScrollView>
   );
 }
 

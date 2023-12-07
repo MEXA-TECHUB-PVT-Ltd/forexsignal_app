@@ -24,12 +24,12 @@ import Buy from '../assets/svg/Buy.svg';
 import Sell from '../assets/svg/Sell.svg';
 import Google from '../assets/svg/Google.svg';
 import FaceBook from '../assets/svg/FaceBook.svg';
-
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {appImages} from '../assets/utilities';
+import { baseUrl } from '../assets/utilities/BaseUrl';
 import {
   borderLineGrey,
   green,
@@ -55,7 +55,7 @@ export default function ForgetPassword({navigation, route}) {
   const getOTP = async () => {
     setLoading(true);
 
-    const apiUrl = 'https://forexs-be.mtechub.com/user/password/forgetpassword';
+    const apiUrl = `${baseUrl}/user/password/forgetpassword`;
 
     try {
       const response = await fetch(apiUrl, {
