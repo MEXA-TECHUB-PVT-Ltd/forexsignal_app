@@ -206,7 +206,6 @@ export default function ChangePassword({navigation}) {
       if (oldPassword !== oldPasswordAccount) {
         handleUpdateConfirmPasswordOld()
       }else{
-
         resetPassword();
       }
     }  else {
