@@ -248,7 +248,7 @@ export default function SearchScreen({navigation}) {
               Profit
             </Text>
 
-            <Text style={{fontSize: hp(1.5), fontWeight: 'bold', color: green}}>
+            <Text ellipsizeMode='tail' numberOfLines={1} style={{fontSize: hp(1.5),  fontWeight: 'bold', color: green}}>
               {item.profit_loss}
             </Text>
           </View>

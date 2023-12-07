@@ -253,6 +253,17 @@ export default function Profile({navigation}) {
     }
   }
 
+  const navigateToDeleteAccount=()=>{
+    if(userId!==''){
+      ref_RBSheet.current.open()
+     // navigation.navigate('EditProfile')
+    }else{
+      ref_RBSheetCreateAccount.current.open();
+     // ref_RBSheetCreateAccount.current.open();
+    }
+  }
+
+
   const changePassword=()=>{
     if(userId!==''){
       navigation.navigate('ChangePassword');
@@ -288,7 +299,7 @@ export default function Profile({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       //setSnackbarVisible(false);
-      navigation.navigate('SignIn');
+      navigation.navigate('SignUp');
     }, 10);
   };
 
@@ -576,7 +587,7 @@ export default function Profile({navigation}) {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => ref_RBSheet.current.open()}
+          onPress={() => navigateToDeleteAccount()}
           style={{
             marginHorizontal: wp(5),
             flexDirection: 'row',
@@ -888,7 +899,7 @@ export default function Profile({navigation}) {
               textAlign: 'center',
               color: textBlack,
             }}>
-            Please create an account to add this trade to your Wishlist
+            Please create an account to edit your profile
           </Text>
         </View>
 
@@ -910,7 +921,7 @@ export default function Profile({navigation}) {
         </View>
 
         <TouchableOpacity
-          onPress={() => ref_RBSheet.current.close()}
+          onPress={() => ref_RBSheetCreateAccount.current.close()}
           style={{marginHorizontal: wp(5)}}>
           <Cancel width={290} />
         </TouchableOpacity>

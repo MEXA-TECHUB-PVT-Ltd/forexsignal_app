@@ -292,6 +292,14 @@ export default function SignalDetails({navigation, route}) {
     }, 50);
   };
 
+  const checkCopy=()=>{
+    if (userId !== '') {
+      handleUpdateCopied()
+    } else {
+      ref_RBSheet.current.open();
+    }
+  }
+
   const createWishList = async () => {
     console.log('Create Wish List Called');
 
@@ -377,7 +385,7 @@ export default function SignalDetails({navigation, route}) {
 
     setLoading(true);
 
-    const apiUrl = `http://192.168.18.114:4000/wishlist/deletewishlist/signal_id/${receivedData?.signal_id}`;
+    const apiUrl = `https://forexs-be.mtechub.com/wishlist/deletewishlist/signal_id/${receivedData?.signal_id}`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -521,7 +529,7 @@ export default function SignalDetails({navigation, route}) {
               {convertedDate}
             </Text>
 
-            <TouchableOpacity onPress={() => handleUpdateCopied()}>
+            <TouchableOpacity onPress={() => checkCopy() }>
               <Copy width={60} height={80} />
             </TouchableOpacity>
           </View>
@@ -985,7 +993,7 @@ export default function SignalDetails({navigation, route}) {
               textAlign: 'center',
               color: textBlack,
             }}>
-            Please create an account to add this trade to your Wishlist
+            Please create an account to do further actions
           </Text>
         </View>
 
@@ -1035,7 +1043,7 @@ export default function SignalDetails({navigation, route}) {
           <Image
             resizeMode="contain"
             style={{height: 400, width: 400}}
-            source={appImages.tradingAppImg}
+            source={{uri:`https://forexs-be.mtechub.com/${receivedData?.image}`}}
           />
         </Lightbox>
       )}

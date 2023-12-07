@@ -86,13 +86,13 @@ const styles = StyleSheet.create({
     right: 15,
     height:hp(7.5),
     borderRadius: 10,
-    backgroundColor: 'red',
+    backgroundColor: 'white',
     //padding: 14,
     flexDirection: 'row',
     //alignItems: 'center',
   },
   message: {
-    color: 'white',
+    color: 'red',
     fontSize:wp(4.5),
     fontWeight:'500'
     

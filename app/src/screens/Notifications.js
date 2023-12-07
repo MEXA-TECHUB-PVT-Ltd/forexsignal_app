@@ -92,6 +92,8 @@ export default function Notifications({navigation}) {
         console.log('Notification Data', data.data);
         if (data.data.length === 0) {
           setNotifications(false);
+        }else{
+          setNotificationData(data.data);
         }
       }
 

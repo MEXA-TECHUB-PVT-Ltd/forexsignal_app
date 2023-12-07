@@ -55,7 +55,7 @@ export default function Onboarding({navigation}) {
         where every trade tells a story.
       </Text>
       <TouchableOpacity
-      onPress={()=>navigation.navigate("SignUp")}
+      onPress={()=>navigation.replace("SignUp")}
         style={{
           height: hp(7),
           paddingRight: wp(1),

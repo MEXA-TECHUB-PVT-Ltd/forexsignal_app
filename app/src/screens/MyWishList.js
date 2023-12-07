@@ -290,7 +290,7 @@ export default function MyWishList({navigation}) {
     return (
       <TouchableOpacity
       
-       onPress={() =>  navigation.navigate('SignalDetails', {signalDetails: item})}
+       onPress={() =>  navigation.replace('SignalDetails', {signalDetails: item})}
         style={{
           marginTop: hp(3),
           justifyContent: 'space-around',
