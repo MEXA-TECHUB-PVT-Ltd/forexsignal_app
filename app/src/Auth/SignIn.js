@@ -507,7 +507,7 @@ export default function SignIn({navigation}) {
             }}></View>
         </View>
 
-        <TouchableOpacity onPress={() => skipforNow()}>
+        {/* <TouchableOpacity onPress={() => skipforNow()}>
           <Text
             style={{
               color: '#FACA4E',
@@ -521,7 +521,7 @@ export default function SignIn({navigation}) {
             Skip For Now
           </Text>
         </TouchableOpacity>
-
+ */}
         <View
           style={{
             height: hp(8),

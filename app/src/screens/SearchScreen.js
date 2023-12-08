@@ -39,7 +39,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomSnackbar from '../Custom/CustomSnackBar';
 import SuggestionBox from '../Custom/SuggestionBox';
-import { baseUrl } from '../assets/utilities/BaseUrl';
+import {baseUrl} from '../assets/utilities/BaseUrl';
 
 const dummyData = [
   'Apple',
@@ -58,6 +58,8 @@ export default function SearchScreen({navigation}) {
   const [queryShow, setQueryShow] = useState(false);
 
   const [loading, setLoading] = useState(false);
+
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   const [data, setData] = useState(null);
 
@@ -112,12 +114,36 @@ export default function SearchScreen({navigation}) {
     }
   }; */
 
+  const copyToClipboard = (value) => {
+    const jsonString = JSON.stringify(value, null, 2); // Convert the JSON data to a formatted string
+    Clipboard.setString(jsonString);
+    console.log('JSON data copied to clipboard:', jsonString);
+  };
+
+  const handleUpdatePasswordShow = async value => {
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    setSnackbarVisible(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      setSnackbarVisible(false);
+      copyToClipboard(value)
+      // navigation.navigate("SignIn")
+    }, 3000);
+  };
+
+  const dismissSnackbar = () => {
+    setSnackbarVisible(false);
+  };
 
   const getAllSignalsBYName = async name => {
     setLoading(true);
     try {
       const apiUrl = `${baseUrl}/signal/search_signal_byname`;
-  
+
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -128,22 +154,24 @@ export default function SearchScreen({navigation}) {
           name: name,
         }),
       });
-  
+
       if (!response.ok) {
         setLoading(false);
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-  
+
       if (data.msg === 'Signals fetched successfully') {
         console.log('All Signals Data', data.data);
-  
+
         // Filter the results based on the title
-        const filteredSignals = data.data.filter(signal => signal.title === name);
-  
+        const filteredSignals = data.data.filter(
+          signal => signal.title === name,
+        );
+
         console.log('Filtered Signals', filteredSignals);
-  
+
         setAllSignals(filteredSignals);
         setLoading(false);
       }
@@ -154,7 +182,6 @@ export default function SearchScreen({navigation}) {
     }
   };
 
-  
   const renderItems = item => {
     console.log('REnder Items Called', item.price);
     return (
@@ -216,12 +243,7 @@ export default function SearchScreen({navigation}) {
             style={{fontSize: hp(1.7), fontWeight: '500', color: lightGrey}}>
             {item.date}
           </Text>
-          <TouchableOpacity
-            onPress={() =>
-              item.showAlert === true
-                ? handleUpdatePasswordShow()
-                : ref_RBSheet.current.open()
-            }>
+          <TouchableOpacity onPress={() => handleUpdatePasswordShow(item)}>
             <Copy width={60} height={80} />
           </TouchableOpacity>
         </View>
@@ -248,7 +270,10 @@ export default function SearchScreen({navigation}) {
               Profit
             </Text>
 
-            <Text ellipsizeMode='tail' numberOfLines={1} style={{fontSize: hp(1.5),  fontWeight: 'bold', color: green}}>
+            <Text
+              ellipsizeMode="tail"
+              numberOfLines={1}
+              style={{fontSize: hp(1.5), fontWeight: 'bold', color: green}}>
               {item.profit_loss}
             </Text>
           </View>
@@ -284,13 +309,13 @@ export default function SearchScreen({navigation}) {
     // Simulate loading
     setLoading(true);
 
-    await getAllSignals(1, 10);
+    await getAllSignals(1, 1000);
     // Fetch data one by one
     // Once all data is fetched, set loading to false
     setLoading(false);
   };
 
-  const getAllSignals = async (page = 1, limit = 10) => {
+  const getAllSignals = async (page = 1, limit = 1000) => {
     try {
       const apiUrl = `${baseUrl}/signal/getallsignals?page=${page}&limit=${limit}`;
 
@@ -381,7 +406,7 @@ export default function SearchScreen({navigation}) {
           <TextInput
             value={query}
             onChangeText={handleQueryChange}
-            style={{marginTop: hp(-0.5), flex:1}}
+            style={{marginTop: hp(-0.5), flex: 1}}
             placeholder="Search here"
           />
         </View>
@@ -424,6 +449,13 @@ export default function SearchScreen({navigation}) {
           <ActivityIndicator size="large" color="#FACA4E" />
         </View>
       )}
+
+      <CustomSnackbar
+        message={'Success'}
+        messageDescription={'Signal Copied Successfully'}
+        onDismiss={dismissSnackbar} // Make sure this function is defined
+        visible={snackbarVisible}
+      />
     </View>
   );
 }

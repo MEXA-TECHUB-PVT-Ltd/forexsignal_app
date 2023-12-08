@@ -26,6 +26,7 @@ import Sell from '../assets/svg/Sell.svg';
 import Google from '../assets/svg/Google.svg';
 import FaceBook from '../assets/svg/FaceBook.svg';
 import CustomSnackbarAlert from '../Custom/CustomSnackBarAlert';
+import DeviceInfo from 'react-native-device-info';
 
 import {
   heightPercentageToDP as hp,
@@ -55,6 +56,9 @@ export default function SignUp({navigation}) {
   const [email, setEmail] = useState('');
 
   const [loading, setLoading] = useState(false);
+
+  const [deviceId, setDeviceId] = useState('');
+
 
   const [password, setPassword] = useState('');
 
@@ -96,6 +100,10 @@ export default function SignUp({navigation}) {
       const result = await AsyncStorage.getItem('UserToken');
       if (result !== null) {
         setAuthToken(result);
+        const deviceId = DeviceInfo.getDeviceId();
+        setDeviceId(deviceId);
+        console.log('Device ID:', deviceId);
+
         console.log('user token retrieved:', result.replace(/\"/g, ''));
       }
     } catch (error) {
@@ -269,6 +277,9 @@ export default function SignUp({navigation}) {
   const signUp = async () => {
     setLoading(true);
 
+    console.log("Password", password)
+    console.log("Email", email)
+
     const apiUrl = `${baseUrl}/user/usersignup`;
 
     try {
@@ -282,30 +293,31 @@ export default function SignUp({navigation}) {
           email: email,
           password: password,
           signup_type: 'email',
-          device_id: authToken.replace(/\"/g, '') ,
-          token: authToken.replace(/\"/g, ''),
+          device_id: authToken.replace(/\"/g, '')
+          //device_id: deviceId.replace(/\"/g, '') ,
+          //token: authToken.replace(/\"/g, ''),
         }),
       });
 
       const data = await response.json();
 
       // Handle the response data as needed
-      console.log('Response data:', data.msg);
+      console.log('Response data:', data.data[0]);
 
       console.log('Email:', email);
       setLoading(false);
       
-      if (data.msg === 'User signed up successfully') {
-        console.log('Data =email', data.data.email);
-        console.log('Data =id', data.data.id);
+      if (data.error === false) {
+        console.log('Data =email', data.data[0].email);
+        console.log('Data =id', data.data[0].id);
         
         setLoading(false);
 
-        AsyncStorage.setItem('email', data.data.email.toString(), () => {
+        AsyncStorage.setItem('email', data.data[0].email.toString(), () => {
           console.log('user email saved successfully');
         });
 
-        AsyncStorage.setItem('userId', data.data.id.toString(), () => {
+        AsyncStorage.setItem('userId', data.data[0].id.toString(), () => {
           console.log('user id saved successfully of signup');
         });
 
@@ -314,7 +326,7 @@ export default function SignUp({navigation}) {
         });
 
 
-        navigation.replace('ProfileImage');
+        navigation.replace('OTPVerifyAccount',{email:data.data[0].email, OTP:data.data[0].verificationcode});
       }else if(data.msg=== 'Email already exists'){
         handleUpdatePassword();
       }

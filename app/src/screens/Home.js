@@ -45,6 +45,7 @@ import Cancel from '../assets/svg/Cancel';
 
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { baseUrl } from '../assets/utilities/BaseUrl';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 export default function Home({navigation}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -61,11 +62,11 @@ export default function Home({navigation}) {
 
   const [copiedText, setCopiedText] = useState('');
 
- /*  const copyToClipboard = (value) => {
-    Clipboard.setString(value);
+  const copyToClipboard = (value) => {
+    const jsonString = JSON.stringify(value, null, 2); // Convert the JSON data to a formatted string
+    Clipboard.setString(jsonString);
+    console.log('JSON data copied to clipboard:', jsonString);
   };
- */
-  
 
   useEffect(() => {
     // Make the API request and update the 'data' state
@@ -91,7 +92,7 @@ export default function Home({navigation}) {
 
     await getUserID();
 
-    await getAllSignals(1, 10);
+    await getAllSignals(1, 1000);
     // Fetch data one by one
     // Once all data is fetched, set loading to false
     setLoading(false);
@@ -111,6 +112,7 @@ export default function Home({navigation}) {
     }
   };
 
+  
   const getAllSignals = async (page = 1, limit = 10) => {
     try {
       const apiUrl = `${baseUrl}/signal/getallsignals?page=${page}&limit=${limit}`;
@@ -159,7 +161,7 @@ export default function Home({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
-      //copyToClipboard(value)
+      copyToClipboard(value)
       // navigation.navigate("SignIn")
     }, 3000);
   };

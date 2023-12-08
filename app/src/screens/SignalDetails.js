@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 
+import FastImage from 'react-native-fast-image';
+
 import Copy from '../assets/svg/Copy.svg';
 import ClipBoard from '../assets/svg/ClipBoard.svg';
 
@@ -52,6 +54,7 @@ import {
 import Headers from '../Custom/Headers';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import Lightbox from 'react-native-lightbox';
 import HapticFeedback from 'react-native-haptic-feedback';
@@ -122,8 +125,7 @@ export default function SignalDetails({navigation, route}) {
     }
   };
 
-  const checkWishList = async (id) => {
-
+  const checkWishList = async id => {
     console.log(' Check Wish List User Id', id);
     console.log(' Check Wish List Signal Id', receivedData?.signal_id);
 
@@ -184,6 +186,11 @@ export default function SignalDetails({navigation, route}) {
     // Save formatted date and time in states
     setConvertedDate(formattedDateValue);
     setConvertedTime(formattedTimeValue);
+  };
+  const copyToClipboard = value => {
+    const jsonString = JSON.stringify(value, null, 2); // Convert the JSON data to a formatted string
+    Clipboard.setString(jsonString);
+    console.log('JSON data copied to clipboard:', jsonString);
   };
 
   const data = [
@@ -292,13 +299,13 @@ export default function SignalDetails({navigation, route}) {
     }, 50);
   };
 
-  const checkCopy=()=>{
+  const checkCopy = value => {
     if (userId !== '') {
-      handleUpdateCopied()
+      handleUpdateCopied(value);
     } else {
       ref_RBSheet.current.open();
     }
-  }
+  };
 
   const createWishList = async () => {
     console.log('Create Wish List Called');
@@ -345,40 +352,38 @@ export default function SignalDetails({navigation, route}) {
     }
   };
 
-  const renderTakeProfit=(item, index)=>{
-     console.log("Item Profit", item)
-    return(
-    
-    <View
+  const renderTakeProfit = (item, index) => {
+    console.log('Item Profit', item);
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          marginTop: hp(5),
+          marginHorizontal: wp(8),
+          height: hp(5),
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+        <Text
           style={{
-            flexDirection: 'row',
-            marginTop: hp(5),
-            marginHorizontal: wp(8),
-            height: hp(5),
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            fontSize: hp(2.1),
+            fontWeight: '300',
+            color: textGrey,
           }}>
-          <Text
-            style={{
-              fontSize: hp(2.1),
-              fontWeight: '300',
-              color: textGrey,
-            }}>
-            Take profit {index + 1}
-          </Text>
+          Take profit {index + 1}
+        </Text>
 
-          <Text
-            style={{
-              fontSize: hp(2.1),
-              fontWeight: '400',
-              color: textBlack,
-            }}>
-            {item?.take_profit}
-          </Text>
-        </View>
-    )
-
-  }
+        <Text
+          style={{
+            fontSize: hp(2.1),
+            fontWeight: '400',
+            color: textBlack,
+          }}>
+          {item?.take_profit}
+        </Text>
+      </View>
+    );
+  };
 
   const removeWishList = async () => {
     console.log('Remove Wish List Called');
@@ -429,7 +434,7 @@ export default function SignalDetails({navigation, route}) {
     setWaitingVisible(!waitingVisible);
   };
 
-  const handleUpdateCopied = async () => {
+  const handleUpdateCopied = async value => {
     // Perform the password update logic here
     // For example, you can make an API request to update the password
 
@@ -439,6 +444,7 @@ export default function SignalDetails({navigation, route}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisibleCopied(false);
+      copyToClipboard(value);
     }, 3000);
   };
 
@@ -529,7 +535,7 @@ export default function SignalDetails({navigation, route}) {
               {convertedDate}
             </Text>
 
-            <TouchableOpacity onPress={() => checkCopy() }>
+            <TouchableOpacity onPress={() => checkCopy(receivedData)}>
               <Copy width={60} height={80} />
             </TouchableOpacity>
           </View>
@@ -691,7 +697,7 @@ export default function SignalDetails({navigation, route}) {
             {receivedData?.take_profit[0]?.take_profit}
           </Text>
         </View> */}
-{/* 
+        {/* 
         <View
           style={{
             flexDirection: 'row',
@@ -719,7 +725,7 @@ export default function SignalDetails({navigation, route}) {
             {receivedData?.take_profit[1]?.take_profit}
           </Text>
         </View> */}
-{/* 
+        {/* 
         <View
           style={{
             flexDirection: 'row',
@@ -808,7 +814,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-           {receivedData?.result===false? "Waiting" : "Profit"}
+            {receivedData?.result === false ? 'Waiting' : 'Profit'}
           </Text>
         </View>
 
@@ -943,7 +949,7 @@ export default function SignalDetails({navigation, route}) {
               fontWeight: '400',
               color: textBlack,
             }}>
-               {convertedDate}
+            {convertedDate}
           </Text>
         </View>
       </ScrollView>
@@ -1040,10 +1046,13 @@ export default function SignalDetails({navigation, route}) {
           onClose={closeLightbox}
           backgroundColor={lightGrey}
           style={styles.lightboxContainer}>
-          <Image
+          <FastImage
             resizeMode="contain"
             style={{height: 400, width: 400}}
-            source={{uri:`https://forexs-be.mtechub.com/${receivedData?.image}`}}
+            source={{
+              uri: `https://forexs-be.mtechub.com/${receivedData?.image}`,
+              priority: FastImage.priority.high,
+            }}
           />
         </Lightbox>
       )}
