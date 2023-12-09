@@ -44,6 +44,8 @@ import Headers from '../Custom/Headers';
 
 import RBSheet from 'react-native-raw-bottom-sheet';
 
+
+
 export default function Brockers({navigation}) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
@@ -88,16 +90,25 @@ export default function Brockers({navigation}) {
     // Replace 'username' with the actual username or user ID of the person you want to message
     const username = 'Testing';
     const userId = '123456789'; // Replace with the actual numeric user ID
-
+    
     // Form the deep link URL for the Telegram direct message
-    const telegramDeepLink = `https://t.me/${username}`;
+    const telegramDeepLink = `https://t.me/+NhLMs9CsaA03Njky`;
     //const telegramDeepLink = `https://t.me/user?id=${userId}`;
-
+    //https://t.me/${username}
   
     // Try to open the Telegram deep link
     Linking.openURL(telegramDeepLink)
       .catch((err) => console.error('An error occurred: ', err));
   };
+
+    const handleSignUpPress = () => {
+      const url = 'https://www.vantagemarkets.com/forex-trading/forex-trading-account/?affid=MTM1MTc1';
+  
+      // Open the link using the Linking module
+      Linking.openURL(url)
+        .then(() => console.log('Link opened successfully'))
+        .catch((err) => console.error('Error opening link:', err));
+    };
 
   const data = [
     {
@@ -312,7 +323,7 @@ export default function Brockers({navigation}) {
       </View>
 
       <View style={{marginHorizontal: wp(5)}}>
-        <TouchableOpacity onPress={()=>navigation.navigate('SignUp')}>
+        <TouchableOpacity onPress={()=>handleSignUpPress()}>
 
         <Text
           style={{

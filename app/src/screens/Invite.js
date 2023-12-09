@@ -61,10 +61,12 @@ import {
   white,
   iconGrey,
 } from '../assets/Colors';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
+
 
 export default function Invite({navigation}) {
     const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -74,7 +76,7 @@ export default function Invite({navigation}) {
     setSnackbarVisible(true);
   };
 
- const handleUpdatePassword = async () => {
+ const handleUpdatePassword = async (value) => {
     // Perform the password update logic here
     // For example, you can make an API request to update the password
 
@@ -84,7 +86,7 @@ export default function Invite({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
-      navigation.goBack()
+      copyToClipboard(value)
     }, 3000);
   };
 
@@ -102,6 +104,15 @@ export default function Invite({navigation}) {
       console.error('Error sharing via WhatsApp:', error.message);
     }
   };
+
+  const copyToClipboard = (value) => {
+    //const jsonString = JSON.stringify(value, null, 2); // Convert the JSON data to a formatted string
+    Clipboard.setString('https://play.google.com/store/apps/details?id=your.app.package');
+    navigation.goBack()
+
+    //console.log('JSON data copied to clipboard:', jsonString);
+  };
+
 
   return (
     <View style={styles.container}>

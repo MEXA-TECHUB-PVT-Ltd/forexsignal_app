@@ -79,42 +79,168 @@ export default function PrivacyPolicy({navigation}) {
       <ScrollView style={{flexGrow: 1}}>
         <View style={{marginHorizontal: wp(8), marginTop: hp(5)}}>
           <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
-          1. Acceptance of Terms
-By downloading, installing, or using Forex Trading App you agree to comply with and be bound by these Terms and Conditions. If you do not agree with any part of these terms, please do not use the App.
-2. Use of the App
-a. User Account:
-To use certain features of the App, you may be required to create an account. You are responsible for maintaining the confidentiality of your account credentials.
-b. Signal Information:
-The App provides Forex trading signals for informational purposes only. We do not guarantee the accuracy or profitability of the signals, and users are encouraged to use their discretion.
-c. Wishlist Functionality:
-Users may add or remove signals to/from their wishlist. The App reserves the right to modify or remove this feature at any time.
-3. User Conduct
-a. Prohibited Activities:
-Users agree not to engage in any unlawful or prohibited activities while using the App, including but not limited to the unauthorized sharing or distribution of signals.
-b. Compliance with Laws:
-Users are responsible for ensuring compliance with all applicable local, state, national, and international laws and regulations.
-4. Privacy
-a. Privacy Policy:
-The use of the App is also governed by our Privacy Policy. By using the App, you consent to the terms of the Privacy Policy.
-5. Intellectual Property
-a. App Content:
-All content provided in the App, including signals, is the property of [Your Forex Trading App Name] and is protected by intellectual property laws.
-b. Trademarks:
-The trademarks, logos, and service marks displayed in the App are the registered and unregistered marks of [Your Forex Trading App Name].
-6. Modification and Termination
-a. App Changes:
-We reserve the right to modify, suspend, or discontinue any part of the App at any time, with or without notice.
-b. Termination of Accounts:
-We reserve the right to terminate user accounts that violate these Terms and Conditions or for any other reason at our discretion.
-7. Disclaimer of Warranties
-The App is provided "as is" and "as available." We make no warranties, express or implied, regarding the accuracy, reliability, or availability of the App.
-8. Limitation of Liability
-To the fullest extent permitted by applicable law, [Your Forex Trading App Name] shall not be liable for any indirect, incidental, special, consequential, or punitive damages.
-9. Governing Law
-These Terms and Conditions are governed by and construed in accordance with the laws of [Your Jurisdiction]. Any disputes arising from or relating to these terms shall be subject to the exclusive jurisdiction of the courts in [Your Jurisdiction].
-10. Contact Us
-If you have any questions or concerns about these Terms and Conditions, please contact us
+            1. Introduction
+          </Text>
+        </View>
 
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            Welcome to Forex Trading App ("we," "our," or "us"). This Privacy
+            Policy is designed to help you understand how we collect, use,
+            share, and safeguard your personal information when you use our
+            Forex trading app and related services. By accessing or using our
+            app, you consent to the terms of this Privacy Policy.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            2. Information We Collect
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            a. User-Provided Information: When you create an account, we collect
+            your name, email address, and other necessary information. If you
+            choose to enable notifications, we collect your device ID to send
+            you alerts about new signals.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            b. Automatically Collected Information: We may collect information
+            about your device, including IP address, device type, and operating
+            system, to ensure a seamless user experience.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            3. How We Use Your Information
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            a. Providing Signals: We use your information to deliver Forex
+            trading signals, which are created by our admin, to your app.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            b. Notifications: If you enable notifications, we use your device ID
+            to send you alerts when new signals are added.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            c. Wishlist Functionality: The app allows users to add or remove
+            signals to/from their wishlist. We use this information to customize
+            your experience.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            4. Sharing Your Information
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            a. Admin Access: Our admin has access to user data to manage and
+            create Forex signals.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            b. Third-Party Services: We may share non-personal information with
+            third-party service providers to improve app functionality.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            c. Legal Requirements: We may disclose your information in response
+            to a court order, legal process, or other legal requests.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            5. Security Measures
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            We employ industry-standard security measures to protect your
+            personal information from unauthorized access or disclosure.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            6. Your Choices
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            a. Account Information: You can review and update your account
+            information at any time within the app.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            b. Notifications: You can enable or disable notifications through
+            your device settings.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            7. Children's Privacy
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            Our app is not intended for users under the age of 18. We do not
+            knowingly collect or solicit personal information from minors.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            8. Changes to this Privacy Policy
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            We reserve the right to update this Privacy Policy to reflect
+            changes in our practices. We will notify you of any material changes
+            via the app.
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            9. Contact Us
+          </Text>
+        </View>
+
+        <View style={{marginHorizontal: wp(8), marginTop: hp(3)}}>
+          <Text style={{color: textGrey, textAlign: 'left', fontSize: hp(2.5)}}>
+            If you have any questions or concerns about this Privacy Policy,
+            please contact us
           </Text>
         </View>
 

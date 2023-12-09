@@ -27,7 +27,7 @@ import Headers from '../Custom/Headers';
 import {appImages} from '../assets/utilities';
 import Fontiso from 'react-native-vector-icons/Fontisto';
 import Happiness from '../assets/svg/Happiness.svg';
-
+import FastImage from 'react-native-fast-image'
 import Send from '../assets/svg/Send.svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
 
@@ -372,7 +372,7 @@ export default function EditProfile({navigation}) {
               )} */}
 
               {url !== '' ? (
-                <Image
+                <FastImage
                   style={{
                     flex: 1,
                     width: '100%',
@@ -380,10 +380,10 @@ export default function EditProfile({navigation}) {
                     borderRadius: wp(25) / 2, // Half of the width (25/2)
                     resizeMode: 'contain',
                   }}
-                  source={{uri: url}}
+                  source={{uri: url, priority: FastImage.priority.high}}
                 />
               ) : imageInfo !== null ? (
-                <Image
+                <FastImage
                   style={{
                     flex: 1,
                     width: '100%',
@@ -391,7 +391,7 @@ export default function EditProfile({navigation}) {
                     borderRadius: wp(25) / 2, // Half of the width (25/2)
                     resizeMode: 'contain',
                   }}
-                  source={{uri: imageInfo.uri}}
+                  source={{uri: imageInfo.uri, priority: FastImage.priority.high}}
                 />
               ) : (
                 <Users width={30} height={30} />

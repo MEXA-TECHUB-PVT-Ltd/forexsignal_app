@@ -11,6 +11,8 @@ import {
   TextInput,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
+import FastImage from 'react-native-fast-image';
+
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
@@ -327,7 +329,8 @@ export default function ProfileImage({navigation}) {
               {imageUri == null ? (
                 <Users width={30} height={30} />
               ) : (
-                <Image
+                <FastImage
+                  priority
                   style={{
                     flex: 1,
                     width: '100%',
@@ -335,7 +338,7 @@ export default function ProfileImage({navigation}) {
                     borderRadius: wp(25) / 2, // Half of the width (25/2)
                     resizeMode: 'contain',
                   }}
-                  source={{uri: imageUri}}
+                  source={{uri: imageUri, priority: FastImage.priority.high }}
                 />
               )}
             </TouchableOpacity>

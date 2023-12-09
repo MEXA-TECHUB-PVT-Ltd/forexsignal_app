@@ -51,13 +51,13 @@ import TermsAndCondition from './app/src/screens/TermsAndCondition';
 import ProfileImage from './app/src/screens/ProfileImage';
 import RateApp from './app/src/screens/RateApp';
 import WebViews from './app/src/screens/WebViews';
+import OTPVerifyAccount from './app/src/Auth/OTPVerifyAccount';
 
 //---------------\\
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 export default function App() {
-
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       //Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
@@ -71,7 +71,6 @@ export default function App() {
     notificationListener();
     getToken();
   }, []);
-
 
   return (
     <NavigationContainer>
@@ -91,6 +90,12 @@ export default function App() {
         <Stack.Screen
           name="ProfileImage"
           component={ProfileImage}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="OTPVerifyAccount"
+          component={OTPVerifyAccount}
           options={{headerShown: false}}
         />
 
