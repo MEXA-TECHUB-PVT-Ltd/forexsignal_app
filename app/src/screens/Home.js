@@ -43,8 +43,10 @@ import SignInBtn from '../assets/svg/SignIn';
 import CreateBtn from '../assets/svg/CreateAccount';
 import Cancel from '../assets/svg/Cancel';
 
+import {useIsFocused} from '@react-navigation/native';
+
 import RBSheet from 'react-native-raw-bottom-sheet';
-import { baseUrl } from '../assets/utilities/BaseUrl';
+import {baseUrl} from '../assets/utilities/BaseUrl';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 export default function Home({navigation}) {
@@ -60,9 +62,11 @@ export default function Home({navigation}) {
 
   const ref_RBSheet = useRef(null);
 
+  const isFocused = useIsFocused();
+
   const [copiedText, setCopiedText] = useState('');
 
-  const copyToClipboard = (value) => {
+  const copyToClipboard = value => {
     const jsonString = JSON.stringify(value, null, 2); // Convert the JSON data to a formatted string
     Clipboard.setString(jsonString);
     console.log('JSON data copied to clipboard:', jsonString);
@@ -71,8 +75,10 @@ export default function Home({navigation}) {
   useEffect(() => {
     // Make the API request and update the 'data' state
     console.log('Came to use effect');
-    fetchVideos();
-  }, []);
+    if (isFocused) {
+      fetchVideos();
+    }
+  }, [isFocused]);
 
   const onRefresh = () => {
     // Set refreshing to true when pull-to-refresh is triggered
@@ -84,7 +90,6 @@ export default function Home({navigation}) {
     // Set refreshing to false after data is fetched
     setRefreshing(false);
   };
-
 
   const fetchVideos = async () => {
     // Simulate loading
@@ -112,7 +117,6 @@ export default function Home({navigation}) {
     }
   };
 
-  
   const getAllSignals = async (page = 1, limit = 10) => {
     try {
       const apiUrl = `${baseUrl}/signal/getallsignals?page=${page}&limit=${limit}`;
@@ -149,7 +153,7 @@ export default function Home({navigation}) {
     setSnackbarVisible(false);
   };
 
-  const handleUpdatePasswordShow = async (value) => {
+  const handleUpdatePasswordShow = async value => {
     ref_RBSheet.current.close();
 
     // Perform the password update logic here
@@ -161,7 +165,7 @@ export default function Home({navigation}) {
     // Automatically hide the Snackbar after 3 seconds
     setTimeout(() => {
       setSnackbarVisible(false);
-      copyToClipboard(value)
+      copyToClipboard(value);
       // navigation.navigate("SignIn")
     }, 3000);
   };
@@ -324,10 +328,10 @@ export default function Home({navigation}) {
     },
   ];
 
-  const showAlerts = (value) => {
-    console.log("Id", userId)
+  const showAlerts = value => {
+    console.log('Id', userId);
     if (userId !== '') {
-      handleUpdatePasswordShow(value)
+      handleUpdatePasswordShow(value);
     } else {
       ref_RBSheet.current.open();
     }
@@ -335,6 +339,11 @@ export default function Home({navigation}) {
 
   const renderItems = item => {
     console.log('REnder Items Called', item.price);
+
+    const dateObject = new Date(item.date);
+
+    // Extract the date in the format YYYY-MM-DD
+    const formattedDate = dateObject.toISOString().split('T')[0];
     return (
       <TouchableOpacity
         onPress={() =>
@@ -370,14 +379,12 @@ export default function Home({navigation}) {
               style={{fontSize: hp(2.1), fontWeight: '500', color: textBlack}}>
               {item.title}
             </Text>
-            <View style={{marginLeft:wp(3)}}>
-
-            {item.action === 'SELL' ? (
-                
-              <Sell width={50} height={50} />
-            ) : (
-              <Buy width={50} height={50} />
-            )}
+            <View style={{marginLeft: wp(3)}}>
+              {item.action === 'SELL' ? (
+                <Sell width={50} height={50} />
+              ) : (
+                <Buy width={50} height={50} />
+              )}
             </View>
           </View>
 
@@ -396,10 +403,11 @@ export default function Home({navigation}) {
           }}>
           <Text
             style={{fontSize: hp(1.7), fontWeight: '500', color: lightGrey}}>
-            {item.date}
+            {formattedDate}
           </Text>
           <TouchableOpacity
-            onPress={() => showAlerts(item)
+            onPress={
+              () => showAlerts(item)
               /*  item.showAlert === true
                 ? handleUpdatePasswordShow()
                 : ref_RBSheet.current.open() */

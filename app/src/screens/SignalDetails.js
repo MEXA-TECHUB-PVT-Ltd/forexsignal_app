@@ -88,7 +88,7 @@ export default function SignalDetails({navigation, route}) {
 
   const receivedData = route.params?.signalDetails;
 
-  console.log('Recieved Data:', receivedData);
+  console.log('Recieved Data:', receivedData?.image);
 
   useEffect(() => {
     // Make the API request and update the 'data' state

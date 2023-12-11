@@ -309,7 +309,7 @@ export default function ProfileImage({navigation}) {
     <ScrollView style={styles.container}>
       <View style={{marginTop: hp(5)}}>
         <Headers
-          showBackIcon={true}
+          showBackIcon={false}
           onPress={() => navigation.goBack()}
           showText={true}
           text={'Create Profile'}

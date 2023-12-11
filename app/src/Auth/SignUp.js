@@ -12,7 +12,7 @@ import {
   TextInput,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -49,8 +49,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
-import { baseUrl } from '../assets/utilities/BaseUrl';
-import { getToken } from '../assets/utilities/CommonUtils';
+import {baseUrl} from '../assets/utilities/BaseUrl';
+import {getToken} from '../assets/utilities/CommonUtils';
 
 export default function SignUp({navigation}) {
   const [email, setEmail] = useState('');
@@ -58,7 +58,6 @@ export default function SignUp({navigation}) {
   const [loading, setLoading] = useState(false);
 
   const [deviceId, setDeviceId] = useState('');
-
 
   const [password, setPassword] = useState('');
 
@@ -68,16 +67,18 @@ export default function SignUp({navigation}) {
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
+  const [snackbarVisibleMatch, setSnackbarVisibleMatch] = useState(false);
+
+
   const [authToken, setAuthToken] = useState('');
 
   useEffect(() => {
-    getUserID()
-}, []);
+    getUserID();
+  }, []);
 
   useEffect(() => {
     configureGoogleSignIn();
   }, []);
-
 
   // all Error Statements
 
@@ -112,9 +113,13 @@ export default function SignUp({navigation}) {
     }
   };
 
-
- 
-
+  const matchPassword = () => {
+    if (password !== confirmPassword) {
+      handleUpdatePasswordMatch()
+    } else {
+      checkSignUp()
+    }
+  };
 
   const checkSignUp = () => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -137,7 +142,7 @@ export default function SignUp({navigation}) {
       setSignUpEmailError(false);
       setSignUpPasswordError(false);
       setSignUpConfirmPasswordError(true);
-    } else if (email !== '' && password == '' && confirmPassword!== '') {
+    } else if (email !== '' && password == '' && confirmPassword !== '') {
       setSignUpEmailError(false);
       setSignUpPasswordError(true);
       setSignUpConfirmPasswordError(false);
@@ -156,7 +161,7 @@ export default function SignUp({navigation}) {
       await GoogleSignin.configure({
         webClientId:
           '567068341135-kcqvi7gvfk47jj5m2rfn5r6nb48dmj0n.apps.googleusercontent.com',
-       /*  androidClientId:
+        /*  androidClientId:
           '736037778215-hjmnkaj86ssnqp0m2hh9kpcikh33obss.apps.googleusercontent.com', */
 
         offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
@@ -177,7 +182,7 @@ export default function SignUp({navigation}) {
       const {user} = userInfo;
       const userName = user.name;
       //console.log('User Name:', user);
-      signUpWithGoogle(user, userInfo )
+      signUpWithGoogle(user, userInfo);
       setLoading(false);
 
       // Handle the signed-in user data
@@ -206,11 +211,11 @@ export default function SignUp({navigation}) {
 
   //--------Sign Up With Google-----------\\
 
-  const signUpWithGoogle = async (user,userInfo) => {
+  const signUpWithGoogle = async (user, userInfo) => {
     console.log('User Name:', user);
     console.log('User Info:', userInfo);
     setLoading(true);
-    
+
     const apiUrl = `${baseUrl}/user/usersignup`;
 
     try {
@@ -236,11 +241,11 @@ export default function SignUp({navigation}) {
 
       console.log('Email:', email);
       setLoading(false);
-      
+
       if (data.msg === 'User signed up successfully') {
         console.log('Data =email', data.data.email);
         console.log('Data =id', data.data.id);
-        
+
         setLoading(false);
 
         AsyncStorage.setItem('email', data.data.email.toString(), () => {
@@ -251,15 +256,12 @@ export default function SignUp({navigation}) {
           console.log('user id saved successfully of signup');
         });
 
-        AsyncStorage.setItem('password', "Qwerty", () => {
-          console.log(
-            'user password saved successfully of signup',
-          );
+        AsyncStorage.setItem('password', 'Qwerty', () => {
+          console.log('user password saved successfully of signup');
         });
         navigation.replace('ProfileImage');
-      }else if(data.msg=== 'Email already exists'){
-        signInWithGoogle(user.email)
-
+      } else if (data.msg === 'Email already exists') {
+        signInWithGoogle(user.email);
       }
 
       // You can perform additional actions based on the response, e.g., navigate to another screen
@@ -270,15 +272,13 @@ export default function SignUp({navigation}) {
     }
   };
 
-
-
   //--------------------------\\
 
   const signUp = async () => {
     setLoading(true);
 
-    console.log("Password", password)
-    console.log("Email", email)
+    console.log('Password', password);
+    console.log('Email', email);
 
     const apiUrl = `${baseUrl}/user/usersignup`;
 
@@ -293,7 +293,7 @@ export default function SignUp({navigation}) {
           email: email,
           password: password,
           signup_type: 'email',
-          device_id: authToken.replace(/\"/g, '')
+          device_id: authToken.replace(/\"/g, ''),
           //device_id: deviceId.replace(/\"/g, '') ,
           //token: authToken.replace(/\"/g, ''),
         }),
@@ -306,11 +306,11 @@ export default function SignUp({navigation}) {
 
       console.log('Email:', email);
       setLoading(false);
-      
+
       if (data.error === false) {
         console.log('Data =email', data.data[0].email);
         console.log('Data =id', data.data[0].id);
-        
+
         setLoading(false);
 
         AsyncStorage.setItem('email', data.data[0].email.toString(), () => {
@@ -322,12 +322,17 @@ export default function SignUp({navigation}) {
         });
 
         AsyncStorage.setItem('password', password.toString(), () => {
-          console.log('user password saved successfully of signup', password.toString() );
+          console.log(
+            'user password saved successfully of signup',
+            password.toString(),
+          );
         });
 
-
-        navigation.replace('OTPVerifyAccount',{email:data.data[0].email, OTP:data.data[0].verificationcode});
-      }else if(data.msg=== 'Email already exists'){
+        navigation.replace('OTPVerifyAccount', {
+          email: data.data[0].email,
+          OTP: data.data[0].verificationcode,
+        });
+      } else if (data.msg === 'Email already exists') {
         handleUpdatePassword();
       }
 
@@ -357,9 +362,33 @@ export default function SignUp({navigation}) {
     }, 3000);
   };
 
-  //sign in with with google 
+  //-------------------------\\
 
-  const signInWithGoogle = async (email) => {
+  const dismissSnackbarMatch = () => {
+    setSnackbarVisibleMatch(false);
+  };
+
+
+  const handleUpdatePasswordMatch = async () => {
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    setSnackbarVisibleMatch(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      setSnackbarVisibleMatch(false);
+      //navigation.navigate('SignIn');
+    }, 3000);
+  };
+
+
+  //------------------------\\
+
+  //sign in with with google
+
+  const signInWithGoogle = async email => {
     setLoading(true);
 
     const apiUrl = `${baseUrl}/user/usersignin`;
@@ -412,8 +441,6 @@ export default function SignUp({navigation}) {
       setLoading(false);
     }
   };
-
-
 
   return (
     <ImageBackground
@@ -530,7 +557,7 @@ export default function SignUp({navigation}) {
             marginTop: hp(3),
             alignItems: 'center',
           }}>
-          <TouchableOpacity onPress={() => checkSignUp()}>
+          <TouchableOpacity onPress={() => matchPassword()}>
             <CustomButton title={'Create'} />
           </TouchableOpacity>
         </View>
@@ -577,7 +604,7 @@ export default function SignUp({navigation}) {
             marginHorizontal: wp(8),
           }}>
           <TouchableOpacity
-          onPress={()=>handleGoogleSignIn()}
+            onPress={() => handleGoogleSignIn()}
             style={{
               height: hp(6),
               paddingHorizontal: wp(3),
@@ -670,12 +697,19 @@ export default function SignUp({navigation}) {
         </View>
       )}
 
-        <CustomSnackbarAlert
+      <CustomSnackbarAlert
         message={'Alert!'}
         messageDescription={'Email Already Exists!'}
         onDismiss={dismissSnackbar} // Make sure this function is defined
         visible={snackbarVisible}
-      /> 
+      />
+
+      <CustomSnackbarAlert
+        message={'Alert!'}
+        messageDescription={'Password Doesnot Match!'}
+        onDismiss={dismissSnackbarMatch} // Make sure this function is defined
+        visible={snackbarVisibleMatch}
+      />
     </ImageBackground>
   );
 }

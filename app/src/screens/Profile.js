@@ -71,6 +71,9 @@ export default function Profile({navigation}) {
 
   const [userName, setUserName] = useState('');
 
+  const [checkStatus, setCheckStatus] = useState(null);
+
+
   const [userEmail, setUserEmail] = useState('');
 
   const [userImage, setUserImage] = useState('');
@@ -149,8 +152,10 @@ export default function Profile({navigation}) {
       setLoading(false);
 
       if (data.msg === 'User fetched') {
+        console.log("User Fetched", data.data.vip_status)
         console.log("User Name", data.data.name)
         console.log("User Image",data.data.image)
+        setCheckStatus(data.data.vip_status)
         setUserName(data.data.name)
         setUserImage(data.data.image)
       }
@@ -263,7 +268,6 @@ export default function Profile({navigation}) {
     }
   }
 
-
   const changePassword=()=>{
     if(userId!==''){
       navigation.navigate('ChangePassword');
@@ -349,6 +353,8 @@ export default function Profile({navigation}) {
             color={'#FACA4E'}
           />}
           </View>
+
+          {checkStatus===false?<Image style={{width:wp(5), marginTop:hp(-5), height:wp(5)}} source={appImages.vipStatus}/>:null}
 
           <View style={{marginLeft: wp(3)}}>
             <Text

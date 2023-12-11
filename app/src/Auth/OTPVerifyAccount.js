@@ -150,7 +150,7 @@ export default function OTPVerifyAccount({navigation, route}) {
         },
         body: JSON.stringify({
           email: email,
-          verificationCode: otp,
+          verificationCode: otpCode,
         }),
       });
 
@@ -162,7 +162,7 @@ export default function OTPVerifyAccount({navigation, route}) {
       console.log('Email:', email);
       setLoading(false);
 
-      if (data.error === false) {
+      if (data.msg === 'Email verified successfully') {
         handleUpdatePassword();
       } else {
         handleUpdateConfirmAlert();

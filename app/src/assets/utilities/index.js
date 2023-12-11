@@ -13,6 +13,7 @@ const appImages = {
   backgroundImgAuth:require(IMAGES_DIR + 'BackgroungImgAuth.png'),
   profileImg:require(IMAGES_DIR + 'ProfileImg.png'),
   ShareMainImg:require(IMAGES_DIR + 'ShareMainImg.png'),
+  vipStatus:require(IMAGES_DIR + 'vipStatus.png'),
   cardImg: require(IMAGES_DIR + 'card3.png')
 
   //graphChart: require(IMAGES_DIR + 'GraphCharts.PNG')
