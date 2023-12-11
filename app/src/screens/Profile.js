@@ -11,7 +11,8 @@ import {
   TextInput,
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
+import FastImage from 'react-native-fast-image'
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -52,7 +53,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import RBSheet from 'react-native-raw-bottom-sheet';
 
 import {greyBold, orange, textBlack, textGrey, white} from '../assets/Colors';
-import { baseUrl } from '../assets/utilities/BaseUrl';
+import {baseUrl} from '../assets/utilities/BaseUrl';
 
 export default function Profile({navigation}) {
   const ref_RBSheet = useRef(null);
@@ -73,38 +74,33 @@ export default function Profile({navigation}) {
 
   const [checkStatus, setCheckStatus] = useState(null);
 
-
   const [userEmail, setUserEmail] = useState('');
 
   const [userImage, setUserImage] = useState('');
 
-
   useEffect(() => {
     // Make the API request and update the 'data' state
-    if(isFocused){
-
+    if (isFocused) {
       console.log('Came to use effect');
       fetchVideos();
     }
   }, [isFocused]);
-  
+
   const fetchVideos = async () => {
     // Simulate loading
     setLoading(true);
-  
+
     // Wait for getUserID to complete before calling getAllSignals
     await getUserID();
 
-      
     // Fetch data one by one
     // Once all data is fetched, set loading to false
     setLoading(false);
   };
-  
+
   const getUserID = async () => {
     console.log("Id's");
     try {
-      
       const userName = await AsyncStorage.getItem('userName');
       if (userName !== null) {
         console.log('user name retrieved:', userName);
@@ -121,7 +117,6 @@ export default function Profile({navigation}) {
         console.log('user id retrieved:', result);
         setUserId(result);
         await getUserById(result);
-
       }
     } catch (error) {
       // Handle errors here
@@ -129,9 +124,7 @@ export default function Profile({navigation}) {
     }
   };
 
-
-  const getUserById = async (id) => {
-   
+  const getUserById = async id => {
     const apiUrl = `${baseUrl}/user/getuser/userbyID/${id}`;
 
     try {
@@ -141,7 +134,6 @@ export default function Profile({navigation}) {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        
       });
 
       const data = await response.json();
@@ -152,12 +144,12 @@ export default function Profile({navigation}) {
       setLoading(false);
 
       if (data.msg === 'User fetched') {
-        console.log("User Fetched", data.data.vip_status)
-        console.log("User Name", data.data.name)
-        console.log("User Image",data.data.image)
-        setCheckStatus(data.data.vip_status)
-        setUserName(data.data.name)
-        setUserImage(data.data.image)
+        console.log('User Fetched', data.data.vip_status);
+        console.log('User Name', data.data.name);
+        console.log('User Image', data.data.image);
+        setCheckStatus(data.data.vip_status);
+        setUserName(data.data.name);
+        setUserImage(data.data.image);
       }
 
       // You can perform additional actions based on the response, e.g., navigate to another screen
@@ -167,53 +159,52 @@ export default function Profile({navigation}) {
       //ref_RBSheetCreateAccount.current.open();
       setLoading(false);
     }
+  };
 
-  }
+  const closeDelete = () => {
+    ref_RBSheet.current.close();
+    deleteUser();
+  };
 
-  const closeDelete=()=>{
-    ref_RBSheet.current.close()
-    deleteUser()
-  }
+  const closeLogOut = () => {
+    ref_RBSheetLogOut.current.close();
+    logOutUser();
+  };
 
-  const closeLogOut=()=>{
-    ref_RBSheetLogOut.current.close()
-    logOutUser()
-  }
-
-  const logOutUser= async ()=>{
+  const logOutUser = async () => {
     try {
       // Get all keys in AsyncStorage
       const keys = await AsyncStorage.getAllKeys();
 
       // Remove all items corresponding to the retrieved keys
       await AsyncStorage.multiRemove(keys);
-      
+
       // Check if keys are deleted
       const remainingKeys = await AsyncStorage.getAllKeys();
 
       if (remainingKeys.length === 0) {
         // Optionally, you can perform additional actions after clearing AsyncStorage
-        // For example, display a success message        
+        // For example, display a success message
         // Move to the next page (replace 'NextScreen' with your actual screen name)
         //navigation.replace('SignIn');
         navigation.reset({
           index: 0,
-          routes: [{ name: 'SignIn' }],
+          routes: [{name: 'SignIn'}],
         });
       } else {
         // Handle the case where keys are not deleted successfully
-        console.log("Failed To Delete Keys")
+        console.log('Failed To Delete Keys');
       }
     } catch (error) {
       // Handle errors, such as AsyncStorage access issues
       console.error('Error clearing AsyncStorage:', error);
     }
-  }
+  };
 
   const deleteUser = async () => {
     try {
       const apiUrl = `https://forexs-be.mtechub.com/user/deleteuser/${userId}`;
-  
+
       const response = await fetch(apiUrl, {
         method: 'DELETE',
         headers: {
@@ -222,20 +213,19 @@ export default function Profile({navigation}) {
           // You can add additional headers if needed
         },
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-  
+
       console.log('Delete User Response:', data);
-  
+
       // Handle the response data as needed
       if (!data.error) {
         console.log('User account deleted successfully.');
-        navigation.navigate('SignIn')
-
+        navigation.navigate('SignIn');
       } else {
         console.error('Error deleting user:', data.msg);
       }
@@ -245,36 +235,36 @@ export default function Profile({navigation}) {
     }
   };
 
-  const closeLogout=()=>{
-    ref_RBSheetLogOut.current.close()
-    navigation.navigate('SignIn')
-  }
+  const closeLogout = () => {
+    ref_RBSheetLogOut.current.close();
+    navigation.navigate('SignIn');
+  };
 
-  const navigateToEditPassword=()=>{
-    if(userId!==''){
-      navigation.navigate('EditProfile')
-    }else{
+  const navigateToEditPassword = () => {
+    if (userId !== '') {
+      navigation.navigate('EditProfile');
+    } else {
       ref_RBSheetCreateAccount.current.open();
     }
-  }
+  };
 
-  const navigateToDeleteAccount=()=>{
-    if(userId!==''){
-      ref_RBSheet.current.open()
-     // navigation.navigate('EditProfile')
-    }else{
+  const navigateToDeleteAccount = () => {
+    if (userId !== '') {
+      ref_RBSheet.current.open();
+      // navigation.navigate('EditProfile')
+    } else {
       ref_RBSheetCreateAccount.current.open();
-     // ref_RBSheetCreateAccount.current.open();
+      // ref_RBSheetCreateAccount.current.open();
     }
-  }
+  };
 
-  const changePassword=()=>{
-    if(userId!==''){
+  const changePassword = () => {
+    if (userId !== '') {
       navigation.navigate('ChangePassword');
-    }else{
+    } else {
       ref_RBSheetCreateAccount.current.open();
     }
-  }
+  };
 
   const handleUpdatePassword = async () => {
     ref_RBSheet.current.close();
@@ -307,7 +297,6 @@ export default function Profile({navigation}) {
     }, 10);
   };
 
-
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <StatusBar
@@ -319,7 +308,7 @@ export default function Profile({navigation}) {
       <View style={{marginTop: hp(5)}}>
         <Headers showText={true} text={'My Account'} />
       </View>
-       
+
       <View
         style={{
           flexDirection: 'row',
@@ -337,29 +326,38 @@ export default function Profile({navigation}) {
             height: '100%',
           }}>
           <View style={styles.circleBox}>
-            {userImage!==null?<Image
-              style={{
-                flex: 1,
-                width: '100%',
-                height: '100%',
-                //borderRadius: wp(25) / 2, // Half of the width (25/2)
-                resizeMode: 'contain',
-              }}
-              source={{uri:userImage}}
-            />:<MaterialCommunityIcons
-            style={{marginTop: hp(0.5)}}
-            name={'account-circle'}
-            size={50}
-            color={'#FACA4E'}
-          />}
+            {userImage !== null ? (
+              <FastImage
+                style={{
+                  flex: 1,
+                  width: '100%',
+                  height: '100%',
+                  //borderRadius: wp(25) / 2, // Half of the width (25/2)
+                  resizeMode: 'contain',
+                }}
+                source={{uri: userImage, priority: FastImage.priority.high}}
+              />
+            ) : (
+              <MaterialCommunityIcons
+                style={{marginTop: hp(0.5)}}
+                name={'account-circle'}
+                size={50}
+                color={'#FACA4E'}
+              />
+            )}
           </View>
 
-          {checkStatus===false?<Image style={{width:wp(5), marginTop:hp(-5), height:wp(5)}} source={appImages.vipStatus}/>:null}
+          {checkStatus === true ? (
+            <Image
+              style={{width: wp(5), marginTop: hp(-5), height: wp(5)}}
+              source={appImages.vipStatus}
+            />
+          ) : null}
 
           <View style={{marginLeft: wp(3)}}>
             <Text
               style={{fontSize: hp(2.1), fontWeight: 'bold', color: textBlack}}>
-               {userName}
+              {userName}
             </Text>
 
             <Text
@@ -622,7 +620,7 @@ export default function Profile({navigation}) {
         </TouchableOpacity>
 
         <TouchableOpacity
-        onPress={()=>ref_RBSheetLogOut.current.open()}
+          onPress={() => ref_RBSheetLogOut.current.open()}
           style={{
             flexDirection: 'row',
             marginBottom: wp(5),
@@ -757,7 +755,6 @@ export default function Profile({navigation}) {
           </TouchableOpacity>
         </View>
       </RBSheet>
-
 
       <RBSheet
         ref={ref_RBSheetLogOut}
@@ -933,7 +930,6 @@ export default function Profile({navigation}) {
         </TouchableOpacity>
       </RBSheet>
 
-
       {loading && (
         <View
           style={{
@@ -948,9 +944,6 @@ export default function Profile({navigation}) {
           <ActivityIndicator size="large" color="#FACA4E" />
         </View>
       )}
-
-
-
     </ScrollView>
   );
 }
