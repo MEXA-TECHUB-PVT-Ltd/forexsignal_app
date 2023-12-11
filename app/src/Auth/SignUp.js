@@ -332,13 +332,14 @@ export default function SignUp({navigation}) {
           email: data.data[0].email,
           OTP: data.data[0].verificationcode,
         });
-      } else if (data.msg === 'Email already exists') {
+      } else {
         handleUpdatePassword();
       }
 
       // You can perform additional actions based on the response, e.g., navigate to another screen
     } catch (error) {
       // Handle errors
+      handleUpdatePassword();
       console.error('Error during sign up:', error);
       setLoading(false);
     }

@@ -124,7 +124,7 @@ export default function MyWishList({navigation}) {
       const data = await response.json();
   
       console.log('All Signals', data.signals);
-      setAllSignals(data.signals);
+      setAllSignals(data.signals.reverse());
   
       // Handle the response data as needed
       //console.log('Response data:', data);
@@ -398,6 +398,7 @@ export default function MyWishList({navigation}) {
       </TouchableOpacity>
     );
   };
+  
   return (
     <View style={styles.container}>
       <View style={{marginTop: hp(5)}}>

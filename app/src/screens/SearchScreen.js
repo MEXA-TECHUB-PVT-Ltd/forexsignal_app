@@ -41,6 +41,9 @@ import CustomSnackbar from '../Custom/CustomSnackBar';
 import SuggestionBox from '../Custom/SuggestionBox';
 import {baseUrl} from '../assets/utilities/BaseUrl';
 
+import Clipboard from '@react-native-clipboard/clipboard';
+
+
 const dummyData = [
   'Apple',
   'Banana',
