@@ -19,6 +19,8 @@ import NewSignal from '../assets/svg/NewSignal.svg';
 
 import NewUpdates from '../assets/svg/NewUpdates.svg';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import NewBrokerUpdate from '../assets/svg/NewBrokerUpdate.svg';
 
 import New from '../assets/svg/New.svg';
@@ -44,10 +46,13 @@ import Headers from '../Custom/Headers';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
-import { baseUrl } from '../assets/utilities/BaseUrl';
+import {baseUrl} from '../assets/utilities/BaseUrl';
 
 export default function Notifications({navigation}) {
-  const [notifications, setNotifications] = useState(false);
+  
+  const [notifications, setNotifications] = useState(true);
+
+  const [userId, setUserId] = useState('');
 
   const [loading, setLoading] = useState(null);
 
@@ -63,14 +68,30 @@ export default function Notifications({navigation}) {
     // Simulate loading
     setLoading(true);
 
-    await getNotifications();
+    await getUserID();
+    //await getNotifications();
     // Fetch data one by one
     // Once all data is fetched, set loading to false
     setLoading(false);
   };
 
-  const getNotifications = async () => {
-    const apiUrl = `${baseUrl}/notifications/getall`;
+  const getUserID = async () => {
+    console.log("Id's");
+    try {
+      const result = await AsyncStorage.getItem('userId');
+      if (result !== null) {
+        console.log('user id retrieved:', result);
+        setUserId(result);
+        await getNotifications(result);
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error('Error retrieving user ID:', error);
+    }
+  };
+
+  const getNotifications = async result => {
+    const apiUrl = `${baseUrl}/notifications/get_notification_byuserID/${result}`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -83,21 +104,27 @@ export default function Notifications({navigation}) {
 
       const data = await response.json();
 
-      // Handle the response data as needed
-      console.log('Response data:', data.msg);
-
       setLoading(false);
 
-      if (data.msg === 'Notifications retrieved successfully') {
+      if (data.error === false) {
         console.log('Notification Data', data.data);
-        if (data.data.length === 0) {
+
+        // Convert date strings to JavaScript Date objects
+        const parsedData = data.data.map(item => ({
+          ...item,
+          date: new Date(item.date),
+        }));
+
+        // Sort the notification data array based on date and time
+        const sortedData = parsedData.sort((a, b) => b.date - a.date); // Sort in descending order
+
+        if (sortedData.length === 0) {
           setNotifications(false);
-        }else{
-          setNotificationData(data.data);
+        } else {
+          setNotifications(true);
+          setNotificationData(sortedData);
         }
       }
-
-      // You can perform additional actions based on the response, e.g., navigate to another screen
     } catch (error) {
       // Handle errors
       console.error('Error during sign up:', error);
@@ -191,8 +218,13 @@ export default function Notifications({navigation}) {
   ];
 
   const renderItems = items => {
+    const dateObject = new Date(items.date);
+
+    // Extract the date in the format YYYY-MM-DD
+    const formattedDate = dateObject.toISOString().split('T')[0];
     return (
-      <View
+      <TouchableOpacity
+        onPress={() => getSignalDetails(items?.signal_id)}
         style={{
           height: hp(15),
           marginTop: hp(3),
@@ -200,7 +232,11 @@ export default function Notifications({navigation}) {
         }}>
         <View style={{height: hp(8), flexDirection: 'row'}}>
           <View style={{flexDirection: 'row', flex: 1}}>
-            <items.img width={45} height={45} />
+            {items?.notification_body === 'Signal Updated Successfully' ? (
+              <NewUpdates width={45} />
+            ) : (
+              <NewSignal width={45} />
+            )}
 
             <View style={{marginLeft: wp(3)}}>
               <Text
@@ -209,7 +245,9 @@ export default function Notifications({navigation}) {
                   fontWeight: 'bold',
                   color: textBlack,
                 }}>
-                {items.type}
+                {items?.notification_body === 'Signal Updated Successfully'
+                  ? 'New Updates'
+                  : 'New Signal Received'}
               </Text>
 
               <Text
@@ -219,22 +257,22 @@ export default function Notifications({navigation}) {
                   fontWeight: '400',
                   color: textGrey,
                 }}>
-                {items.date}
+                {formattedDate}
               </Text>
             </View>
           </View>
-
-          {items.status === 'New' ? <New width={55} /> : null}
+          {items.signal_status === 'New' ? <New width={55} /> : null}
         </View>
 
         <Text
           style={{
             fontSize: hp(1.59),
             marginTop: hp(0.3),
+            // marginLeft:wp(3),
             fontWeight: '400',
             color: textGrey,
           }}>
-          {items.desc}
+          {items.notification_body}
         </Text>
 
         <View
@@ -244,8 +282,45 @@ export default function Notifications({navigation}) {
             height: hp(0.1),
             backgroundColor: '#00000017',
           }}></View>
-      </View>
+      </TouchableOpacity>
     );
+  };
+
+  const getSignalDetails = async result => {
+    setLoading(true);
+
+    try {
+      const apiUrl = `${baseUrl}/signal/getsignalbyID/${result}`;
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          // You can add additional headers if needed
+        },
+      });
+
+      if (!response.ok) {
+        setLoading(false);
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      console.log('All Signals', data.data);
+      setLoading(false);
+
+      navigation.navigate('SignalDetails', {signalDetails: data.data});
+      // Handle the response data as needed
+      //console.log('Response data:', data);
+
+      // You can perform additional actions based on the response data
+    } catch (error) {
+      // Handle errors
+      setLoading(false);
+      console.error('Error during API request:', error);
+    }
   };
 
   return (
@@ -268,8 +343,8 @@ export default function Notifications({navigation}) {
           <FlatList
             style={{flexGrow: 1}}
             showsVerticalScrollIndicator={false}
-            data={data}
-            keyExtractor={item => item.id.toString()}
+            data={notificationData}
+            keyExtractor={item => item.notification_id.toString()}
             renderItem={({item}) => renderItems(item)}
           />
         </View>

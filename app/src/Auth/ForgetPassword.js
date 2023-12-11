@@ -11,7 +11,7 @@ import {
   ImageBackground,
   TextInput,
 } from 'react-native';
-import React,{useState} from 'react';
+import React, {useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -24,12 +24,13 @@ import Buy from '../assets/svg/Buy.svg';
 import Sell from '../assets/svg/Sell.svg';
 import Google from '../assets/svg/Google.svg';
 import FaceBook from '../assets/svg/FaceBook.svg';
+
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {appImages} from '../assets/utilities';
-import { baseUrl } from '../assets/utilities/BaseUrl';
+import {baseUrl} from '../assets/utilities/BaseUrl';
 import {
   borderLineGrey,
   green,
@@ -45,10 +46,32 @@ import {
 import Headers from '../Custom/Headers';
 import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
+import CustomSnackbarAlert from '../Custom/CustomSnackBarAlert';
 
 export default function ForgetPassword({navigation, route}) {
-
   const [email, setEmail] = useState('');
+
+  const [snackbarVisibleMatch, setSnackbarVisibleMatch] = useState(false);
+
+  const dismissSnackbarMatch = () => {
+    setSnackbarVisibleMatch(false);
+  };
+
+
+  const handleUpdatePasswordMatch = async () => {
+    // Perform the password update logic here
+    // For example, you can make an API request to update the password
+
+    // Assuming the update was successful
+    setSnackbarVisibleMatch(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      setSnackbarVisibleMatch(false);
+      //navigation.navigate('SignIn');
+    }, 3000);
+  };
+
 
   const [loading, setLoading] = useState(false);
 
@@ -66,23 +89,24 @@ export default function ForgetPassword({navigation, route}) {
         },
         body: JSON.stringify({
           email: email,
-          
         }),
       });
 
       const data = await response.json();
 
       // Handle the response data as needed
-      console.log('Response data:', data.msg);
+      console.log('Response data:', data);
 
       console.log('Email:', email);
-      setLoading(false)
+      setLoading(false);
 
-      if (data.msg === 'OTP sent successfully') {
-        console.log("User OTP", data.otp)
+      if (data.error === false) {
+        console.log('User OTP', data.otp);
         setLoading(false);
 
-        navigation.replace('OTP', {email:email,OTP:data.otp});
+        navigation.replace('OTP', {email: email, OTP: data.otp});
+      }else{
+        handleUpdatePasswordMatch()
       }
 
       // You can perform additional actions based on the response, e.g., navigate to another screen
@@ -92,8 +116,6 @@ export default function ForgetPassword({navigation, route}) {
       setLoading(false);
     }
   };
-
-
 
   return (
     <ImageBackground
@@ -125,28 +147,30 @@ export default function ForgetPassword({navigation, route}) {
           fontSize: hp(2.1),
           marginTop: hp(3),
           marginLeft: wp(10),
-          lineHeight:hp(3),
+          lineHeight: hp(3),
           fontWeight: '300',
-          marginRight:wp(10),
+          marginRight: wp(10),
           color: textGrey,
         }}>
-        Please enter your account email address.
-        We will send an OTP code for verification.
+        Please enter your account email address. We will send an OTP code for
+        verification.
       </Text>
 
-      <View style={{flex:1, justifyContent:'space-around', marginHorizontal:wp(10)}}>
-      <CPaperInput
-        placeholder="abc @ gmail.com"
-        onChangeText={text => setEmail(text)}
-        left={true}
-        leftName="Mail"
-      />
-      <TouchableOpacity onPress={()=>getOTP()}>
-      <CustomButton title={'Send Code'}/>
-
-      </TouchableOpacity>
-
-      
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'space-around',
+          marginHorizontal: wp(10),
+        }}>
+        <CPaperInput
+          placeholder="abc @ gmail.com"
+          onChangeText={text => setEmail(text)}
+          left={true}
+          leftName="Mail"
+        />
+        <TouchableOpacity onPress={() => getOTP()}>
+          <CustomButton title={'Send Code'} />
+        </TouchableOpacity>
       </View>
 
       {loading && (
@@ -163,6 +187,13 @@ export default function ForgetPassword({navigation, route}) {
           <ActivityIndicator size="large" color="#FACA4E" />
         </View>
       )}
+
+      <CustomSnackbarAlert
+        message={'Alert!'}
+        messageDescription={'User With This Email Not Found!'}
+        onDismiss={dismissSnackbarMatch} // Make sure this function is defined
+        visible={snackbarVisibleMatch}
+      />
     </ImageBackground>
   );
 }
