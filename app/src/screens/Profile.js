@@ -203,7 +203,7 @@ export default function Profile({navigation}) {
 
   const deleteUser = async () => {
     try {
-      const apiUrl = `https://forexs-be.mtechub.com/user/deleteuser/${userId}`;
+      const apiUrl = `https://forexs-be.mtechub.com/user/deleteuserpermanently/${userId}`;
 
       const response = await fetch(apiUrl, {
         method: 'DELETE',
@@ -225,7 +225,8 @@ export default function Profile({navigation}) {
       // Handle the response data as needed
       if (!data.error) {
         console.log('User account deleted successfully.');
-        navigation.navigate('SignIn');
+        logOutUser()
+        //navigation.navigate('SignIn');
       } else {
         console.error('Error deleting user:', data.msg);
       }
