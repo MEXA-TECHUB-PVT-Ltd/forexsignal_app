@@ -195,20 +195,18 @@ export default function SignalDetails({navigation, route}) {
     setConvertedTime(formattedTimeValue);
     setChartData( [
       {
-        timestamp: new Date(receivedData.date).getTime(),
-        open: parseFloat(receivedData.take_profit[0].open_price),
-        high: parseFloat(receivedData.price+ '123'),
-        low: parseFloat(receivedData.price),
-        close: parseFloat(receivedData.stop_loss),
+        timestamp: new Date(receivedData?.date).getTime(),
+        open: parseFloat(receivedData?.take_profit[0]?.open_price),
+        high: parseFloat(receivedData?.price+ '123'),
+        low: parseFloat(receivedData?.price),
+        close: parseFloat(receivedData?.stop_loss),
       }])
       console.log("Time Stamp",new Date(receivedData.date).getTime());
-      console.log("Open",parseFloat(receivedData?.take_profit[0].open_price+ + 1000))
-      console.log("High",receivedData?.price+ + 1000)
-      console.log("Low",receivedData?.stop_loss+ + 1000)
-      console.log("Close",parseFloat(receivedData?.trade_probability+ + 1000))
+      console.log("Open",parseFloat(receivedData?.take_profit[0]?.open_price))
+      console.log("High",receivedData?.price)
+      console.log("Low",receivedData?.stop_loss)
+      console.log("Close",parseFloat(receivedData?.trade_probability))
       covertUpdateTimeAndDate(receivedData?.updated_at)
-      
-
 
   };
 
@@ -237,7 +235,6 @@ export default function SignalDetails({navigation, route}) {
     setUpdateConvertedDate(formattedDateValue);
     setConvertedUpdateTime(formattedTimeValue);
     
-
   };
   const copyToClipboard = value => {
     const jsonString = JSON.stringify(value, null, 2); // Convert the JSON data to a formatted string
@@ -280,19 +277,30 @@ export default function SignalDetails({navigation, route}) {
   const datas = [
     {
       timestamp: new Date(receivedData.date).getTime(),
-      open: parseFloat(receivedData?.take_profit[0].open_price+ + 112),
-      high: parseFloat(receivedData?.price + + 112),
-      low:  parseFloat(receivedData?.stop_loss + + 112),
-      close: parseFloat(receivedData?.trade_probability + + 1121),
+      open: parseFloat(receivedData?.take_profit[0]?.open_price),
+      high: parseFloat(receivedData?.price) ,
+      low:  parseFloat(receivedData?.stop_loss),
+      close: parseFloat(receivedData?.trade_probability ) ,
     },
-    {
+     /* {
       timestamp: new Date(receivedData.date).getTime(),
-      open: parseFloat(receivedData?.take_profit[0].open_price+ + 112),
+      open: parseFloat(receivedData?.take_profit[0]?.open_price+ + 112),
       high: parseFloat(receivedData?.stop_loss+ + 125),
       low:  parseFloat(receivedData?.price+ + 115),
       close: parseFloat(receivedData?.trade_probability+ + 1101),
-    }
+    }  */
   ];
+
+  const datasWithAddedValue = datas.map(data => ({
+    ...data,
+    open: parseFloat(data.open) + 33545.25,
+  high: parseFloat(data.high) + 33545.25,
+  low: parseFloat(data.low) + 33545.25,
+  close: parseFloat(data.close) + 33545.25
+  }));
+
+  console.log('Updated datas:', datasWithAddedValue);
+
 
 
   const openLightbox = () => {
@@ -424,7 +432,7 @@ export default function SignalDetails({navigation, route}) {
   };
 
   const renderTakeProfit = (item, index) => {
-    console.log('Item Profit', item);
+    console.log('Item Profit', item.open_price  ) + 33575.25;
     return (
       <View
         style={{
@@ -620,7 +628,7 @@ export default function SignalDetails({navigation, route}) {
           }}>
           {/* <Bars width={300} height={230} /> */}
 
-          <CandlestickChart.Provider data={datas}>
+          <CandlestickChart.Provider data={datasWithAddedValue}>
             <CandlestickChart width={wp(80)} height={hp(30)}>
               <CandlestickChart.Candles />
               <CandlestickChart.Crosshair onCurrentXChange={invokeHaptic}>

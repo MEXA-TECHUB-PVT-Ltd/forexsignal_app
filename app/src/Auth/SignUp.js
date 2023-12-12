@@ -50,12 +50,17 @@ import CPaperInput from '../Custom/CPaperInput';
 import CustomButton from '../Custom/CustomButton';
 import CustomSnackbar from '../Custom/CustomSnackBar';
 import {baseUrl} from '../assets/utilities/BaseUrl';
+import {useIsFocused} from '@react-navigation/native';
+
+
 import {getToken} from '../assets/utilities/CommonUtils';
 
 export default function SignUp({navigation}) {
   const [email, setEmail] = useState('');
 
   const [loading, setLoading] = useState(false);
+
+  const isFocused = useIsFocused();
 
   const [deviceId, setDeviceId] = useState('');
 
@@ -73,12 +78,18 @@ export default function SignUp({navigation}) {
   const [authToken, setAuthToken] = useState('');
 
   useEffect(() => {
-    getUserID();
-  }, []);
+    if (isFocused) {
+      console.log("Focused")
+      //getToken()
+      getUserID();
+    }
+  }, [isFocused]);
 
   useEffect(() => {
-    configureGoogleSignIn();
-  }, []);
+    if (isFocused) {
+      configureGoogleSignIn();
+    }
+  }, [isFocused]);
 
   // all Error Statements
 
@@ -275,10 +286,13 @@ export default function SignUp({navigation}) {
   //--------------------------\\
 
   const signUp = async () => {
+
     setLoading(true);
 
     console.log('Password', password);
     console.log('Email', email);
+    console.log('token', authToken.replace(/\"/g, ''));
+
 
     const apiUrl = `${baseUrl}/user/usersignup`;
 

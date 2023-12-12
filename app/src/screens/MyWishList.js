@@ -289,8 +289,8 @@ export default function MyWishList({navigation}) {
     console.log("Render Items", item)
     return (
       <TouchableOpacity
-      
-       onPress={() =>  navigation.replace('SignalDetails', {signalDetails: item})}
+      onPress={() =>  getSignalDetails(item?.signal_id)}
+       //onPress={() =>  navigation.replace('SignalDetails', {signalDetails: item})}
         style={{
           marginTop: hp(3),
           justifyContent: 'space-around',
@@ -398,6 +398,44 @@ export default function MyWishList({navigation}) {
       </TouchableOpacity>
     );
   };
+
+  const getSignalDetails = async result => {
+    setLoading(true);
+
+    try {
+      const apiUrl = `${baseUrl}/signal/getsignalbyID/${result}`;
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          // You can add additional headers if needed
+        },
+      });
+
+      if (!response.ok) {
+        setLoading(false);
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      console.log('All Signals', data.data);
+      setLoading(false);
+
+      navigation.navigate('SignalDetails', {signalDetails: data.data});
+      // Handle the response data as needed
+      //console.log('Response data:', data);
+
+      // You can perform additional actions based on the response data
+    } catch (error) {
+      // Handle errors
+      setLoading(false);
+      console.error('Error during API request:', error);
+    }
+  };
+
   
   return (
     <View style={styles.container}>
