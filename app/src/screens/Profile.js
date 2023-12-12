@@ -168,7 +168,7 @@ export default function Profile({navigation}) {
 
   const closeLogOut = () => {
     ref_RBSheetLogOut.current.close();
-    logOutUser();
+    logOutUsers();
   };
 
   const logOutUser = async () => {
@@ -201,6 +201,42 @@ export default function Profile({navigation}) {
     }
   };
 
+  const logOutUsers = async () => {
+    try {
+      // Get the 'UserToken' key
+      const userTokenKey = 'UserToken';
+      const userToken = await AsyncStorage.getItem(userTokenKey);
+  
+      // Get all keys in AsyncStorage
+      const keys = await AsyncStorage.getAllKeys();
+  
+      // Remove all items corresponding to the retrieved keys, except 'UserToken'
+      const filteredKeys = keys.filter(key => key !== userTokenKey);
+      await AsyncStorage.multiRemove(filteredKeys);
+  
+      // Check if keys are deleted
+      const remainingKeys = await AsyncStorage.getAllKeys();
+  
+      if (remainingKeys.length === 1 && remainingKeys.includes(userTokenKey)) {
+        // Optionally, you can perform additional actions after clearing AsyncStorage
+        // For example, display a success message
+        // Move to the next page (replace 'NextScreen' with your actual screen name)
+        // navigation.replace('SignIn');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'SignIn' }],
+        });
+      } else {
+        // Handle the case where keys are not deleted successfully
+        console.log('Failed To Delete Keys');
+      }
+    } catch (error) {
+      // Handle errors, such as AsyncStorage access issues
+      console.error('Error clearing AsyncStorage:', error);
+    }
+  };
+  
+
   const deleteUser = async () => {
     try {
       const apiUrl = `https://forexs-be.mtechub.com/user/deleteuserpermanently/${userId}`;
@@ -225,7 +261,7 @@ export default function Profile({navigation}) {
       // Handle the response data as needed
       if (!data.error) {
         console.log('User account deleted successfully.');
-        logOutUser()
+        logOutUsers()
         //navigation.navigate('SignIn');
       } else {
         console.error('Error deleting user:', data.msg);
